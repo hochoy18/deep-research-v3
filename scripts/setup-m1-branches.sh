@@ -396,9 +396,11 @@ step "6. 推送 main 上的 .github/ 文件"
 if $DRY_RUN; then
   skip "[DRY] 跳过 push"
 else
-  if git status --short | grep -q "^M\|?? \.github/"; then
+  # 修复：用未推送 commits 数量判断（之前用 working tree 状态判断，commit 后会误判）
+  UNPUSHED=$(git log "origin/$MAIN_BRANCH..$MAIN_BRANCH" --oneline 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$UNPUSHED" -gt 0 ]; then
     git push origin "$MAIN_BRANCH" 2>&1 | tail -3
-    ok "已推送 .github/ 配置到 origin/main"
+    ok "已推送 $UNPUSHED 个 commit 到 origin/main"
   else
     skip "main 无新 commit 需要推送"
   fi
@@ -417,20 +419,30 @@ else
   REPO_NAME="hochoy18/deep-research-v3"
   for branch in "${PROTECTED_BRANCH[@]}"; do
     echo "  → 设置 $branch 保护规则..."
-    RESULT=$(gh api "repos/$REPO_NAME/branches/$branch/protection" \
+    # 修复：用 --input 传 JSON（之前用 --field 传 JSON 字符串会触发 "anyOf" schema 错误）
+    RESULT=$(printf '%s' '{
+      "required_status_checks": {
+        "strict": true,
+        "contexts": ["ci/lint", "ci/test", "ci/sast", "ci/sca"]
+      },
+      "enforce_admins": false,
+      "required_pull_request_reviews": {
+        "dismiss_stale_reviews": true,
+        "require_code_owner_review": true,
+        "required_approving_review_count": 1
+      },
+      "restrictions": null,
+      "required_linear_history": true,
+      "allow_force_pushes": false,
+      "allow_deletions": false
+    }' | gh api "repos/$REPO_NAME/branches/$branch/protection" \
       --method PUT \
-      --field required_status_checks='{"strict":true,"contexts":["ci/lint","ci/test","ci/sast","ci/sca"]}' \
-      --field enforce_admins=false \
-      --field required_pull_request_reviews='{"required_approving_review_count":1,"dismiss_stale_reviews":true,"require_code_owner_reviews":true}' \
-      --field restrictions='null' \
-      --field required_linear_history=true \
-      --field allow_force_pushes=false \
-      --field allow_deletions=false \
+      --input - \
       2>&1) || true
     if echo "$RESULT" | grep -q '"url"'; then
       ok "$branch 保护已启用（CODEOWNERS + 1 review + 状态检查）"
     else
-      warn "$branch 保护设置失败（可能无 admin 权限）：$RESULT" | head -c 200
+      warn "$branch 保护设置失败（可能无 admin 权限）：$(echo "$RESULT" | head -c 200)"
     fi
   done
 fi
