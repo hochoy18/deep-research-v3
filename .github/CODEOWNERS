@@ -1,0 +1,55 @@
+# =============================================================================
+# CODEOWNERS — Deep Research M1 (FEATURE-001-m1-infra)
+# =============================================================================
+# 路径 → Owner 自动路由规则。PR 改动对应路径时，GitHub 自动请求 review。
+# Owner 格式：@<github-username>（constitution V + spec Q5）
+#
+# 注意：以下 username 是 M1 Kickoff 阶段的占位符，集成日前由 TL.cai 回填为
+# 真实 GitHub 用户名。所有者矩阵见 specs/001-m1-infra/plan.md §Owner 矩阵。
+# =============================================================================
+
+# --- 主 Owner 兜底（最后兜底） ---
+*                                                  @TL.cai
+
+# --- 后端（Python / LangGraph / DB） ---
+/research_backend/                                 @Dev.cai.2 @Dev.cai.1
+/research_backend/app/agents/                      @Dev.cai.2
+/research_backend/app/graph/                       @Dev.cai.2
+/research_backend/app/api/                         @Dev.cai.2 @Dev.cai.1
+/research_backend/app/db/                          @Dev.cai.1
+/research_backend/app/auth/                        @Dev.cai.1
+/research_backend/app/ratelimit/                   @Dev.cai.1
+/research_backend/app/observability/               @Dev.cai.1
+/research_backend/tests/integration/               @Dev.cai.2 @Dev.cai.1
+/research_backend/tests/unit/                      @Dev.cai.2
+
+# --- 前端（Next.js / React / Tailwind） ---
+/research_frontend/                                @Dev.cai.3
+/research_frontend/app/                            @Dev.cai.3
+/research_frontend/components/                     @Dev.cai.3
+/research_frontend/lib/                            @Dev.cai.3
+/research_frontend/tests/                          @Dev.cai.3
+
+# --- 部署 / 基础设施 ---
+/deploy/                                           @Dev.cai.1
+/docker-compose*.yml                               @Dev.cai.1
+/Taskfile.yml                                      @Dev.cai.1
+/.env.example                                      @Dev.cai.1
+
+# --- CI / 质量门禁 / 安全 ---
+/.github/workflows/                                @Dev.cai.3
+/.pre-commit-config.yaml                           @Dev.cai.3
+/bandit.yaml                                       @Dev.cai.3
+/.gitleaks.toml                                    @Dev.cai.3
+
+# --- 测试基础设施 / 单测一键跑 ---
+/scripts/                                         @Dev.cai.4
+/pyproject.toml                                    @Dev.cai.4
+/.coveragerc                                       @Dev.cai.4
+
+# --- 文档 / Spec / 治理（TL.cai 主导） ---
+/docs/                                             @TL.cai
+/specs/                                            @TL.cai
+/.specify/                                         @TL.cai
+/README.md                                         @TL.cai
+CODEOWNERS                                         @TL.cai
