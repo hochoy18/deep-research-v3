@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>awesome skills 集合 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .category {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+    background: var(--color-bg-soft);
+  }
+  .category h4 { margin: 0 0 8px; }
+  .compat {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .compat.green { background: #dafbe1; color: #1a7f37; }
+  .compat.yellow { background: #fff8c5; color: #9a6700; }
+  .compat.red { background: #ffebe9; color: #cf222e; }
+  .compat.gray { background: #f6f8fa; color: #57606a; }
+  .scenario {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    background: var(--color-bg-soft);
+  }
+  .scenario-best {
+    border-color: #1a7f37;
+    border-width: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="../00-home/index.html" class="brand">
+      <span class="brand-logo">X</span>
+      <span>其他工具 / 决策指南</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="../00-home/index.html">首页</a></li>
+        <li class="has-dropdown">
+          <a href="../10-spec-kit/00-overview.html">Spec Kit</a>
+          <ul class="dropdown">
+          <li><a href="../10-spec-kit/00-overview.html">概览</a></li>
+          <li><a href="../10-spec-kit/01-quickstart.html">快速入门</a></li>
+          <li><a href="../10-spec-kit/02-team-collaboration.html">团队协作</a></li>
+          <li><a href="../10-spec-kit/03-constitution.html">Constitution 深度</a></li>
+          <li><a href="../10-spec-kit/04-specify.html">Specify 深度</a></li>
+          <li><a href="../10-spec-kit/05-commands.html">10 命令详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../20-mattpocock/01-grill-domain.html">Matt Pocock</a>
+          <ul class="dropdown">
+          <li><a href="../20-mattpocock/01-grill-domain.html">4 skill 深度</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a>
+          <ul class="dropdown">
+          <li><a href="../30-grill-ecosystem/01-grill-skills.html">7 个 Grill 实现对比</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../40-openspec/01-overview.html">OpenSpec</a>
+          <ul class="dropdown">
+          <li><a href="../40-openspec/01-overview.html">总览</a></li>
+          <li><a href="../40-openspec/02-commands.html">explore / propose</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../50-superpowers/01-overview.html">Superpowers</a>
+          <ul class="dropdown">
+          <li><a href="../50-superpowers/01-overview.html">总览</a></li>
+          <li><a href="../50-superpowers/02-skills.html">brainstorming 详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../60-kiro/01-overview.html">Kiro</a>
+          <ul class="dropdown">
+          <li><a href="../60-kiro/01-overview.html">Kiro 总览</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../90-others/01-awesome-skills.html" class="active">其他工具</a>
+          <ul class="dropdown">
+          <li><a href="../90-others/01-awesome-skills.html" class="active">awesome skills 集合</a></li>
+          <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景 + 矩阵</a></li>
+          <li><a href="../90-others/03-niche-tools.html">小众工具汇总</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#awesome-claude">awesome-claude-skills</a></li>
+      <li><a href="#agentic-awesome">agentic-awesome-skills</a></li>
+      <li><a href="#with-spec-kit">spec-kit + 按需挑</a></li>
+      <li><a href="#usage">怎么用</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>📚 awesome-claude-skills & agentic-awesome-skills</h1>
+      <p class="subtitle">两个大型 skills 集合仓库,按需挑拣,适合"想要什么 skill 都能找到"的场景。</p>
+      <div class="badge-row">
+        <span class="tag primary">1000+ skills</span>
+        <span class="tag primary">2689+ skills</span>
+        <span class="tag success">按需挑</span>
+      </div>
+    </section>
+
+    <h2 id="awesome-claude">1. awesome-claude-skills 1000+</h2>
+
+            <h3>🥇 awesome-claude-skills</h3>
+        <p><strong>一句话</strong>:1000+ Claude Skills 目录</p>
+        <p><strong>发现阶段 skill</strong>:<code>brainstorming</code>、<code>deep-research</code>、<code>recursive-research</code></p>
+        <p><strong>强项</strong>:中英文混合、覆盖面广</p>
+        <p><strong>弱项</strong>:不是完整 SDD,需要自己拼装</p>
+        <p><strong>安装</strong>:<code>cp -r skill-name ~/.config/claude-code/skills/</code></p>
+      </div>
+
+      <div>
+        <h3>🥇 agentic-awesome-skills</h3>
+
+
+          <h4>2. awesome-claude-skills 1000+ <span class="compat yellow">推荐</span></h4>
+      <p><strong>定位</strong>:Claude Skills 目录,从中挑 1-2 个</p>
+      <p><strong>核心能力</strong>:包含 <code>brainstorming</code>、<code>deep-research</code>、<code>recursive-research</code></p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 覆盖面广(1000+)</li>
+        <li>✅ 中英文混合</li>
+        <li>✅ 单文件复制即用</li>
+      </ul>
+      <p><strong>劣势</strong>:❌ 不成体系,自己拼装</p>
+      <p><strong>适合</strong>:在 brainstorming 之外,想加 research 能力</p>
+    </div>
+
+    <div class="radar-card">
+
+
+    <h2 id="agentic-awesome">2. agentic-awesome-skills 2689+</h2>
+
+            <h3>🥇 agentic-awesome-skills</h3>
+        <p><strong>一句话</strong>:2689+ skills 大全,场景化</p>
+        <p><strong>发现阶段 skill</strong>:<code>brainstorming</code>、<code>before-you-build</code>、<code>idea-autopsy</code>、<code>what-could-break</code>、<code>rich-elicitation</code></p>
+        <p><strong>强项</strong>:精准场景化(skills 可按需挑)</p>
+        <p><strong>弱项</strong>:需要自己挑,新手不知道选哪个</p>
+        <p><strong>安装</strong>:<code>npx agentic-awesome-skills --skills brainstorming,before-you-build</code></p>
+      </div>
+
+      <div>
+        <h3>🥈 Marvin</h3>
+
+
+          <h4>3. agentic-awesome-skills 2689+ <span class="compat green">强烈推荐</span></h4>
+      <p><strong>定位</strong>:场景化 skills 集合,按"建前审查"挑</p>
+      <p><strong>核心能力</strong>:包含 <code>brainstorming</code>、<code>before-you-build</code>、<code>idea-autopsy</code>、<code>what-could-break</code>、<code>rich-elicitation</code></p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ <strong>精准场景化</strong>(每个 skill 对应一个明确场景)</li>
+        <li>✅ 16+ 平台支持</li>
+        <li>✅ 与 spec-kit 友好</li>
+      </ul>
+      <p><strong>劣势</strong>:❌ 新手不知道选哪个(5 个 skill 容易选错)</p>
+      <p><strong>适合</strong>:已经有 RFC,想用 1-2 个 skill 做"建前审查"</p>
+    </div>
+
+    <div class="radar-card">
+
+
+    <h2 id="with-spec-kit">🔗 spec-kit + 按需挑拣组合</h2>
+
+        <h3>组合 3:spec-kit + agentic-awesome-skills(按需挑)</h3>
+    <div class="scenario">
+      <p><strong>分工</strong>:</p>
+      <ul>
+        <li><code>brainstorming</code> — 任何需要发现时</li>
+        <li><code>before-you-build</code> — RFC 之前审查</li>
+        <li><code>idea-autopsy</code> — 想法尸检</li>
+        <li><code>what-could-break</code> — 爆炸半径评估</li>
+        <li><code>rich-elicitation</code> — 扫 PRD 收边界</li>
+        <li>spec-kit — 走完整流程</li>
+      </ul>
+      <p><strong>适用</strong>:想要"按场景挑 skill"的人</p>
+    </div>
+
+    <h3>组合 4:spec-kit + Marvin(纯 Python)</h3>
+
+
+    <h2 id="usage">💡 怎么用</h2>
+    <ul>
+      <li>先在 README 搜你需要的 skill(如 "brainstorm"、"grill")</li>
+      <li>把单个 skill 的 SKILL.md 复制到 <code>~/.claude/skills/&lt;name&gt;/SKILL.md</code></li>
+      <li>不要整包安装,会污染 prompt</li>
+    </ul>
+  </article>
+</main>
+
+</body>
+</html>

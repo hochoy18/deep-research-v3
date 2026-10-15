@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>首页 · SDD & AI Coding 中文文档站</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin: 24px 0;
+  }
+  .topic-card {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    background: var(--color-bg-card);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .topic-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  }
+  .topic-card h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+  }
+  .topic-card .topic-desc {
+    color: var(--color-text-soft);
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .topic-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+  }
+  .topic-card li {
+    padding: 4px 0;
+    font-size: 14px;
+  }
+  .topic-card li::before {
+    content: "→ ";
+    color: var(--color-primary);
+    font-weight: bold;
+  }
+  .topic-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .hero-banner {
+    background: linear-gradient(135deg, #0969da 0%, #1a7f37 100%);
+    color: white;
+    padding: 40px 24px;
+    border-radius: 12px;
+    margin: 20px 0;
+  }
+  .hero-banner h1 {
+    color: white;
+    margin: 0 0 8px;
+    border: none;
+    padding: 0;
+  }
+  .hero-banner p {
+    color: rgba(255,255,255,0.9);
+    margin: 8px 0 0;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">
+      <span class="brand-logo">S</span>
+      <span>SDD & AI Coding 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="../00-home/index.html" class="active">首页</a></li>
+        <li class="has-dropdown">
+          <a href="../10-spec-kit/00-overview.html">Spec Kit</a>
+          <ul class="dropdown">
+          <li><a href="../10-spec-kit/00-overview.html">概览</a></li>
+          <li><a href="../10-spec-kit/01-quickstart.html">快速入门</a></li>
+          <li><a href="../10-spec-kit/02-team-collaboration.html">团队协作</a></li>
+          <li><a href="../10-spec-kit/03-constitution.html">Constitution 深度</a></li>
+          <li><a href="../10-spec-kit/04-specify.html">Specify 深度</a></li>
+          <li><a href="../10-spec-kit/05-commands.html">10 命令详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../20-mattpocock/01-grill-domain.html">Matt Pocock</a>
+          <ul class="dropdown">
+          <li><a href="../20-mattpocock/01-grill-domain.html">4 skill 深度</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a>
+          <ul class="dropdown">
+          <li><a href="../30-grill-ecosystem/01-grill-skills.html">7 个 Grill 实现对比</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../40-openspec/01-overview.html">OpenSpec</a>
+          <ul class="dropdown">
+          <li><a href="../40-openspec/01-overview.html">总览</a></li>
+          <li><a href="../40-openspec/02-commands.html">explore / propose</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../50-superpowers/01-overview.html">Superpowers</a>
+          <ul class="dropdown">
+          <li><a href="../50-superpowers/01-overview.html">总览</a></li>
+          <li><a href="../50-superpowers/02-skills.html">brainstorming 详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../60-kiro/01-overview.html">Kiro</a>
+          <ul class="dropdown">
+          <li><a href="../60-kiro/01-overview.html">Kiro 总览</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../90-others/01-awesome-skills.html">其他工具</a>
+          <ul class="dropdown">
+          <li><a href="../90-others/01-awesome-skills.html">awesome skills 集合</a></li>
+          <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景 + 矩阵</a></li>
+          <li><a href="../90-others/03-niche-tools.html">小众工具汇总</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout-full">
+  <article class="content">
+    <section class="hero">
+      <h1>🧭 SDD & AI Coding 中文文档站</h1>
+      <p class="subtitle">围绕 Spec-Driven Development(规格驱动开发)与 AI Coding 工具链的中文实战文档,覆盖 5 大主题、18 篇深度文章。</p>
+    </section>
+
+    <div class="hero-banner">
+      <h1>核心理念</h1>
+      <p>用"先写 spec,再写代码"的纪律,让 AI 在严格的规格边界内高效工作。本站汇集 GitHub spec-kit、Matt Pocock 的 Grill/OpenSpec/Superpowers 等主流方案,帮你选对工具、用对方法。</p>
+    </div>
+
+    <h2 id="topics">🗂️ 5 大主题导航</h2>
+
+    <div class="topic-grid">
+
+      <div class="topic-card">
+        <span class="topic-icon">📘</span>
+        <h3><a href="../10-spec-kit/00-overview.html">Spec Kit</a></h3>
+        <p class="topic-desc">GitHub 官方 SDD 框架,9 步流程把想法变成可执行 spec。</p>
+        <ul>
+          <li><a href="../10-spec-kit/00-overview.html">概览</a></li>
+          <li><a href="../10-spec-kit/01-quickstart.html">快速入门</a></li>
+          <li><a href="../10-spec-kit/02-team-collaboration.html">团队协作</a></li>
+          <li><a href="../10-spec-kit/03-constitution.html">/speckit-constitution 深度</a></li>
+          <li><a href="../10-spec-kit/04-specify.html">/speckit-specify 深度</a></li>
+          <li><a href="../10-spec-kit/05-commands.html">10 命令详解</a></li>
+        </ul>
+      </div>
+
+      <div class="topic-card">
+        <span class="topic-icon">🧠</span>
+        <h3><a href="../20-mattpocock/01-grill-domain.html">Matt Pocock / Skills</a></h3>
+        <p class="topic-desc">mattpocock/skills 仓库的 4 个核心 skill 深度解读。苏格拉底式追问 + 领域建模。</p>
+        <ul>
+          <li><a href="../20-mattpocock/01-grill-domain.html">4 skill 深度:grilling / grill-me / grill-with-docs / domain-modeling</a></li>
+        </ul>
+      </div>
+
+      <div class="topic-card">
+        <span class="topic-icon">🔥</span>
+        <h3><a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a></h3>
+        <p class="topic-desc">Grill 风格的 7+ 个实现横向对比,从作者最推的到小众实验版。</p>
+        <ul>
+          <li><a href="../30-grill-ecosystem/01-grill-skills.html">7 个 Grill 实现对比 + spec-kit 组合 + 决策树</a></li>
+        </ul>
+      </div>
+
+      <div class="topic-card">
+        <span class="topic-icon">🥇</span>
+        <h3><a href="../40-openspec/01-overview.html">OpenSpec</a></h3>
+        <p class="topic-desc">Fission AI 开源的 SDD 框架,/opsx:explore + /opsx:propose 把想法变 spec。</p>
+        <ul>
+          <li><a href="../40-openspec/01-overview.html">总览 + 与 spec-kit 组合</a></li>
+          <li><a href="../40-openspec/02-commands.html">explore + propose 命令详解</a></li>
+        </ul>
+      </div>
+
+      <div class="topic-card">
+        <span class="topic-icon">⚡</span>
+        <h3><a href="../50-superpowers/01-overview.html">Superpowers</a></h3>
+        <p class="topic-desc">Anthropic 官方维护的 Claude Code 插件,提供 brainstorming/writing-plans/tdd 等高质量 skill。</p>
+        <ul>
+          <li><a href="../50-superpowers/01-overview.html">总览 + 与 spec-kit 组合(最推荐)</a></li>
+          <li><a href="../50-superpowers/02-skills.html">brainstorming skill 详解</a></li>
+        </ul>
+      </div>
+
+      <div class="topic-card">
+        <span class="topic-icon">🥈</span>
+        <h3><a href="../60-kiro/01-overview.html">Kiro (AWS)</a></h3>
+        <p class="topic-desc">AWS 推出的 AI IDE,把 spec-driven 思想融入 IDE 本身,适合一站式完成。</p>
+        <ul>
+          <li><a href="../60-kiro/01-overview.html">Kiro 总览 + 能力详解</a></li>
+        </ul>
+      </div>
+
+      <div class="topic-card">
+        <span class="topic-icon">📚</span>
+        <h3><a href="../90-others/01-awesome-skills.html">其他工具</a></h3>
+        <p class="topic-desc">awesome-claude-skills / agentic-awesome-skills 等大集合,以及小众实验性工具。</p>
+        <ul>
+          <li><a href="../90-others/01-awesome-skills.html">awesome-claude-skills + agentic-awesome-skills</a></li>
+          <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景 + 11 维矩阵</a></li>
+          <li><a href="../90-others/03-niche-tools.html">Marvin / Amplifier / Eigent 等小众</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <h2 id="path">🛤️ 推荐阅读路径</h2>
+
+    <h3 id="path-beginner">🌱 入门路径(零基础)</h3>
+    <ol>
+      <li><a href="../10-spec-kit/00-overview.html">Spec Kit 概览</a> — 理解 SDD 是什么</li>
+      <li><a href="../10-spec-kit/01-quickstart.html">快速入门</a> — 跑一遍 9 步流程</li>
+      <li><a href="../20-mattpocock/01-grill-domain.html">Matt Pocock 4 skill 深度</a> — 学 Grill 苏格拉底式追问</li>
+      <li><a href="../50-superpowers/01-overview.html">Superpowers</a> — 装上就能用的高质量 skill</li>
+    </ol>
+
+    <h3 id="path-advanced">🚀 进阶路径(已用 spec-kit)</h3>
+    <ol>
+      <li><a href="../10-spec-kit/03-constitution.html">/speckit-constitution 深度</a> — 写好项目宪法</li>
+      <li><a href="../10-spec-kit/04-specify.html">/speckit-specify 深度</a> — 写好功能 spec</li>
+      <li><a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a> — 选一个 Grill 实现做 spec 前的压力测试</li>
+      <li><a href="../40-openspec/01-overview.html">OpenSpec</a> — 替换/增强 spec-kit 的发现阶段</li>
+    </ol>
+
+    <h3 id="path-decision">🧭 工具选型路径</h3>
+    <ol>
+      <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景</a> — 跨工具决策地图</li>
+      <li><a href="../90-others/02-decision-tree.html#matrix">11 维能力矩阵</a> — 横向对比</li>
+      <li><a href="../90-others/02-decision-tree.html#checklist">选型检查清单</a> — 选错工具的 5 个信号</li>
+    </ol>
+
+    <h2 id="about">ℹ️ 关于本站</h2>
+    <p>本站文档基于对 <a href="https://github.com/github/spec-kit" target="_blank">github/spec-kit</a>、<a href="https://github.com/mattpocock/skills" target="_blank">mattpocock/skills</a>、<a href="https://github.com/Fission-AI/OpenSpec" target="_blank">Fission-AI/OpenSpec</a>、Superpowers、Kiro 等 14+ 个开源方案的真实调研,持续更新中。</p>
+    <p>本文档站仅供学习与团队实践参考。</p>
+  </article>
+</main>
+
+</body>
+</html>

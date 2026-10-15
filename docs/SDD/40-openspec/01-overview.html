@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenSpec 总览 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .category {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+    background: var(--color-bg-soft);
+  }
+  .category h4 { margin: 0 0 8px; }
+  .compat {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .compat.green { background: #dafbe1; color: #1a7f37; }
+  .compat.yellow { background: #fff8c5; color: #9a6700; }
+  .compat.red { background: #ffebe9; color: #cf222e; }
+  .compat.gray { background: #f6f8fa; color: #57606a; }
+  .scenario {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    background: var(--color-bg-soft);
+  }
+  .scenario-best {
+    border-color: #1a7f37;
+    border-width: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="../00-home/index.html" class="brand">
+      <span class="brand-logo">O</span>
+      <span>OpenSpec 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="../00-home/index.html">首页</a></li>
+        <li class="has-dropdown">
+          <a href="../10-spec-kit/00-overview.html">Spec Kit</a>
+          <ul class="dropdown">
+          <li><a href="../10-spec-kit/00-overview.html">概览</a></li>
+          <li><a href="../10-spec-kit/01-quickstart.html">快速入门</a></li>
+          <li><a href="../10-spec-kit/02-team-collaboration.html">团队协作</a></li>
+          <li><a href="../10-spec-kit/03-constitution.html">Constitution 深度</a></li>
+          <li><a href="../10-spec-kit/04-specify.html">Specify 深度</a></li>
+          <li><a href="../10-spec-kit/05-commands.html">10 命令详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../20-mattpocock/01-grill-domain.html">Matt Pocock</a>
+          <ul class="dropdown">
+          <li><a href="../20-mattpocock/01-grill-domain.html">4 skill 深度</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a>
+          <ul class="dropdown">
+          <li><a href="../30-grill-ecosystem/01-grill-skills.html">7 个 Grill 实现对比</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../40-openspec/01-overview.html" class="active">OpenSpec</a>
+          <ul class="dropdown">
+          <li><a href="../40-openspec/01-overview.html" class="active">总览</a></li>
+          <li><a href="../40-openspec/02-commands.html">explore / propose</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../50-superpowers/01-overview.html">Superpowers</a>
+          <ul class="dropdown">
+          <li><a href="../50-superpowers/01-overview.html">总览</a></li>
+          <li><a href="../50-superpowers/02-skills.html">brainstorming 详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../60-kiro/01-overview.html">Kiro</a>
+          <ul class="dropdown">
+          <li><a href="../60-kiro/01-overview.html">Kiro 总览</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../90-others/01-awesome-skills.html">其他工具</a>
+          <ul class="dropdown">
+          <li><a href="../90-others/01-awesome-skills.html">awesome skills 集合</a></li>
+          <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景 + 矩阵</a></li>
+          <li><a href="../90-others/03-niche-tools.html">小众工具汇总</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#overview">OpenSpec 是什么</a></li>
+      <li><a href="#with-spec-kit">spec-kit + OpenSpec 组合</a></li>
+      <li><a href="#action">5 分钟起步</a></li>
+      <li><a href="#pros-cons">优缺点总结</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>🥇 OpenSpec · 发现阶段 SDD 框架</h1>
+      <p class="subtitle">OpenSpec 是 Fission AI 开源的 Spec-Driven Development 框架,通过 /opsx:explore、/opsx:propose 等命令把"想法"转化为可执行的 spec。</p>
+      <div class="badge-row">
+        <span class="tag primary">Fission AI 出品</span>
+        <span class="tag success">spec-kit 友好</span>
+        <span class="tag warning">4 个核心命令</span>
+        <span class="tag">中等学习曲线</span>
+      </div>
+    </section>
+
+            <h3>🥇 OpenSpec</h3>
+        <p><strong>一句话</strong>:SDD 框架,4 命令轻量流程</p>
+        <p><strong>发现阶段命令</strong>:<code>/opsx:explore</code></p>
+        <p><strong>强项</strong>:轻量、灵活、无重型仪式</p>
+        <p><strong>弱项</strong>:与 spec-kit 思路略不同(单 change 目录 vs specs/ 目录)</p>
+        <p><strong>安装</strong>:<code>npm install -g @fission-ai/openspec@latest</code></p>
+      </div>
+
+      <div>
+        <h3>🥇 Superpowers</h3>
+
+
+    <h2 id="with-spec-kit">🔗 spec-kit + OpenSpec 组合</h2>
+
+        <h3>组合 2:spec-kit + OpenSpec</h3>
+    <div class="scenario">
+      <p><strong>分工</strong>:</p>
+      <ul>
+        <li>OpenSpec <code>explore</code> — 探索阶段</li>
+        <li>OpenSpec <code>propose</code> — 创建 change(可选,如果想用 OpenSpec 格式)</li>
+        <li>spec-kit <code>/speckit-constitution</code> — 宪法</li>
+        <li>spec-kit <code>/speckit-specify</code> — feature spec</li>
+      </ul>
+      <p><strong>适用</strong>:同时用 OpenSpec + spec-kit 的人群</p>
+    </div>
+
+    <h3>组合 3:spec-kit + agentic-awesome-skills(按需挑)</h3>
+
+
+    <h2 id="action">🚀 5 分钟起步:OpenSpec explore</h2>
+
+        <h3>10 分钟起步:试用 OpenSpec explore</h3>
+    <pre><code># 1. 安装:
+npm install -g @fission-ai/openspec@latest
+cd /path/to/your-project
+openspec init
+
+# 2. 试试 explore:
+> /opsx:explore 我们想做一个新功能,有什么方案?
+```</code></pre>
+
+
+
+    <h2 id="pros-cons">⚖️ 优缺点总结</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>维度</th><th>评价</th></tr></thead>
+        <tbody>
+          <tr><td>易上手</td><td>🟢 命令式触发,文档清晰</td></tr>
+          <tr><td>与 spec-kit 协作</td><td>🟢 输出 spec 文档,可直接复用</td></tr>
+          <tr><td>团队协作</td><td>🟡 需配合 git workflow</td></tr>
+          <tr><td>生态成熟度</td><td>🟡 新兴项目,Star 较少</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+</main>
+
+</body>
+</html>

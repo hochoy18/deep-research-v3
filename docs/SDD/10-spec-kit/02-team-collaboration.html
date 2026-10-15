@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>团队协作 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="../00-home/index.html" class="brand">
+      <span class="brand-logo">S</span>
+      <span>Spec Kit 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="../00-home/index.html">首页</a></li>
+        <li class="has-dropdown">
+          <a href="../10-spec-kit/00-overview.html" class="active">Spec Kit</a>
+          <ul class="dropdown">
+          <li><a href="../10-spec-kit/00-overview.html">概览</a></li>
+          <li><a href="../10-spec-kit/01-quickstart.html">快速入门</a></li>
+          <li><a href="../10-spec-kit/02-team-collaboration.html" class="active">团队协作</a></li>
+          <li><a href="../10-spec-kit/03-constitution.html">Constitution 深度</a></li>
+          <li><a href="../10-spec-kit/04-specify.html">Specify 深度</a></li>
+          <li><a href="../10-spec-kit/05-commands.html">10 命令详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../20-mattpocock/01-grill-domain.html">Matt Pocock</a>
+          <ul class="dropdown">
+          <li><a href="../20-mattpocock/01-grill-domain.html">4 skill 深度</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a>
+          <ul class="dropdown">
+          <li><a href="../30-grill-ecosystem/01-grill-skills.html">7 个 Grill 实现对比</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../40-openspec/01-overview.html">OpenSpec</a>
+          <ul class="dropdown">
+          <li><a href="../40-openspec/01-overview.html">总览</a></li>
+          <li><a href="../40-openspec/02-commands.html">explore / propose</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../50-superpowers/01-overview.html">Superpowers</a>
+          <ul class="dropdown">
+          <li><a href="../50-superpowers/01-overview.html">总览</a></li>
+          <li><a href="../50-superpowers/02-skills.html">brainstorming 详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../60-kiro/01-overview.html">Kiro</a>
+          <ul class="dropdown">
+          <li><a href="../60-kiro/01-overview.html">Kiro 总览</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../90-others/01-awesome-skills.html">其他工具</a>
+          <ul class="dropdown">
+          <li><a href="../90-others/01-awesome-skills.html">awesome skills 集合</a></li>
+          <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景 + 矩阵</a></li>
+          <li><a href="../90-others/03-niche-tools.html">小众工具汇总</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#overview">协作模型总览</a></li>
+      <li><a href="#phase0">阶段 0 · 团队初始化</a></li>
+      <li><a href="#phase1">阶段 1 · 协作核心机制</a></li>
+      <li><a href="#phase2">阶段 2 · 9 步协作示例</a></li>
+      <li><a href="#phase3">阶段 3 · 冲突与门禁</a></li>
+      <li><a href="#phase4">阶段 4 · 角色与权限</a></li>
+      <li><a href="#phase5">阶段 5 · 节奏建议</a></li>
+      <li><a href="#phase6">阶段 6 · 常见坑</a></li>
+      <li><a href="#phase7">阶段 7 · 启动脚本</a></li>
+      <li><a href="#summary">总结</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>团队协作实战方案</h1>
+      <p class="subtitle">用 Spec Kit 协作开发一个真实项目:分工 / 分支 / 门禁 / 节奏,一文讲透。</p>
+      <div class="badge-row">
+        <span class="tag primary">5–20 人团队</span>
+        <span class="tag success">可直接落地</span>
+        <span class="tag warning">含 CI 模板</span>
+      </div>
+    </section>
+
+    <!-- ================= 总览 ================= -->
+    <h2 id="overview">🏛️ 协作模型总览</h2>
+    <p>假设团队规模 5–20 人,正在做一个中大型项目。核心思路是 <strong>"状态隔离 + 阶段门禁 + Review 闭环"</strong>。</p>
+
+    <figure>
+      <svg viewBox="0 0 800 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="团队协作模型">
+        <defs>
+          <marker id="arrow4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- 顶层宪法 -->
+        <rect x="200" y="10" width="400" height="44" rx="22" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="400" y="38" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6700">⚖️ Project Constitution(项目级, 一次)</text>
+
+        <!-- 中层仓库 -->
+        <rect x="100" y="80" width="600" height="50" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="400" y="111" text-anchor="middle" font-size="14" font-weight="700" fill="#0969da">📦 团队仓库 · 单一主干(main) + 特性分支</text>
+
+        <!-- 并行特性小组 -->
+        <rect x="40" y="170" width="220" height="120" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="1.5"/>
+        <text x="150" y="194" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">特性 A 团队</text>
+        <text x="150" y="214" text-anchor="middle" font-size="11" fill="#57606a">张三 + 李四</text>
+        <line x1="60" y1="225" x2="240" y2="225" stroke="#d0d7de" stroke-width="1"/>
+        <text x="150" y="246" text-anchor="middle" font-size="10" fill="#1f2328">每人 1 个 .specify/feature.json</text>
+        <text x="150" y="262" text-anchor="middle" font-size="10" fill="#1f2328">独立目录 · 独立 spec</text>
+        <text x="150" y="278" text-anchor="middle" font-size="10" fill="#1f2328">状态完全隔离</text>
+
+        <rect x="290" y="170" width="220" height="120" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="1.5"/>
+        <text x="400" y="194" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">特性 B 团队</text>
+        <text x="400" y="214" text-anchor="middle" font-size="11" fill="#57606a">王五 + 赵六</text>
+        <line x1="310" y1="225" x2="490" y2="225" stroke="#d0d7de" stroke-width="1"/>
+        <text x="400" y="246" text-anchor="middle" font-size="10" fill="#1f2328">每人 1 个 .specify/feature.json</text>
+        <text x="400" y="262" text-anchor="middle" font-size="10" fill="#1f2328">独立目录 · 独立 spec</text>
+        <text x="400" y="278" text-anchor="middle" font-size="10" fill="#1f2328">状态完全隔离</text>
+
+        <rect x="540" y="170" width="220" height="120" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="1.5"/>
+        <text x="650" y="194" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">特性 C 团队</text>
+        <text x="650" y="214" text-anchor="middle" font-size="11" fill="#57606a">陈八 + 周九</text>
+        <line x1="560" y1="225" x2="740" y2="225" stroke="#d0d7de" stroke-width="1"/>
+        <text x="650" y="246" text-anchor="middle" font-size="10" fill="#1f2328">每人 1 个 .specify/feature.json</text>
+        <text x="650" y="262" text-anchor="middle" font-size="10" fill="#1f2328">独立目录 · 独立 spec</text>
+        <text x="650" y="278" text-anchor="middle" font-size="10" fill="#1f2328">状态完全隔离</text>
+
+        <!-- 收敛 -->
+        <rect x="200" y="340" width="400" height="60" rx="30" fill="#0969da" stroke="#0969da" stroke-width="2"/>
+        <text x="400" y="375" text-anchor="middle" font-size="14" font-weight="700" fill="white">🎯 /speckit-converge · 项目级一致性验证</text>
+
+        <!-- 连线 -->
+        <line x1="400" y1="54" x2="400" y2="80" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow4)"/>
+        <line x1="150" y1="130" x2="150" y2="170" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow4)"/>
+        <line x1="400" y1="130" x2="400" y2="170" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow4)"/>
+        <line x1="650" y1="130" x2="650" y2="170" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow4)"/>
+        <line x1="150" y1="290" x2="300" y2="340" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow4)"/>
+        <line x1="400" y1="290" x2="400" y2="340" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow4)"/>
+        <line x1="650" y1="290" x2="500" y2="340" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow4)"/>
+      </svg>
+      <figcaption>图 5 · 团队协作模型:宪法 → 仓库 → 三特性团队并行 → 项目级验证</figcaption>
+    </figure>
+
+    <hr>
+
+    <!-- ================= 阶段0 ================= -->
+    <h2 id="phase0">🎬 阶段 0 · 团队初始化(项目第 1 天)</h2>
+
+    <h3>0.1 仓库初始化</h3>
+    <p><strong>Lead 执行</strong>:</p>
+    <pre><code># 1. 安装 CLI
+uv tool install specify-cli
+
+# 2. 创建项目(一次性,非交互)
+specify init my-platform --integration copilot --non-interactive
+
+# 3. 关联远程仓库
+git init
+git remote add origin &lt;team-repo-url&gt;
+git push -u origin main</code></pre>
+
+    <h3>0.2 制定 Constitution(宪法)</h3>
+    <p>在 Copilot 中执行:</p>
+    <pre><code>/speckit-constitution</code></pre>
+    <p>并写入项目的指导原则,例如:</p>
+    <ol>
+      <li><strong>Security-First</strong>:任何 PR 必须通过 SAST/SCA</li>
+      <li><strong>Spec-Traceable</strong>:每个 PR 必须引用一个 spec ID</li>
+      <li><strong>Test-First</strong>:关键路径测试覆盖率 ≥ 80%</li>
+      <li><strong>Converge-Gate</strong>:任何 feature 必须 Converged 才能合并</li>
+      <li><strong>One-Feature-Owner</strong>:每个特性有且仅有一个 Owner</li>
+    </ol>
+
+    <div class="callout">
+      <p><strong>产出</strong>:<code>.specify/memory/constitution.md</code> —— <strong>必须提交到 Git</strong>,所有人均可访问。</p>
+    </div>
+
+    <h3>0.3 仓库目录结构</h3>
+    <figure>
+      <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="仓库目录结构">
+        <rect x="40" y="20" width="720" height="280" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+        <text x="60" y="48" font-size="14" font-family="monospace" font-weight="700" fill="#1f2328">my-platform/</text>
+
+        <!-- .specify -->
+        <rect x="60" y="60" width="380" height="100" rx="6" fill="#fff8c5" stroke="#9a6700"/>
+        <text x="76" y="78" font-size="12" font-family="monospace" font-weight="700" fill="#9a6700">.specify/</text>
+        <text x="240" y="78" font-size="10" fill="#8b949e">← Spec Kit 自动生成</text>
+        <text x="76" y="100" font-size="11" font-family="monospace" fill="#1f2328">├── memory/constitution.md</text>
+        <text x="76" y="118" font-size="11" font-family="monospace" fill="#1f2328">├── scripts/</text>
+        <text x="76" y="136" font-size="11" font-family="monospace" fill="#1f2328">├── templates/</text>
+        <text x="76" y="154" font-size="11" font-family="monospace" fill="#1f2328">└── feature.json ← 激活特性指针</text>
+
+        <!-- specs -->
+        <rect x="460" y="60" width="280" height="100" rx="6" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="476" y="78" font-size="12" font-family="monospace" font-weight="700" fill="#0969da">specs/</text>
+        <text x="540" y="78" font-size="10" fill="#8b949e">← 已完成归档</text>
+        <text x="476" y="100" font-size="11" font-family="monospace" fill="#1f2328">└── 001-user-auth/</text>
+        <text x="492" y="118" font-size="11" font-family="monospace" fill="#1f2328">├── spec.md</text>
+        <text x="492" y="136" font-size="11" font-family="monospace" fill="#1f2328">├── plan.md</text>
+        <text x="492" y="154" font-size="11" font-family="monospace" fill="#1f2328">└── tasks.md</text>
+
+        <!-- features -->
+        <rect x="60" y="180" width="680" height="100" rx="6" fill="#dafbe1" stroke="#1a7f37"/>
+        <text x="76" y="198" font-size="12" font-family="monospace" font-weight="700" fill="#1a7f37">features/</text>
+        <text x="160" y="198" font-size="10" fill="#8b949e">← 当前在做的特性</text>
+        <text x="76" y="220" font-size="11" font-family="monospace" fill="#1f2328">├── 002-task-board/        ← 特性 A 团队</text>
+        <text x="76" y="238" font-size="11" font-family="monospace" fill="#1f2328">├── 003-notifications/     ← 特性 B 团队</text>
+        <text x="76" y="256" font-size="11" font-family="monospace" fill="#1f2328">└── 004-export-pdf/        ← 特性 C 团队</text>
+
+        <text x="60" y="294" font-size="11" font-family="monospace" fill="#1f2328">└── README.md</text>
+      </svg>
+      <figcaption>图 6 · 仓库目录结构</figcaption>
+    </figure>
+
+    <h3>0.4 分工策略 — 按特性切片(非角色分层)</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>模式</th><th>组成</th><th>优缺点</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>❌ 按角色分层</td>
+            <td>前端 3 人 / 后端 3 人 / 测试 1 人</td>
+            <td>前端等后端接口,后端等前端确认 — <strong>串行等待</strong></td>
+          </tr>
+          <tr>
+            <td>✅ 按特性切片<br>(推荐)</td>
+            <td>每特性 1 Owner + 1–2 开发者</td>
+            <td>端到端负责,前后端都写 — <strong>反馈环最短</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout success">
+      <div class="callout-title">🎯 核心建议</div>
+      <p>每个特性独立运行完整 9 步,团队成员<strong>拥有完整上下文</strong>。Lead 负责仲裁与 Review,不参与具体实现。</p>
+    </div>
+
+    <hr>
+
+    <!-- ================= 阶段1 ================= -->
+    <h2 id="phase1">🔧 阶段 1 · 协作核心机制</h2>
+
+    <h3>1.1 特性目录与状态隔离</h3>
+    <p>每个特性一个<strong>独立目录</strong>,通过 <code>.specify/feature.json</code> 切换上下文:</p>
+    <pre><code># 张三做特性 002
+echo '{"feature": "002-task-board"}' > .specify/feature.json
+# 之后所有 /speckit-* 命令都基于这个目录
+
+# 王五做特性 003(切换上下文)
+echo '{"feature": "003-notifications"}' > .specify/feature.json</code></pre>
+
+    <div class="callout tip">
+      <div class="callout-title">💡 隔离的三个好处</div>
+      <ul>
+        <li>多人同时操作不同特性,<strong>互不干扰</strong></li>
+        <li>即使两个特性改动同一文件,合并时是 <strong>spec 级别的冲突</strong>(可读、可解决)</li>
+        <li><code>feature.json</code> 可加入 <code>.gitignore</code>,或团队约定<strong>提交时忽略</strong></li>
+      </ul>
+    </div>
+
+    <h3>1.2 Git 分支策略(选配 git 扩展)</h3>
+    <p>推荐 Git Flow 轻量化版本:</p>
+    <figure>
+      <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Git 分支策略">
+        <defs>
+          <marker id="arrow5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- main -->
+        <line x1="40" y1="40" x2="40" y2="180" stroke="#0969da" stroke-width="3"/>
+        <circle cx="40" cy="40" r="8" fill="#0969da"/>
+        <circle cx="40" cy="80" r="6" fill="#0969da"/>
+        <circle cx="40" cy="120" r="6" fill="#0969da"/>
+        <circle cx="40" cy="180" r="6" fill="#0969da"/>
+        <text x="40" y="200" text-anchor="middle" font-size="12" font-weight="700" fill="#0969da">main</text>
+        <text x="55" y="44" font-size="10" fill="#57606a">受保护</text>
+
+        <!-- 分支 1 -->
+        <line x1="60" y1="60" x2="280" y2="60" stroke="#1a7f37" stroke-width="2"/>
+        <circle cx="60" cy="60" r="6" fill="#1a7f37"/>
+        <circle cx="170" cy="60" r="6" fill="#1a7f37"/>
+        <circle cx="280" cy="60" r="6" fill="#1a7f37"/>
+        <line x1="280" y1="60" x2="280" y2="80" stroke="#1a7f37" stroke-width="2"/>
+        <text x="170" y="52" text-anchor="middle" font-size="11" font-weight="700" fill="#1a7f37">002-task-board · 张三</text>
+
+        <!-- 分支 2 -->
+        <line x1="60" y1="100" x2="320" y2="100" stroke="#8250df" stroke-width="2"/>
+        <circle cx="60" cy="100" r="6" fill="#8250df"/>
+        <circle cx="190" cy="100" r="6" fill="#8250df"/>
+        <circle cx="320" cy="100" r="6" fill="#8250df"/>
+        <line x1="320" y1="100" x2="320" y2="120" stroke="#8250df" stroke-width="2"/>
+        <text x="190" y="92" text-anchor="middle" font-size="11" font-weight="700" fill="#8250df">003-notifications · 王五</text>
+
+        <!-- 分支 3 -->
+        <line x1="60" y1="140" x2="240" y2="140" stroke="#9a6700" stroke-width="2"/>
+        <circle cx="60" cy="140" r="6" fill="#9a6700"/>
+        <circle cx="150" cy="140" r="6" fill="#9a6700"/>
+        <circle cx="240" cy="140" r="6" fill="#9a6700"/>
+        <line x1="240" y1="140" x2="240" y2="180" stroke="#9a6700" stroke-width="2"/>
+        <text x="150" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#9a6700">004-export-pdf · 陈八</text>
+
+        <!-- 标签 -->
+        <text x="700" y="40" font-size="11" fill="#8b949e" font-style="italic">分支命名 = 目录命名</text>
+        <text x="700" y="58" font-size="11" fill="#8b949e" font-style="italic">人脑可直接映射</text>
+      </svg>
+      <figcaption>图 7 · Git 分支策略:main + 多个特性分支并行</figcaption>
+    </figure>
+
+    <hr>
+
+    <!-- ================= 阶段2 ================= -->
+    <h2 id="phase2">📅 阶段 2 · 9 步协作示例</h2>
+    <p>假设<strong>张三和李四</strong>协作做特性 <code>002-task-board</code>:</p>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <h4>📝 Day 1 — 张三:启动特性</h4>
+        <pre><code>git checkout -b 002-task-board
+echo '{"feature": "002-task-board"}' > .specify/feature.json
+
+# 在 Copilot 中
+/speckit-specify "Taskify 的任务看板:用户可以创建任务、分配、拖拽改状态,实时多人协作"</code></pre>
+        <p class="text-soft">产出:<code>features/002-task-board/spec.md</code></p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>❓ Day 1 — 李四:协同澄清</h4>
+        <pre><code>git pull && git checkout 002-task-board
+
+# 自己的 Copilot
+/speckit-clarify
+# AI 问:"实时协作意味着 WebSocket 还是短轮询?"
+# 李四回答 → 自动合并到 spec.md
+
+git add . && git commit -m "clarify:明确实时协作采用 WebSocket"
+git push</code></pre>
+        <div class="callout tip">
+          <p>🤝 <strong>协作要点</strong>:<code>spec.md</code> 是<strong>共享资产</strong>,任何人都可以补充,但每次修改要 <strong>commit message 清晰</strong>。</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <h4>🏛️ Day 2 — 张三:制定方案</h4>
+        <pre><code>/speckit-plan
+# 输入:PostgreSQL + Node.js + Socket.io + React</code></pre>
+        <p class="text-soft">产出:<code>plan.md</code>(技术方案 + 架构 + 权衡)</p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>✅ Day 2 — 李四:质量 checklist</h4>
+        <pre><code>/speckit-checklist
+# AI 生成"需求质量检查清单"
+# 李四逐项核对,勾选已满足的项</code></pre>
+        <p class="text-soft">产出:<code>checklists/requirements.md</code>(可勾选)</p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>📋 Day 3 — 张三:拆解任务</h4>
+        <pre><code>/speckit-tasks
+# 自动产出按依赖排序的 tasks.md</code></pre>
+        <div class="callout">
+          <p><strong>关键设计</strong>:<code>[P]</code> 表示可并行,<code>[US1]</code> 表示关联用户故事 —— <strong>任务有了"故事标签"和"并行标签"</strong>。</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <h4>🔍 Day 3 — Lead 介入:analyze 一致性</h4>
+        <pre><code># Lead 切到该特性
+echo '{"feature": "002-task-board"}' > .specify/feature.json
+/speckit-analyze
+# 输出:跨 spec/plan/tasks 的一致性报告</code></pre>
+        <div class="callout warning">
+          <div class="callout-title">⚠️ Review 核心节点</div>
+          <p>Lead 在这一步介入,而不是等代码写完才发现问题。</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <h4>⚒️ Day 4–7 — 张三、李四并行实现</h4>
+        <pre><code># 张三做 T01、T02(后端)
+/speckit-implement --filter T01,T02
+
+# 李四做 T04(前端)
+/speckit-implement --filter T04</code></pre>
+        <p class="text-soft">关键:<code>tasks.md</code> 中的 <code>[P]</code> 标签让 AI 知道<strong>哪些可并行</strong>,团队成员各自实现自己的子集。</p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>🎯 Day 8 — 张三:收敛验证</h4>
+        <pre><code>/speckit-converge
+# 输出:"Converged" 或 "需要追加以下任务..."
+
+# 如果追加了任务,继续
+/speckit-implement
+/speckit-converge
+# 直到 Converged</code></pre>
+      </div>
+
+      <div class="timeline-item">
+        <h4>🚢 Day 9 — Lead:合并</h4>
+        <pre><code>git checkout main
+git merge --no-ff 002-task-board -m "feat: 002-task-board 完成"
+git push
+
+# 归档特性
+mv features/002-task-board specs/</code></pre>
+      </div>
+
+    </div>
+
+    <hr>
+
+    <!-- ================= 阶段3 ================= -->
+    <h2 id="phase3">🛡️ 阶段 3 · 冲突解决与质量门禁</h2>
+
+    <h3>3.1 并行特性之间的冲突</h3>
+    <p>当张三的 <code>005</code> 和王五的 <code>006</code> 都改了 <code>api/users.ts</code>,怎么办?</p>
+
+    <figure>
+      <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="冲突解决三原则">
+        <rect x="40" y="40" width="240" height="200" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="160" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#0969da">① spec.md 级别</text>
+        <text x="160" y="100" text-anchor="middle" font-size="11" fill="#1f2328">Lead 仲裁</text>
+        <text x="160" y="120" text-anchor="middle" font-size="11" fill="#1f2328">谁更贴近原始需求</text>
+        <text x="160" y="160" text-anchor="middle" font-size="32">📋</text>
+
+        <rect x="280" y="40" width="240" height="200" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="400" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#1a7f37">② 任务级冲突</text>
+        <text x="400" y="100" text-anchor="middle" font-size="11" fill="#1f2328">PR 中讨论</text>
+        <text x="400" y="120" text-anchor="middle" font-size="11" fill="#1f2328">谁先合,谁 rebase</text>
+        <text x="400" y="160" text-anchor="middle" font-size="32">🔧</text>
+
+        <rect x="520" y="40" width="240" height="200" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="640" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6700">③ 代码级冲突</text>
+        <text x="640" y="100" text-anchor="middle" font-size="11" fill="#1f2328">常规 Git merge</text>
+        <text x="640" y="120" text-anchor="middle" font-size="11" fill="#1f2328">工具解决</text>
+        <text x="640" y="160" text-anchor="middle" font-size="32">🔀</text>
+
+        <text x="400" y="266" text-anchor="middle" font-size="13" fill="#57606a" font-weight="600">三种冲突类型 → 三种处理方式</text>
+      </svg>
+      <figcaption>图 8 · 冲突解决三原则</figcaption>
+    </figure>
+
+    <h3>3.2 PR Review Checklist</h3>
+    <p>团队应维护一份**统一的 Review 清单**,每个 PR 都按它走:</p>
+    <pre><code>## PR Review Checklist
+- [ ] 该 PR 引用的 spec.md 存在且已合并
+- [ ] tasks.md 中对应任务被勾选
+- [ ] /speckit-analyze 无报告
+- [ ] 测试覆盖率 ≥ 80%
+- [ ] /speckit-converge 输出 Converged
+- [ ] Constitution 中的相关原则已遵守</code></pre>
+
+    <h3>3.3 CI/CD 集成(企业级)</h3>
+    <p>将 Spec Kit 接到 CI,作为合并硬性条件:</p>
+    <pre><code># .github/workflows/spec-kit-ci.yml
+name: Spec Kit CI
+on: [pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. 验证 PR 引用的 spec.md 存在
+      - name: Check spec reference
+        run: |
+          if ! grep -r "spec.md" .specify/; then
+            echo "::error::PR 必须引用 spec.md"
+            exit 1
+          fi
+
+      # 2. 运行 /speckit-analyze
+      - name: Run analyze
+        run: |
+          uv tool run specify-cli analyze
+
+      # 3. 验证 checklist 完整性
+      - name: Check checklist
+        run: |
+          python .specify/scripts/check_checklist.py</code></pre>
+
+    <hr>
+
+    <!-- ================= 阶段4 ================= -->
+    <h2 id="phase4">👥 阶段 4 · 角色与权限</h2>
+
+    <figure>
+      <svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="角色与权限">
+        <defs>
+          <marker id="arrow6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- Lead -->
+        <rect x="280" y="20" width="240" height="70" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="400" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6700">👑 Lead / Architect</text>
+        <text x="400" y="68" text-anchor="middle" font-size="11" fill="#1f2328">维护 constitution · 最终 merge 仲裁</text>
+
+        <!-- 中间层 -->
+        <rect x="60" y="130" width="220" height="70" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="170" y="158" text-anchor="middle" font-size="14" font-weight="700" fill="#0969da">🔍 Tech Reviewer</text>
+        <text x="170" y="178" text-anchor="middle" font-size="11" fill="#1f2328">运行 analyze · 审核 plan.md</text>
+
+        <rect x="290" y="130" width="220" height="70" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="400" y="158" text-anchor="middle" font-size="14" font-weight="700" fill="#1a7f37">🎯 特性负责人</text>
+        <text x="400" y="178" text-anchor="middle" font-size="11" fill="#1f2328">运行 specify · 拆任务 · 协调</text>
+
+        <rect x="520" y="130" width="220" height="70" rx="8" fill="#f5e8ff" stroke="#8250df" stroke-width="2"/>
+        <text x="630" y="158" text-anchor="middle" font-size="14" font-weight="700" fill="#8250df">🧪 QA</text>
+        <text x="630" y="178" text-anchor="middle" font-size="11" fill="#1f2328">运行 converge · 补充 checklist</text>
+
+        <!-- 底部 -->
+        <rect x="280" y="240" width="240" height="70" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="400" y="268" text-anchor="middle" font-size="14" font-weight="700" fill="#0969da">💻 特性开发者</text>
+        <text x="400" y="288" text-anchor="middle" font-size="11" fill="#1f2328">实现 tasks.md 中的子集</text>
+
+        <!-- 连线 -->
+        <line x1="400" y1="90" x2="170" y2="130" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow6)"/>
+        <line x1="400" y1="90" x2="400" y2="130" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow6)"/>
+        <line x1="400" y1="90" x2="630" y2="130" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow6)"/>
+        <line x1="400" y1="200" x2="400" y2="240" stroke="#57606a" stroke-width="1.5" marker-end="url(#arrow6)"/>
+
+        <text x="400" y="338" text-anchor="middle" font-size="11" fill="#8b949e">Lead → 三类支持角色 → 开发者</text>
+      </svg>
+      <figcaption>图 9 · 团队角色与协作关系</figcaption>
+    </figure>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>角色</th><th>人数</th><th>职责</th></tr></thead>
+        <tbody>
+          <tr><td>👑 <strong>Lead / Architect</strong></td><td>1</td><td>维护 constitution、最终 merge 仲裁</td></tr>
+          <tr><td>🔍 <strong>Tech Reviewer</strong></td><td>1–2</td><td>跑 <code>/speckit-analyze</code>、审核 plan.md</td></tr>
+          <tr><td>🎯 <strong>特性负责人</strong></td><td>每特性 1</td><td>跑 <code>/speckit-specify</code>、拆任务、协调</td></tr>
+          <tr><td>💻 <strong>特性开发者</strong></td><td>每特性 1–3</td><td>实现 tasks.md 中的子集</td></tr>
+          <tr><td>🧪 <strong>QA</strong></td><td>1</td><td>跑 <code>/speckit-converge</code>、补充 checklist</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <!-- ================= 阶段5 ================= -->
+    <h2 id="phase5">📆 阶段 5 · 日常节奏建议</h2>
+
+    <figure>
+      <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="日常节奏时间线">
+        <line x1="40" y1="140" x2="760" y2="140" stroke="#d0d7de" stroke-width="2"/>
+        <circle cx="120" cy="140" r="10" fill="#0969da"/>
+        <circle cx="380" cy="140" r="10" fill="#1a7f37"/>
+        <circle cx="640" cy="140" r="10" fill="#8250df"/>
+
+        <!-- 每日站会 -->
+        <rect x="40" y="40" width="160" height="80" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+        <text x="120" y="62" text-anchor="middle" font-size="13" font-weight="700" fill="#0969da">每日站会</text>
+        <text x="120" y="84" text-anchor="middle" font-size="11" fill="#1f2328">15 分钟</text>
+        <text x="120" y="104" text-anchor="middle" font-size="10" fill="#57606a">spec/plan/tasks 进展</text>
+
+        <!-- 周 review -->
+        <rect x="290" y="40" width="200" height="80" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="1.5"/>
+        <text x="390" y="62" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">每周 Spec Review</text>
+        <text x="390" y="84" text-anchor="middle" font-size="11" fill="#1f2328">Lead 主持</text>
+        <text x="390" y="104" text-anchor="middle" font-size="10" fill="#57606a">constitution 复盘</text>
+
+        <!-- 月度 retro -->
+        <rect x="540" y="40" width="220" height="80" rx="8" fill="#f5e8ff" stroke="#8250df" stroke-width="1.5"/>
+        <text x="650" y="62" text-anchor="middle" font-size="13" font-weight="700" fill="#8250df">每月 Retro</text>
+        <text x="650" y="84" text-anchor="middle" font-size="11" fill="#1f2328">流程效率</text>
+        <text x="650" y="104" text-anchor="middle" font-size="10" fill="#57606a">是否新增 extension</text>
+
+        <!-- 时间标记 -->
+        <text x="120" y="172" text-anchor="middle" font-size="11" fill="#8b949e">每日 9:30</text>
+        <text x="390" y="172" text-anchor="middle" font-size="11" fill="#8b949e">周五 16:00</text>
+        <text x="650" y="172" text-anchor="middle" font-size="11" fill="#8b949e">月末</text>
+
+        <text x="400" y="240" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2328">每日对齐 · 每周复盘 · 每月优化</text>
+      </svg>
+      <figcaption>图 10 · 三层节奏建议</figcaption>
+    </figure>
+
+    <h3>每日站会(15 分钟)</h3>
+    <ul>
+      <li>昨天跑了哪个 <code>/speckit-*</code> skill?</li>
+      <li>spec.md / plan.md / tasks.md 是否更新?</li>
+      <li>卡点是什么(技术 / 规格 / 资源)?</li>
+    </ul>
+
+    <h3>每周 Spec Review(Lead 主持)</h3>
+    <ul>
+      <li>本周合并的 spec.md 质量如何?</li>
+      <li>Constitution 是否需要更新?</li>
+      <li>哪些流程节点耗时过长?</li>
+    </ul>
+
+    <h3>每月 Retro</h3>
+    <ul>
+      <li><code>/speckit-converge</code> 平均几次能 Converged?</li>
+      <li>哪些步骤经常跳行?(通常是 constitution 不完善)</li>
+      <li>是否需要新增 extension / preset?</li>
+    </ul>
+
+    <hr>
+
+    <!-- ================= 阶段6 ================= -->
+    <h2 id="phase6">⚠️ 阶段 6 · 常见坑 & 防范</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>坑</th><th>表现</th><th>防范</th></tr></thead>
+        <tbody>
+          <tr><td>跳过 constitution</td><td>每个特性风格漂移</td><td>项目第一天 Lead 强制运行</td></tr>
+          <tr><td>跳过 clarify</td><td>实现到一半 spec 被重定义</td><td>任何超过 3 天的特性都跑</td></tr>
+          <tr><td>跳过 checklist</td><td>临交付发现需求缺口</td><td>接进 CI,作为合并条件</td></tr>
+          <tr><td>跳过 analyze</td><td>多人合并时大量冲突</td><td>Lead 在合并前必跑</td></tr>
+          <tr><td>converge 反复失败</td><td>spec/实现对不上</td><td>constitution 明确"每次失败追加任务,不许删任务"</td></tr>
+          <tr><td>特性目录混乱</td><td>找不到当前激活特性</td><td><code>.specify/feature.json</code> 必须反映现实,Lead 抽查</td></tr>
+          <tr><td>同特性多人同时改 spec.md</td><td>互相覆盖</td><td>用分支 + PR,不在 main 上直接改</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <!-- ================= 阶段7 ================= -->
+    <h2 id="phase7">🚀 阶段 7 · 实战启动脚本</h2>
+    <p>在 <code>organization-sh.md</code>(团队首个文档)写入:</p>
+    <pre><code># 团队使用规范
+
+## 工作流
+每个特性必须走完整 9 步:
+constitution(项目级一次) → specify → clarify →
+plan → checklist → tasks → analyze →
+implement → converge
+
+## 分支策略
+- 主分支:main(受保护,需 PR +1 Review)
+- 特性分支:NNN-feature-name
+- 归档:合并后 mv 到 specs/NNN-dir/
+
+## Review Gate(PR 必须满足)
+1. 引用 spec.md 路径
+2. /speckit-analyze 无错
+3. /speckit-converge 输出 Converged
+
+## 角色
+(按团队实际填写)
+
+## 工具
+- AI 智能体:Copilot(配 Claude API)
+- CLI:specify-cli vX.Y
+- CI:GitHub Actions(spec-kit-ci.yml)</code></pre>
+
+    <hr>
+
+    <!-- ================= 总结 ================= -->
+    <h2 id="summary">📌 总结</h2>
+    <div class="callout success">
+      <div class="callout-title">🎓 核心三句话</div>
+      <ul>
+        <li><strong>状态隔离</strong>:<code>feature.json</code> + 特性目录 = 每个成员在不同"沙箱"工作</li>
+        <li><strong>阶段门禁</strong>:每个 <code>/speckit-*</code> 都是质量门,跳步意味着债务</li>
+        <li><strong>Review 闭环</strong>:Lead 在 analyze / merge 介入,不在代码写完后才介入</li>
+      </ul>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-title">🌟 一句话</div>
+      <p><strong>"规格是 AI 的共同记忆,也是团队共同的契约。"</strong></p>
+    </div>
+
+    <p style="margin-top: 32px; text-align: center;">
+      👉 回到 <a href="../00-home/index.html"><strong>文档站首页</strong></a> · 浏览 <a href="00-overview.html">概览</a> · <a href="01-quickstart.html">快速入门</a>
+    </p>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  基于 <a href="https://github.github.io/spec-kit/" target="_blank">GitHub Spec Kit</a> 官方文档构建 ·
+  本文档站仅供学习与团队实践参考
+</footer>
+
+</body>
+</html>

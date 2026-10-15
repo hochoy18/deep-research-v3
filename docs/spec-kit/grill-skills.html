@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grill 系列 Skill 全面对比 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .grill-card {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+    background: var(--color-bg-soft);
+  }
+  .grill-card.featured {
+    border-color: #0969da;
+    border-width: 2px;
+    background: linear-gradient(135deg, #ddf4ff 0%, var(--color-bg-soft) 100%);
+  }
+  .grill-card .name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0969da;
+    margin-bottom: 6px;
+  }
+  .grill-card .stars {
+    color: #9a6700;
+    font-size: 12px;
+    margin-left: 8px;
+  }
+  .grill-card .meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+    font-size: 12px;
+    color: var(--color-text-soft);
+  }
+  .grill-card .meta span {
+    background: rgba(9, 105, 218, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .star-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 16px 0;
+  }
+  @media (max-width: 900px) { .star-grid { grid-template-columns: 1fr; } }
+  .star-card {
+    border: 2px solid #0969da;
+    border-radius: 12px;
+    padding: 16px;
+    background: linear-gradient(135deg, #ddf4ff 0%, #ffffff 100%);
+    text-align: center;
+  }
+  .star-card .icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+  .star-card h4 {
+    margin: 0 0 4px;
+    color: #0969da;
+  }
+  .pattern-flow {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin: 16px 0;
+  }
+  @media (max-width: 900px) { .pattern-flow { grid-template-columns: repeat(2, 1fr); } }
+  .pattern-step {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    position: relative;
+  }
+  .pattern-step .num {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: #0969da;
+    color: white;
+    border-radius: 50%;
+    line-height: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .pattern-step.warning {
+    background: #ffebe9;
+    border-color: #cf222e;
+  }
+  .pattern-step.warning .num {
+    background: #cf222e;
+  }
+  .pattern-step.success {
+    background: #dafbe1;
+    border-color: #1a7f37;
+  }
+  .pattern-step.success .num {
+    background: #1a7f37;
+  }
+  .branch {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 12px 0;
+  }
+  .branch.heavy { border-color: #cf222e; background: #ffebe9; }
+  .branch.medium { border-color: #9a6700; background: #fff8c5; }
+  .branch.light { border-color: #1a7f37; background: #dafbe1; }
+  .branch h4 { margin: 0 0 8px; }
+  .wave {
+    border-left: 4px solid #0969da;
+    padding: 10px 14px;
+    margin: 8px 0;
+    background: var(--color-bg-soft);
+  }
+  .wave h5 {
+    margin: 0 0 4px;
+    color: #0969da;
+  }
+  .gate {
+    display: inline-block;
+    padding: 2px 10px;
+    background: #0969da;
+    color: white;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 2px 4px 2px 0;
+  }
+  .gate.cn {
+    background: #1a7f37;
+  }
+  .lens {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #ddf4ff;
+    border: 1px solid #0969da;
+    border-radius: 16px;
+    font-size: 12px;
+    margin: 4px 4px 4px 0;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">
+      <span class="brand-logo">S</span>
+      <span>Spec Kit 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">首页</a></li>
+        <li><a href="overview.html">概览</a></li>
+        <li><a href="quickstart.html">快速入门</a></li>
+        <li><a href="team-collaboration.html">团队协作</a></li>
+        <li><a href="constitution.html">Constitution</a></li>
+        <li><a href="specify.html">Specify</a></li>
+        <li><a href="discovery-tools.html">发现阶段工具</a></li>
+        <li><a href="grill-skills.html" class="active">Grill Skills</a></li>
+        <li><a href="find-tools-compare.html">深度对比</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#overview">总览:Grill 是什么</a></li>
+      <li><a href="#pattern">Grill 模式核心:苏格拉底式追问</a></li>
+      <li><a href="#three-stars">3 个核心命令:/grilling /grill-me /grill-with-docs</a></li>
+      <li><a href="#mattpocock">mattpocock/skills 家族(推荐)</a></li>
+      <li><a href="#alternatives">其他 6 个 Grill 实现</a></li>
+      <li><a href="#spec-flow">grill-spec-flow:门控 spec 工作流</a></li>
+      <li><a href="#comparison-matrix">完整能力矩阵</a></li>
+      <li><a href="#decision-tree">选型决策树(更新版)</a></li>
+      <li><a href="#with-spec-kit">Grill + spec-kit 组合</a></li>
+      <li><a href="#scenarios">4 个实战场景</a></li>
+      <li><a href="#vs-brainstorming">vs Superpowers brainstorming</a></li>
+      <li><a href="#anti-patterns">反模式(什么时候不要用)</a></li>
+      <li><a href="#action">立即可执行</a></li>
+      <li><a href="#conclusion">结论</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>🔥 Grill 系列 Skill 全面对比</h1>
+      <p class="subtitle">/grilling · /grill-me · /grill-with-docs 等 7+ 个 Grill 类 Skill 调研,与 spec-kit 组合实战。</p>
+      <div class="badge-row">
+        <span class="tag primary">苏格拉底式追问</span>
+        <span class="tag success">7+ 实现对比</span>
+        <span class="tag warning">含决策树</span>
+        <span class="tag">spec-kit 友好</span>
+      </div>
+    </section>
+
+    <!-- ================= 总览 ================= -->
+    <h2 id="overview">📋 总览:Grill 是什么</h2>
+
+    <p><strong>"Grill"</strong> 直译为"炙烤/拷问",在 AI Coding 语境下指<strong>苏格拉底式追问(Socratic Interview)</strong>模式:让 AI <strong>反过来</strong>向用户提问题,直到把方案/想法的每一个分支都问清楚、每个隐藏假设都挖出来。</p>
+
+    <p>它与传统"brainstorming"最大的区别:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>维度</th><th>Brainstorming(头脑风暴)</th><th>Grilling(炙烤追问)</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>方向</strong></td>
+            <td>探索"要做什么"</td>
+            <td>拷问"你确定这样做吗"</td>
+          </tr>
+          <tr>
+            <td><strong>阶段</strong></td>
+            <td>项目早期(从 0 到 1)</td>
+            <td>已经有方案/想法(从 1 到 ∞)</td>
+          </tr>
+          <tr>
+            <td><strong>问题类型</strong></td>
+            <td>开放式:谁用?做什么?不做什么?</td>
+            <td>封闭但深挖:为什么?如果 X 失败?边界情况?</td>
+          </tr>
+          <tr>
+            <td><strong>停止条件</strong></td>
+            <td>用户说"够了"</td>
+            <td>所有决策树分支都被问过</td>
+          </tr>
+          <tr>
+            <td><strong>风格</strong></td>
+            <td>温和引导</td>
+            <td>不留情面(relentlessly)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <p><strong>一句话理解</strong>:</p>
+      <ul>
+        <li><strong>Brainstorming</strong>:你有一个"模糊的方向",AI 帮你"打开想象"</li>
+        <li><strong>Grilling</strong>:你有一个"具体的方案",AI 帮你"找出所有漏洞"</li>
+      </ul>
+    </div>
+
+    <!-- ================= 核心模式 ================= -->
+    <h2 id="pattern">🎯 Grill 模式核心:苏格拉底式追问</h2>
+
+    <p>Grill 模式有一个<strong>5 步标准循环</strong>,几乎所有 Grill 类 skill 都遵循:</p>
+
+    <div class="pattern-flow">
+      <div class="pattern-step">
+        <div class="num">1</div>
+        <strong>接收方案</strong><br>
+        用户陈述计划/设计/想法
+      </div>
+      <div class="pattern-step">
+        <div class="num">2</div>
+        <strong>枚举分支</strong><br>
+        AI 列出所有决策点
+      </div>
+      <div class="pattern-step">
+        <div class="num">3</div>
+        <strong>顺序追问</strong><br>
+        一个一个分支问透
+      </div>
+      <div class="pattern-step warning">
+        <div class="num">4</div>
+        <strong>挖假设</strong><br>
+        找"你以为是但其实不是"
+      </div>
+      <div class="pattern-step success">
+        <div class="num">5</div>
+        <strong>对齐/否决</strong><br>
+        共识 or 推翻重来
+      </div>
+    </div>
+
+    <div class="diagram-caption">图 1:Grill 5 步循环(几乎所有 Grill 实现都基于此模式)</div>
+
+    <h3>典型 Grill 问题示例</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>类型</th><th>示例问题</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Why(为什么)</strong></td>
+            <td>为什么不用 PostgreSQL?为什么必须 7 天而不是 3 天?</td>
+          </tr>
+          <tr>
+            <td><strong>What if(假设)</strong></td>
+            <td>如果 QPS 涨 10 倍?如果服务挂了?如果用户是色盲?</td>
+          </tr>
+          <tr>
+            <td><strong>Hidden assumption(隐藏假设)</strong></td>
+            <td>"所有人都用 Chrome"——真的所有吗?移动端呢?</td>
+          </tr>
+          <tr>
+            <td><strong>Trade-off(权衡)</strong></td>
+            <td>性能 vs 准确性?开发速度 vs 可维护性?选哪个,为什么?</td>
+          </tr>
+          <tr>
+            <td><strong>Boundary(边界)</strong></td>
+            <td>空字符串?0?null?负数?emoji?1MB 文件?</td>
+          </tr>
+          <tr>
+            <td><strong>Cost(成本)</strong></td>
+            <td>迁移成本?回滚成本?团队学习成本?云资源成本?</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 3 个核心命令 ================= -->
+    <h2 id="three-stars">⭐ 3 个核心命令(用户重点关注的)</h2>
+
+    <p>这三个命令<strong>都来自 mattpocock/skills</strong>(290.8K stars,Matt Pocock 是 TypeScript 教学界的知名人物),<strong>共享同一个底层原语 <code>grilling</code></strong>。</p>
+
+    <div class="star-grid">
+      <div class="star-card">
+        <div class="icon">🔥</div>
+        <h4>/grilling</h4>
+        <p><strong>底层原语</strong></p>
+        <p style="font-size: 12px;">Model-invoked,其他 5 个 skill 的复用基础</p>
+        <p><span class="tag">共享引擎</span></p>
+      </div>
+      <div class="star-card">
+        <div class="icon">🔍</div>
+        <h4>/grill-me</h4>
+        <p><strong>生产力</strong></p>
+        <p style="font-size: 12px;">User-invoked,对一个 plan/design 持续追问</p>
+        <p><span class="tag primary">最流行</span></p>
+      </div>
+      <div class="star-card">
+        <div class="icon">📚</div>
+        <h4>/grill-with-docs</h4>
+        <p><strong>工程 + 文档</strong></p>
+        <p style="font-size: 12px;">Grilling + 域建模/ADR 沉淀</p>
+        <p><span class="tag success">作者最推荐</span></p>
+      </div>
+    </div>
+
+    <h3>关系图</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="mattpocock Grill 家族关系">
+        <defs>
+          <marker id="arr-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- 底层原语 -->
+        <rect x="280" y="20" width="240" height="60" rx="30" fill="#0969da" stroke="#0969da" stroke-width="2"/>
+        <text x="400" y="48" text-anchor="middle" font-size="15" font-weight="700" fill="white">/grilling(底层原语)</text>
+        <text x="400" y="68" text-anchor="middle" font-size="11" fill="white">Model-invoked · 共享引擎</text>
+
+        <!-- 5 个上层 skill -->
+        <line x1="400" y1="80" x2="400" y2="120" stroke="#57606a" stroke-width="2" marker-end="url(#arr-g)"/>
+        <line x1="200" y1="120" x2="600" y2="120" stroke="#57606a" stroke-width="2"/>
+
+        <line x1="120" y1="120" x2="120" y2="160" stroke="#57606a" stroke-width="2" marker-end="url(#arr-g)"/>
+        <line x1="240" y1="120" x2="240" y2="160" stroke="#57606a" stroke-width="2" marker-end="url(#arr-g)"/>
+        <line x1="360" y1="120" x2="360" y2="160" stroke="#57606a" stroke-width="2" marker-end="url(#arr-g)"/>
+        <line x1="480" y1="120" x2="480" y2="160" stroke="#57606a" stroke-width="2" marker-end="url(#arr-g)"/>
+        <line x1="600" y1="120" x2="600" y2="160" stroke="#57606a" stroke-width="2" marker-end="url(#arr-g)"/>
+
+        <rect x="40" y="160" width="160" height="60" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="120" y="184" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">/grill-me</text>
+        <text x="120" y="204" text-anchor="middle" font-size="10" fill="#1f2328">反复追问 plan</text>
+
+        <rect x="220" y="160" width="160" height="60" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="300" y="184" text-anchor="middle" font-size="12" font-weight="700" fill="#9a6700">/grill-with-docs</text>
+        <text x="300" y="204" text-anchor="middle" font-size="10" fill="#1f2328">追问 + ADR/Glossary</text>
+
+        <rect x="400" y="160" width="160" height="60" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="480" y="184" text-anchor="middle" font-size="12" font-weight="700" fill="#0969da">/triage</text>
+        <text x="480" y="204" text-anchor="middle" font-size="10" fill="#1f2328">追问 issue 状态机</text>
+
+        <rect x="580" y="160" width="180" height="60" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="670" y="184" text-anchor="middle" font-size="12" font-weight="700" fill="#0969da">/wayfinder</text>
+        <text x="670" y="204" text-anchor="middle" font-size="10" fill="#1f2328">追问 + 决策票</text>
+
+        <text x="400" y="248" text-anchor="middle" font-size="11" fill="#57606a">5 个上层 skill 共享 grilling 原语</text>
+
+        <!-- spec-kit 集成 -->
+        <line x1="300" y1="220" x2="300" y2="270" stroke="#cf222e" stroke-width="2" marker-end="url(#arr-g)" stroke-dasharray="4,4"/>
+        <rect x="180" y="275" width="440" height="60" rx="8" fill="#1a3a23" stroke="#1a7f37" stroke-width="2"/>
+        <text x="400" y="300" text-anchor="middle" font-size="13" font-weight="700" fill="#3fb950">→ /speckit-specify(吸收 plan 输出)</text>
+        <text x="400" y="320" text-anchor="middle" font-size="11" fill="#dafbe1">grill-with-docs 的 ADR 沉淀是 spec-kit 黄金输入</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 2:mattpocock/skills 的 Grill 家族(共享 /grilling 引擎)</div>
+
+    <!-- ================= mattpocock 家族 ================= -->
+    <h2 id="mattpocock">📚 mattpocock/skills 家族(强烈推荐)</h2>
+
+    <div class="grill-card featured">
+      <div class="name">mattpocock/skills <span class="stars">⭐ 290.8K · 24.4K forks</span></div>
+      <div class="meta">
+        <span>📜 MIT</span>
+        <span>🌍 多 IDE</span>
+        <span>📦 30+ skills</span>
+        <span>🎯 工程实践导向</span>
+      </div>
+      <p><strong>地址</strong>:<code>github.com/mattpocock/skills</code></p>
+      <p><strong>设计哲学</strong>:"real engineering" 而非 "vibe coding"——可适配、可组合、跨模型、基于数十年工程经验。</p>
+
+      <h4>安装方式(挑一个 IDE)</h4>
+      <pre><code># Claude Code(自动更新)
+/plugin install mattpocock-skills@claude-plugins-official
+
+# Codex
+codex plugin add mattpocock/skills
+
+# GitHub Copilot
+copilot plugin install mattpocock/skills
+
+# Gemini CLI
+gemini skills install mattpocock/skills
+
+# 其他(Cursor/OpenCode/Devin/Windsurf/Amp/Pi)
+npx skills@latest add mattpocock/skills -a &lt;agent&gt;</code></pre>
+
+      <h4>3 个核心 Grill 命令详解</h4>
+
+      <div class="wave">
+        <h5>1️⃣ /grill-me(最受欢迎)</h5>
+        <p><strong>类别</strong>:User-invoked,生产力</p>
+        <p><strong>用途</strong>:"Relentlessly interviews you about a plan/design until every branch is resolved"</p>
+        <p><strong>触发</strong>:"grill me about [我的计划]"</p>
+        <p><strong>典型场景</strong>:已经写完 RFC,想"压力测试"一遍再发给团队</p>
+      </div>
+
+      <div class="wave">
+        <h5>2️⃣ /grill-with-docs(作者最推荐)</h5>
+        <p><strong>类别</strong>:User-invoked,工程</p>
+        <p><strong>用途</strong>:"A grilling session, but that helps you build a shared language with the AI, and document hard-to-explain decisions in ADR's."</p>
+        <p><strong>触发</strong>:"grill-with-docs on this RFC"</p>
+        <p><strong>额外能力</strong>:</p>
+        <ul>
+          <li>主动构建<strong>共享语言</strong>(domain modeling)</li>
+          <li>更新 <code>GLOSSARY.md</code>(术语词典)</li>
+          <li>沉淀<strong>ADR(架构决策记录)</strong>到 docs/</li>
+          <li>变量/函数/文件<strong>命名一致</strong>,agent 减少 token 消耗</li>
+        </ul>
+        <p><strong>作者原话</strong>:"The single coolest technique in this repo."</p>
+      </div>
+
+      <div class="wave">
+        <h5>3️⃣ /grilling(底层原语)</h5>
+        <p><strong>类别</strong>:Model-invoked,工程</p>
+        <p><strong>用途</strong>:可复用的<strong>追问原语</strong>,被 /grill-me、/grill-with-docs、/triage、/wayfinder、/improve-codebase-architecture 共用</p>
+        <p><strong>用户</strong>:通常<strong>不直接调用</strong>,被上层 skill 自动调用</p>
+        <p><strong>适合</strong>:开发者自己 fork 写新 skill 时复用</p>
+      </div>
+    </div>
+
+    <h3>Matt Pocock 的 4 大失败模式 + 4 大对应 skill</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>失败模式</th><th>对应解决方案</th><th>依赖 Grill?</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>#1 Misalignment</strong>(智能体没做你想要的)</td>
+            <td><code>/grill-me</code>、<code>/grill-with-docs</code></td>
+            <td>✅ 直接</td>
+          </tr>
+          <tr>
+            <td><strong>#2 Verbosity / Jargon mismatch</strong>(表达不一致)</td>
+            <td><code>/grill-with-docs</code>(构建共享语言)</td>
+            <td>✅ 直接</td>
+          </tr>
+          <tr>
+            <td><strong>#3 Code doesn't work</strong>(代码不工作)</td>
+            <td><code>/tdd</code>、<code>/diagnosing-bugs</code></td>
+            <td>❌ 间接(feedback loop)</td>
+          </tr>
+          <tr>
+            <td><strong>#4 Ball of mud</strong>(代码腐烂)</td>
+            <td><code>/to-spec</code>、<code>/improve-codebase-architecture</code></td>
+            <td>⚠️ 部分</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 其他 6 个 ================= -->
+    <h2 id="alternatives">🧩 其他 6 个 Grill 实现</h2>
+
+    <p>Matt Pocock 不是唯一做 Grill 的人,GitHub 上还有 6+ 个独立实现:</p>
+
+    <div class="grill-card">
+      <div class="name">RobMitt/grill-me-skill <span class="stars">⭐ 928</span></div>
+      <div class="meta">
+        <span>📜 MIT</span>
+        <span>🎯 Claude Code / Cowork</span>
+        <span>📦 单文件(SKILL.md)</span>
+      </div>
+      <p><strong>地址</strong>:<code>github.com/RobMitt/grill-me-skill</code></p>
+      <p><strong>核心能力</strong>:</p>
+      <ul>
+        <li><strong>Stress-tests</strong> a plan or design by poking holes in it</li>
+        <li><strong>Resolves each branch</strong> of a decision tree through persistent questioning</li>
+        <li>Triggered by saying <code>"grill me"</code> or asking Claude to stress-test a plan</li>
+      </ul>
+      <p><strong>优势</strong>:轻量(单文件 SKILL.md)、社区认知度最高(928 stars)</p>
+      <p><strong>局限</strong>:不沉淀 ADR、不构建术语词典(没有 mattpocock 那种 domain-modeling 能力)</p>
+      <p><strong>适合</strong>:个人开发者,只想"拷问"一下自己的方案</p>
+    </div>
+
+    <div class="grill-card">
+      <div class="name">Jekudy/grillme-skill <span class="stars">⭐ 69</span></div>
+      <div class="meta">
+        <span>📜 MIT</span>
+        <span>🎯 Claude Code</span>
+        <span>🧪 3 waves + 4 lenses 结构化</span>
+      </div>
+      <p><strong>结构</strong>:</p>
+      <ul>
+        <li><strong>Wave 1:Discovery</strong>(发现)→ 目标/痛点/受众</li>
+        <li><strong>Wave 2:Design</strong>(设计)→ 架构/接口/数据流</li>
+        <li><strong>Wave 3:Operation</strong>(运营)→ 部署/监控/成本</li>
+      </ul>
+      <p><strong>4 个透镜</strong>:</p>
+      <div>
+        <span class="lens">🔬 Technical</span>
+        <span class="lens">👤 UX</span>
+        <span class="lens">💼 Business</span>
+        <span class="lens">⚠️ Risk</span>
+      </div>
+      <p><strong>特色</strong>:<strong>结构化</strong>的追问框架,比 rob-mitt 版本更系统</p>
+    </div>
+
+    <div class="grill-card">
+      <div class="name">MbappeWU/murder-board <span class="stars">⭐ 18</span></div>
+      <div class="meta">
+        <span>📜 MIT</span>
+        <span>🎯 Claude Code</span>
+        <span>🔪 6 步谋杀审查</span>
+      </div>
+      <p><strong>核心</strong>:"Murder Board" 概念—— 像陪审团审判一样<strong>全方位挑战</strong>你的想法</p>
+      <p><strong>6 步流程</strong>:</p>
+      <ol>
+        <li><strong>Establish</strong> idea context</li>
+        <li><strong>Identify</strong> assumptions</li>
+        <li><strong>Attack</strong> each assumption</li>
+        <li><strong>Stress-test</strong> failure modes</li>
+        <li><strong>Counter</strong> arguments</li>
+        <li><strong>Verdict</strong>(survive / revise / kill)</li>
+      </ol>
+      <p><strong>特色</strong>:<strong>决断式</strong>输出(survive/revise/kill),适合做"go/no-go"决策</p>
+    </div>
+
+    <div class="grill-card">
+      <div class="name">pardeep-kumar94/claude-idea-to-pr <span class="stars">⭐ 8</span></div>
+      <div class="meta">
+        <span>📜 MIT</span>
+        <span>🎯 Claude Code</span>
+        <span>🛤️ 7 阶段管线</span>
+      </div>
+      <p><strong>定位</strong>:"Idea to PR" 全流程自动化</p>
+      <p><strong>7 阶段</strong>:idea → research → spec → design → tasks → implement → review</p>
+      <p><strong>与 Grill 关系</strong>:Grill 是<strong>其中第 1-2 阶段</strong>(idea → spec)的核心机制</p>
+      <p><strong>特色</strong>:把 Grill 嵌入了<strong>更大的 SDD 流水线</strong></p>
+    </div>
+
+    <div class="grill-card">
+      <div class="name">mcdays94/pocock-agents <span class="stars">⭐ 37</span></div>
+      <div class="meta">
+        <span>📜 MIT</span>
+        <span>🎯 多平台</span>
+        <span>🛤️ grill + plan + dispatch</span>
+      </div>
+      <p><strong>3 个核心</strong>:</p>
+      <ul>
+        <li><code>grill</code> — 拷问模式(基于 mattpocock)</li>
+        <li><code>plan</code> — 任务分解</li>
+        <li><code>dispatch</code> — 派发到多 agent</li>
+      </ul>
+      <p><strong>特色</strong>:<strong>多 agent 协作</strong>,Grill 完了直接派发执行</p>
+    </div>
+
+    <div class="grill-card">
+      <div class="name">chichex/skills <span class="stars">⭐ 4</span></div>
+      <div class="meta">
+        <span>📜 MIT</span>
+        <span>🎯 Claude Code</span>
+        <span>📚 skill 集合(包含 grill)</span>
+      </div>
+      <p><strong>内容</strong>:多个 skill 的合集,grill 是其中之一</p>
+      <p><strong>特色</strong>:<strong>轻量、组合</strong>,适合挑选单个 skill 用</p>
+    </div>
+
+    <!-- ================= grill-spec-flow ================= -->
+    <h2 id="spec-flow">🚧 grill-spec-flow:门控 Spec 工作流(特殊场景)</h2>
+
+    <div class="grill-card">
+      <div class="name">joslynSmall/grill-spec-flow <span class="stars">⭐ 0</span></div>
+      <div class="meta">
+        <span>🎯 Claude Code + Codex CLI</span>
+        <span>🚪 5 阶段 + 4 道门</span>
+        <span>📦 完整 spec 包</span>
+      </div>
+      <p><strong>定位</strong>:<strong>Not</strong> an automatic implementer —— 是一个<strong>门控式</strong> spec 流程,任何代码改动前必须通过 5 道关卡</p>
+
+      <h4>5 阶段 + 4 道门</h4>
+      <div class="pattern-flow">
+        <div class="pattern-step">
+          <div class="num">0</div>
+          <strong>访谈</strong><br>
+          Question-by-question
+        </div>
+        <div class="pattern-step">
+          <div class="num">1</div>
+          <strong>需求 REQ-*</strong>
+        </div>
+        <div class="pattern-step">
+          <div class="num">2</div>
+          <strong>设计 DES-*</strong>
+        </div>
+        <div class="pattern-step">
+          <div class="num">3</div>
+          <strong>任务 + 验证</strong>
+        </div>
+        <div class="pattern-step success">
+          <div class="num">4</div>
+          <strong>实施 + 验证</strong>
+        </div>
+      </div>
+
+      <h4>4 道门控(必须<strong>精确</strong>输入批准短语)</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>门号</th><th>精确批准短语</th><th>通过条件</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>门 1</td>
+              <td><code class="gate cn">批准访谈并进入需求阶段</code></td>
+              <td>所有访谈问题已回答</td>
+            </tr>
+            <tr>
+              <td>门 2</td>
+              <td><code class="gate cn">批准需求并进入设计阶段</code></td>
+              <td>所有 REQ-* 条目已 Approved</td>
+            </tr>
+            <tr>
+              <td>门 3</td>
+              <td><code class="gate cn">批准设计并进入任务阶段</code></td>
+              <td>DES-* 决策已记录</td>
+            </tr>
+            <tr>
+              <td>门 4</td>
+              <td><code class="gate cn">批准任务并开始实施</code></td>
+              <td>任务列表 + 验证计划</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>注意</strong>:<strong>通用确认("OK"、"1"、"next")无效</strong>,必须使用上述精确短语</p>
+
+      <h4>产物结构</h4>
+      <pre><code>.specs/
+└── 2026-10-14-feat-citation/
+    ├── requirements.md   # REQ-001, REQ-002 ...
+    ├── design.md         # DES-001, DES-002 ...
+    └── tasks.md          # TASK-001, TASK-002 ...</code></pre>
+
+      <h4>依赖的 skill</h4>
+      <ul>
+        <li><code>grilling</code> — 追问原语</li>
+        <li><code>requirements-engineering</code> — 需求工程</li>
+        <li><code>design-documentation</code> — 设计文档</li>
+        <li><code>spec-driven-development</code> — SDD 主线</li>
+        <li><code>domain-modeling</code>(可选) — 域建模</li>
+      </ul>
+
+      <p><strong>与 spec-kit 的关系</strong>:</p>
+      <ul>
+        <li>概念接近(<strong>都是</strong>门控 spec 流程)</li>
+        <li>产出格式不同(<code>.specs/日期/</code> vs spec-kit 的 <code>specs/NNN-feature/</code>)</li>
+        <li>可<strong>手动桥接</strong>:把 grill-spec-flow 的 <code>requirements.md</code> 作为 <code>/speckit-specify</code> 的输入</li>
+      </ul>
+    </div>
+
+    <!-- ================= 能力矩阵 ================= -->
+    <h2 id="comparison-matrix">📊 完整能力矩阵(7 个 Grill 实现)</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Skill</th>
+            <th>Stars</th>
+            <th>触发</th>
+            <th>追问强度</th>
+            <th>结构化</th>
+            <th>沉淀文档</th>
+            <th>门控</th>
+            <th>多平台</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>mattpocock/grilling</strong></td>
+            <td>290.8K</td>
+            <td>底层原语</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>通用</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>✅ 6+ IDE</td>
+          </tr>
+          <tr>
+            <td><strong>mattpocock/grill-me</strong></td>
+            <td>290.8K</td>
+            <td>"grill me"</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>通用</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>✅ 6+ IDE</td>
+          </tr>
+          <tr>
+            <td><strong>mattpocock/grill-with-docs</strong></td>
+            <td>290.8K</td>
+            <td>"grill with docs"</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>通用</td>
+            <td>✅ ADR+Glossary</td>
+            <td>❌</td>
+            <td>✅ 6+ IDE</td>
+          </tr>
+          <tr>
+            <td><strong>RobMitt/grill-me-skill</strong></td>
+            <td>928</td>
+            <td>"grill me"</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>通用</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>Claude only</td>
+          </tr>
+          <tr>
+            <td><strong>Jekudy/grillme-skill</strong></td>
+            <td>69</td>
+            <td>"grill me"</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>3 waves × 4 lenses</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>Claude only</td>
+          </tr>
+          <tr>
+            <td><strong>MbappeWU/murder-board</strong></td>
+            <td>18</td>
+            <td>"murder board"</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>6 步流程</td>
+            <td>✅ 审判纪要</td>
+            <td>✅ verdict</td>
+            <td>Claude only</td>
+          </tr>
+          <tr>
+            <td><strong>joslynSmall/grill-spec-flow</strong></td>
+            <td>0</td>
+            <td>自动</td>
+            <td>⭐⭐⭐</td>
+            <td>5 阶段 + 4 门</td>
+            <td>✅ spec 包</td>
+            <td>✅ 4 道门</td>
+            <td>Claude+Codex</td>
+          </tr>
+          <tr>
+            <td><strong>pardeep-kumar94/idea-to-pr</strong></td>
+            <td>8</td>
+            <td>"idea to pr"</td>
+            <td>⭐⭐⭐</td>
+            <td>7 阶段管线</td>
+            <td>✅ spec 全部</td>
+            <td>✅ 阶段门</td>
+            <td>Claude only</td>
+          </tr>
+          <tr>
+            <td><strong>mcdays94/pocock-agents</strong></td>
+            <td>37</td>
+            <td>"grill me"</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>通用 + plan + dispatch</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>多平台</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>核心能力对比</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>能力</th>
+            <th>/grilling</th>
+            <th>/grill-me</th>
+            <th>/grill-with-docs</th>
+            <th>RobMitt</th>
+            <th>Jekudy</th>
+            <th>Murder-Board</th>
+            <th>grill-spec-flow</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>苏格拉底追问</strong></td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅(分阶段)</td>
+          </tr>
+          <tr>
+            <td><strong>域建模/术语</strong></td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>✅ GLOSSARY</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>✅(可选)</td>
+          </tr>
+          <tr>
+            <td><strong>ADR 沉淀</strong></td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>✅ docs/adr/</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>⚠️ 纪要</td>
+            <td>✅(设计阶段)</td>
+          </tr>
+          <tr>
+            <td><strong>多 wave/lens 结构</strong></td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>✅ 3×4</td>
+            <td>✅ 6 步</td>
+            <td>✅ 5 阶段</td>
+          </tr>
+          <tr>
+            <td><strong>门控机制</strong></td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>✅ verdict</td>
+            <td>✅ 4 道门</td>
+          </tr>
+          <tr>
+            <td><strong>分支穷尽</strong></td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>⚠️ 阶段内</td>
+          </tr>
+          <tr>
+            <td><strong>可与 spec-kit 桥接</strong></td>
+            <td>✅ 间接</td>
+            <td>✅ 直接</td>
+            <td>✅ 黄金输入</td>
+            <td>✅ 直接</td>
+            <td>✅ 直接</td>
+            <td>✅ 直接</td>
+            <td>✅ 需转换</td>
+          </tr>
+          <tr>
+            <td><strong>学习曲线</strong></td>
+            <td>平</td>
+            <td>平</td>
+            <td>中(ADR 概念)</td>
+            <td>平</td>
+            <td>中</td>
+            <td>中</td>
+            <td>陡(精确短语)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 决策树 ================= -->
+    <h2 id="decision-tree">🌳 选型决策树(Grill 版)</h2>
+
+    <p>在 <a href="discovery-tools.html">discovery-tools.html</a> 的 4 大决策分支上,叠加 Grill 选型:</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 1100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grill 选型决策树">
+        <defs>
+          <marker id="arr-g2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- 起点 -->
+        <rect x="330" y="20" width="240" height="44" rx="22" fill="#fff8c5" stroke="#9a6700" stroke-width="3"/>
+        <text x="450" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6700">我需要拷问我的方案吗?</text>
+
+        <!-- Q1:你已经有方案了吗? -->
+        <line x1="450" y1="64" x2="450" y2="100" stroke="#57606a" stroke-width="2" marker-end="url(#arr-g2)"/>
+        <rect x="330" y="105" width="240" height="50" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="450" y="128" text-anchor="middle" font-size="12" font-weight="700" fill="#0969da">Q1. 已有方案/计划?</text>
+        <text x="450" y="145" text-anchor="middle" font-size="10" fill="#57606a">(不是"模糊方向",是具体计划)</text>
+
+        <!-- Q1:否 → 回去 brainstorming -->
+        <line x1="390" y1="155" x2="120" y2="200" stroke="#cf222e" stroke-width="2" marker-end="url(#arr-g2)"/>
+        <text x="240" y="180" text-anchor="middle" font-size="10" font-weight="600" fill="#cf222e">没有(只是模糊方向)</text>
+
+        <rect x="40" y="205" width="240" height="80" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+        <text x="160" y="230" text-anchor="middle" font-size="12" font-weight="700" fill="#cf222e">🅰️ 回去用 brainstorming</text>
+        <text x="160" y="252" text-anchor="middle" font-size="10" fill="#1f2328">Superpowers brainstorming</text>
+        <text x="160" y="268" text-anchor="middle" font-size="10" fill="#1f2328">+ awesome-claude-skills</text>
+
+        <!-- Q1:是 → Q2 -->
+        <line x1="510" y1="155" x2="750" y2="200" stroke="#1a7f37" stroke-width="2" marker-end="url(#arr-g2)"/>
+        <text x="630" y="180" text-anchor="middle" font-size="10" font-weight="600" fill="#1a7f37">有(具体方案)</text>
+
+        <rect x="620" y="205" width="240" height="80" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="740" y="230" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">🅱️ Q2. 你想让 AI 追问?</text>
+
+        <!-- Q2:不想 → 简单自查 -->
+        <line x1="680" y1="285" x2="120" y2="330" stroke="#cf222e" stroke-width="2" marker-end="url(#arr-g2)"/>
+        <text x="400" y="310" text-anchor="middle" font-size="10" font-weight="600" fill="#cf222e">不想,自己想想就行</text>
+
+        <rect x="40" y="335" width="240" height="80" rx="8" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+        <text x="160" y="360" text-anchor="middle" font-size="12" font-weight="700" fill="#57606a">🅲️ 跳过</text>
+        <text x="160" y="382" text-anchor="middle" font-size="10" fill="#1f2328">直接 /speckit-specify</text>
+        <text x="160" y="398" text-anchor="middle" font-size="10" fill="#1f2328">clarify 阶段自查</text>
+
+        <!-- Q2:想 → Q3 -->
+        <line x1="800" y1="285" x2="800" y2="330" stroke="#1a7f37" stroke-width="2" marker-end="url(#arr-g2)"/>
+
+        <rect x="620" y="335" width="240" height="80" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="740" y="360" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">🅳️ Q3. 需要沉淀文档吗?</text>
+
+        <!-- Q3:否 → 简单版 -->
+        <line x1="680" y1="415" x2="200" y2="460" stroke="#9a6700" stroke-width="2" marker-end="url(#arr-g2)"/>
+        <text x="450" y="440" text-anchor="middle" font-size="10" font-weight="600" fill="#9a6700">不需要</text>
+
+        <rect x="40" y="465" width="320" height="100" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="200" y="492" text-anchor="middle" font-size="13" font-weight="700" fill="#9a6700">🅴️ 轻量追问(2 选 1)</text>
+        <text x="200" y="514" text-anchor="middle" font-size="11" fill="#1f2328">A. /grill-me (mattpocock,290K stars)</text>
+        <text x="200" y="532" text-anchor="middle" font-size="11" fill="#1f2328">B. RobMitt/grill-me-skill (928 stars)</text>
+        <text x="200" y="552" text-anchor="middle" font-size="10" fill="#57606a">触发:"grill me about my plan"</text>
+
+        <!-- Q3:是 → Q4 -->
+        <line x1="800" y1="415" x2="800" y2="460" stroke="#1a7f37" stroke-width="2" marker-end="url(#arr-g2)"/>
+
+        <rect x="620" y="465" width="240" height="80" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="740" y="490" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">🅵️ Q4. spec-kit 深度集成?</text>
+
+        <!-- Q4:否 → grill-with-docs -->
+        <line x1="680" y1="545" x2="200" y2="590" stroke="#1a7f37" stroke-width="2" marker-end="url(#arr-g2)"/>
+        <text x="450" y="570" text-anchor="middle" font-size="10" font-weight="600" fill="#1a7f37">不需要门控</text>
+
+        <rect x="40" y="595" width="320" height="100" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="200" y="622" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">🅶️ 工程版(2 选 1)</text>
+        <text x="200" y="644" text-anchor="middle" font-size="11" fill="#1f2328">A. /grill-with-docs(沉淀 ADR+Glossary)</text>
+        <text x="200" y="662" text-anchor="middle" font-size="11" fill="#1f2328">B. Jekudy/grillme-skill(3 waves×4 lenses)</text>
+        <text x="200" y="682" text-anchor="middle" font-size="10" fill="#57606a">触发:"grill-with-docs on this RFC"</text>
+
+        <!-- Q4:是 → grill-spec-flow -->
+        <line x1="800" y1="545" x2="800" y2="590" stroke="#cf222e" stroke-width="2" marker-end="url(#arr-g2)"/>
+        <text x="830" y="570" text-anchor="middle" font-size="10" font-weight="600" fill="#cf222e">要门控,精确短语</text>
+
+        <rect x="620" y="595" width="240" height="100" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+        <text x="740" y="622" text-anchor="middle" font-size="13" font-weight="700" fill="#cf222e">🅷️ 门控版</text>
+        <text x="740" y="644" text-anchor="middle" font-size="11" fill="#1f2328">joslynSmall/grill-spec-flow</text>
+        <text x="740" y="662" text-anchor="middle" font-size="11" fill="#1f2328">5 阶段 + 4 道精确门</text>
+        <text x="740" y="682" text-anchor="middle" font-size="10" fill="#57606a">适合:高合规/医疗/金融</text>
+
+        <!-- spec-kit 接入 -->
+        <line x1="450" y1="730" x2="450" y2="770" stroke="#0969da" stroke-width="3" marker-end="url(#arr-g2)"/>
+        <rect x="270" y="775" width="360" height="44" rx="22" fill="#0969da"/>
+        <text x="450" y="803" text-anchor="middle" font-size="14" font-weight="700" fill="white">→ /speckit-specify 进入 spec-kit 流程</text>
+
+        <!-- 总结区 -->
+        <rect x="40" y="850" width="820" height="40" rx="8" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="450" y="875" text-anchor="middle" font-size="11" fill="#0969da">🅴️ 个人快速 → /grill-me 或 RobMitt</text>
+
+        <rect x="40" y="900" width="820" height="40" rx="8" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="450" y="925" text-anchor="middle" font-size="11" fill="#0969da">🅶️ 团队工程 → /grill-with-docs(作者最推荐)</text>
+
+        <rect x="40" y="950" width="820" height="40" rx="8" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="450" y="975" text-anchor="middle" font-size="11" fill="#0969da">🅷️ 高合规/门控 → grill-spec-flow(需桥接到 spec-kit)</text>
+
+        <rect x="40" y="1000" width="820" height="50" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="450" y="1025" text-anchor="middle" font-size="11" font-weight="700" fill="#9a6700">⚠️ 不要用 Grill 探索方向!那应该是 brainstorming</text>
+        <text x="450" y="1042" text-anchor="middle" font-size="10" fill="#57606a">Grill 是"反对意见生成器",不是"想法生成器"</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 3:Grill 选型决策树(在 discovery-tools.html 决策树上叠加 Grill 维度)</div>
+
+    <!-- ================= Grill + spec-kit 组合 ================= -->
+    <h2 id="with-spec-kit">🔗 Grill + spec-kit 组合(零冲突)</h2>
+
+    <p>与 OpenSpec 不同,<strong>Grill 与 spec-kit 零冲突</strong>,因为 Grill 是<strong>前置追问</strong>,不写 spec 文档;spec-kit 是<strong>后置规范化</strong>,把方案变成可追溯 Markdown。</p>
+
+    <h3>黄金路径</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grill 到 spec-kit 的黄金路径">
+        <defs>
+          <marker id="arr-g3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#0969da"/>
+          </marker>
+        </defs>
+
+        <rect x="20" y="60" width="160" height="80" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="100" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#9a6700">1. 想法</text>
+        <text x="100" y="112" text-anchor="middle" font-size="11" fill="#1f2328">RFC / 草案</text>
+        <text x="100" y="128" text-anchor="middle" font-size="10" fill="#57606a">brainstorming</text>
+
+        <line x1="180" y1="100" x2="220" y2="100" stroke="#0969da" stroke-width="3" marker-end="url(#arr-g3)"/>
+
+        <rect x="220" y="40" width="160" height="120" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="3"/>
+        <text x="300" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="#cf222e">2. GRILL 🔥</text>
+        <text x="300" y="92" text-anchor="middle" font-size="11" fill="#1f2328">拷问所有分支</text>
+        <text x="300" y="110" text-anchor="middle" font-size="11" fill="#1f2328">挖隐藏假设</text>
+        <text x="300" y="128" text-anchor="middle" font-size="11" fill="#1f2328">沉淀 ADR/Glossary</text>
+        <text x="300" y="146" text-anchor="middle" font-size="10" fill="#57606a">/grill-with-docs</text>
+
+        <line x1="380" y1="100" x2="420" y2="100" stroke="#0969da" stroke-width="3" marker-end="url(#arr-g3)"/>
+
+        <rect x="420" y="60" width="160" height="80" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="500" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">3. SPEC</text>
+        <text x="500" y="112" text-anchor="middle" font-size="11" fill="#1f2328">Markdown 规格</text>
+        <text x="500" y="128" text-anchor="middle" font-size="10" fill="#57606a">/speckit-specify</text>
+
+        <line x1="580" y1="100" x2="620" y2="100" stroke="#0969da" stroke-width="3" marker-end="url(#arr-g3)"/>
+
+        <rect x="620" y="40" width="120" height="120" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="680" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="#0969da">4. PLAN</text>
+        <text x="680" y="92" text-anchor="middle" font-size="11" fill="#1f2328">技术方案</text>
+        <text x="680" y="128" text-anchor="middle" font-size="10" fill="#57606a">/speckit-plan</text>
+
+        <line x1="740" y1="100" x2="780" y2="100" stroke="#0969da" stroke-width="3" marker-end="url(#arr-g3)"/>
+
+        <rect x="780" y="60" width="100" height="80" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="830" y="92" text-anchor="middle" font-size="12" font-weight="700" fill="#0969da">5. CODE</text>
+        <text x="830" y="128" text-anchor="middle" font-size="10" fill="#57606a">implement</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 4:Grill 在 spec-kit 流程中的位置(夹在 RFC 和 specify 之间)</div>
+
+    <h3>3 种推荐组合</h3>
+
+    <div class="branch light">
+      <h4>组合 A:spec-kit + /grill-me(默认推荐)</h4>
+      <p><strong>适用</strong>:80% 的 feature,只需轻量拷问</p>
+      <p><strong>分工</strong>:</p>
+      <ul>
+        <li>RFC 写完 → <code>/grill-me</code> 拷问 1 轮(30 分钟)</li>
+        <li>把回答整理成 bullet list</li>
+        <li>把 bullet list 作为 <code>/speckit-specify</code> 的输入</li>
+      </ul>
+      <p><strong>学习曲线</strong>:极低</p>
+    </div>
+
+    <div class="branch medium">
+      <h4>组合 B:spec-kit + /grill-with-docs(团队推荐)</h4>
+      <p><strong>适用</strong>:跨团队、长寿命的 feature(如 RFC-002 答案溯源)</p>
+      <p><strong>分工</strong>:</p>
+      <ul>
+        <li>RFC 写完 → <code>/grill-with-docs</code>(1-2 小时)</li>
+        <li>自动产出 <code>docs/adr/NNNN-xxx.md</code> 和 <code>GLOSSARY.md</code> 更新</li>
+        <li>ADR 是 <code>/speckit-specify</code> 的<strong>黄金前置输入</strong>(直接 copy "Why this decision" 段落)</li>
+        <li>术语统一后,所有 feature spec 命名一致</li>
+      </ul>
+      <p><strong>学习曲线</strong>:中(需要理解 ADR 概念)</p>
+    </div>
+
+    <div class="branch heavy">
+      <h4>组合 C:spec-kit + grill-spec-flow(高合规推荐)</h4>
+      <p><strong>适用</strong>:医疗/金融/高合规场景,需要"留痕"</p>
+      <p><strong>分工</strong>:</p>
+      <ul>
+        <li>用 grill-spec-flow 跑完整 5 阶段(产出 <code>.specs/日期/</code> 包)</li>
+        <li>把 <code>requirements.md</code> 改写为 spec-kit 格式</li>
+        <li>把 <code>design.md</code> 拆为多个 <code>/speckit-specify</code> feature</li>
+      </ul>
+      <p><strong>学习曲线</strong>:陡(精确短语 + 格式转换)</p>
+    </div>
+
+    <!-- ================= 实战场景 ================= -->
+    <h2 id="scenarios">🌟 4 个实战场景</h2>
+
+    <h3>场景 1:写完 RFC,想压力测试</h3>
+    <div class="branch light">
+      <p><strong>状态</strong>:🅴️ 已有方案,想拷问</p>
+      <p><strong>推荐</strong>:<code>/grill-me</code>(mattpocock)</p>
+      <pre><code># 1. 安装(已装过则跳过)
+/plugin install mattpocock-skills@claude-plugins-official
+
+# 2. 触发
+> /grill-me about RFC-002 答案溯源的设计方案
+> 或者:grill me about the answer citation plan
+
+# 3. AI 提问 10-20 个问题,回答完后给出:
+#    - Survived: 3 个假设
+#    - Revised: 2 个设计点需要改
+#    - Killed: 1 个子模块(不需要做了)
+
+# 4. 把"Revised"清单写进 RFC 的"风险与权衡"段
+# 5. 进入 /speckit-specify</code></pre>
+      <p><strong>耗时</strong>:30-60 分钟</p>
+    </div>
+
+    <h3>场景 2:跨团队 feature,需要术语统一</h3>
+    <div class="branch light">
+      <p><strong>状态</strong>:🅶️ 3 个团队,术语不一致</p>
+      <p><strong>推荐</strong>:<code>/grill-with-docs</code></p>
+      <pre><code># 1. 触发
+> /grill-with-docs on this RFC-002 答案溯源 RFC
+> 同时把 RFC 路径粘进来
+
+# 2. AI 拷问 30+ 问题,关键在于:
+#    - "你们对'溯源'的定义是什么?"→ 触发术语定义
+#    - "段落 ID 和 chunk ID 有什么区别?"→ 沉淀到 GLOSSARY
+#    - "为什么用指针而不是坐标?"→ 沉淀到 ADR-001
+
+# 3. 产出:
+#    - docs/adr/0001-citation-pointer-vs-coordinate.md
+#    - GLOSSARY.md(增加:citation / source / chunk / segment)
+#    - RFC-002 标注"grilled-on: 2026-10-14"
+
+# 4. 后续 /speckit-specify 引用 ADR 内容,术语自动一致</code></pre>
+      <p><strong>耗时</strong>:1-2 小时</p>
+    </div>
+
+    <h3>场景 3:做"go/no-go"决策</h3>
+    <div class="branch medium">
+      <p><strong>状态</strong>:🅷️ 高层想知道"做不做"</p>
+      <p><strong>推荐</strong>:<code>MbappeWU/murder-board</code></p>
+      <pre><code># 1. 安装
+mkdir -p ~/.config/claude-code/skills/
+git clone https://github.com/MbappeWU/murder-board.git \
+  ~/.config/claude-code/skills/murder-board
+
+# 2. 触发
+> murder board on RFC-002 答案溯源
+
+# 3. AI 跑 6 步流程:
+#    1) Establish context
+#    2) Identify assumptions (找 8 个)
+#    3) Attack each (攻击每个)
+#    4) Stress-test failure modes
+#    5) Counter arguments
+#    6) Verdict: SURVIVED(70%) / 修订后做 / KILLED
+
+# 4. 把 verdict 写成 1 段,给高层</code></pre>
+      <p><strong>耗时</strong>:1-2 小时</p>
+    </div>
+
+    <h3>场景 4:从想法到 PR 全流程</h3>
+    <div class="branch medium">
+      <p><strong>状态</strong>:个人项目,1 个人从 0 到 1</p>
+      <p><strong>推荐</strong>:<code>pardeep-kumar94/claude-idea-to-pr</code></p>
+      <pre><code># 7 阶段自动跑:
+> idea: 给我做一个 Slack 总结 bot
+# → 1) idea clarification(grill)
+# → 2) research
+# → 3) spec
+# → 4) design
+# → 5) tasks
+# → 6) implement
+# → 7) review
+
+# 中途会插入多轮 grill
+# 最终产物:PR 自动开</code></pre>
+      <p><strong>耗时</strong>:几天(看规模)</p>
+    </div>
+
+    <!-- ================= vs brainstorming ================= -->
+    <h2 id="vs-brainstorming">⚖️ Grill vs Superpowers brainstorming</h2>
+
+    <p>这是最容易混淆的对比,明确区分清楚:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th>🧠 Superpowers brainstorming</th>
+            <th>🔥 mattpocock /grill-me</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>目标</strong></td>
+            <td>从 0 到 1(发散想法)</td>
+            <td>从 1 到 ∞(收敛漏洞)</td>
+          </tr>
+          <tr>
+            <td><strong>输入</strong></td>
+            <td>"我想做一个 X,但不知道细节"</td>
+            <td>"我计划这样实现 X,你看怎么样?"</td>
+          </tr>
+          <tr>
+            <td><strong>输出</strong></td>
+            <td>设计文档、feature 列表、RFC</td>
+            <td>"Survived / Revised / Killed" 三段式判断</td>
+          </tr>
+          <tr>
+            <td><strong>问题类型</strong></td>
+            <td>开放式:谁用?做什么?</td>
+            <td>封闭式:为什么?如果 X 怎么办?</td>
+          </tr>
+          <tr>
+            <td><strong>态度</strong></td>
+            <td>温和,鼓励</td>
+            <td>不留情面(relentlessly)</td>
+          </tr>
+          <tr>
+            <td><strong>何时用</strong></td>
+            <td>项目启动、新功能 0 阶段</td>
+            <td>RFC 完成后、写代码前</td>
+          </tr>
+          <tr>
+            <td><strong>典型时长</strong></td>
+            <td>1-2 小时</td>
+            <td>30-60 分钟</td>
+          </tr>
+          <tr>
+            <td><strong>与 spec-kit 关系</strong></td>
+            <td><strong>前置</strong>(产生 RFC)</td>
+            <td><strong>中夹</strong>(拷问 RFC 后再走 specify)</td>
+          </tr>
+          <tr>
+            <td><strong>沉淀物</strong></td>
+            <td>设计文档</td>
+            <td>ADR + Glossary(/grill-with-docs)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-title">🎓 怎么选?</div>
+      <ul>
+        <li><strong>只有模糊方向</strong>("我想做 AI 助手")→ <code>brainstorming</code></li>
+        <li><strong>已有方案</strong>(RFC 写完)→ <code>grill-me</code> 或 <code>grill-with-docs</code></li>
+        <li><strong>两者可以叠加</strong>:<code>brainstorming</code> 产生 RFC → <code>grill-me</code> 拷问 → <code>/speckit-specify</code></li>
+      </ul>
+    </div>
+
+    <!-- ================= 反模式 ================= -->
+    <h2 id="anti-patterns">🚫 反模式(什么时候不要用 Grill)</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>反模式</th><th>后果</th><th>正确做法</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>❌ 用 Grill 探索方向</td>
+            <td>AI 不知道问什么(没东西可拷问)</td>
+            <td>先用 brainstorming 出 RFC</td>
+          </tr>
+          <tr>
+            <td>❌ 一上来就 Grill 一个想法</td>
+            <td>被拷问到放弃</td>
+            <td>至少先写到 RFC 草稿阶段</td>
+          </tr>
+          <tr>
+            <td>❌ 装 3 个 Grill skill 同时跑</td>
+            <td>对话冲突,AI 不知道听哪个</td>
+            <td>挑 1 个(推荐 mattpocock)</td>
+          </tr>
+          <tr>
+            <td>❌ Grill 一个 1 行需求</td>
+            <td>没东西可问,AI 尬问</td>
+            <td>至少 1 段(200+ 字)再 Grill</td>
+          </tr>
+          <tr>
+            <td>❌ 用 Grill 替代 brainstorming</td>
+            <td>把"发散"环节跳过</td>
+            <td>Grill 是"反对意见",brainstorming 是"想法"</td>
+          </tr>
+          <tr>
+            <td>❌ Grill 后不更新 RFC</td>
+            <td>问题回答了但方案没改</td>
+            <td>把"Revised"清单写回 RFC</td>
+          </tr>
+          <tr>
+            <td>❌ 用 grill-spec-flow 不读门控短语</td>
+            <td>一直卡在门 1</td>
+            <td>先看 4 个精确短语</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 立即可执行 ================= -->
+    <h2 id="action">🚀 立即可执行</h2>
+
+    <h3>5 分钟起步:装 mattpocock skills</h3>
+    <pre><code># Claude Code
+/plugin install mattpocock-skills@claude-plugins-official
+
+# 重启
+exit && claude
+
+# 试试 /grill-me
+> /grill-me about my answer citation plan
+> 或者:grill me about this RFC</code></pre>
+
+    <h3>10 分钟起步:试试 /grill-with-docs</h3>
+    <pre><code># 1. 在项目根目录
+> /setup-matt-pocock-skills
+# 配置:issue tracker / triage labels / docs location
+
+# 2. 试一下
+> /grill-with-docs about this RFC-002
+# 会自动创建:
+#   - docs/adr/0001-xxx.md
+#   - GLOSSARY.md
+#   - 沉淀到 spec-kit 的黄金输入</code></pre>
+
+    <h3>1 分钟起步:只用 RobMitt 版本</h3>
+    <pre><code># 1. 复制单个文件
+mkdir -p ~/.config/claude-code/skills/grill-me/
+curl -L https://raw.githubusercontent.com/RobMitt/grill-me-skill/main/SKILL.md \
+  > ~/.config/claude-code/skills/grill-me/SKILL.md
+
+# 2. 重启
+claude
+
+# 3. 试一下
+> grill me about my plan
+# (单文件轻量版)</code></pre>
+
+    <h3>本项目推荐(Deep Research Agent)</h3>
+    <div class="branch light">
+      <p>针对 RFC-002 答案溯源功能,建议:</p>
+      <ol>
+        <li><strong>装 mattpocock skills</strong>(5 分钟)</li>
+        <li><strong>跑 /grill-with-docs</strong> on RFC-002(1-2 小时),产出 ADR + Glossary</li>
+        <li><strong>更新 RFC-002</strong> 把"Revised"段补上</li>
+        <li><strong>进入 spec-kit</strong>:
+          <pre><code>> /speckit-specify 段落 ID 生成器  # 第一个 feature
+> /speckit-specify 引用映射插入     # 第二个 feature
+> /speckit-specify 引用渲染组件     # 第三个 feature</code></pre>
+        </li>
+      </ol>
+      <p>这样 <strong>Grill 沉淀的术语和 ADR 会被 spec-kit 自动复用</strong>。</p>
+    </div>
+
+    <!-- ================= 结论 ================= -->
+    <h2 id="conclusion">📌 结论</h2>
+
+    <div class="callout success">
+      <p><strong>核心要点</strong>:</p>
+      <ol>
+        <li><strong>Grill = 苏格拉底式追问</strong>,专门拷问已有方案,与 brainstorming 互补</li>
+        <li><strong>3 个核心命令</strong>(都来自 mattpocock):
+          <ul>
+            <li><code>/grilling</code> —— 底层原语,不直接用</li>
+            <li><code>/grill-me</code> —— 个人快速拷问</li>
+            <li><code>/grill-with-docs</code> —— 团队推荐,沉淀 ADR+Glossary</li>
+          </ul>
+        </li>
+        <li><strong>其他 6 个实现</strong>各有特色:Jekudy 3×4 结构化、Murder-Board 6 步审判、grill-spec-flow 5 阶段门控</li>
+        <li><strong>与 spec-kit 零冲突</strong>:Grill 在 RFC 之后、specify 之前</li>
+        <li><strong>本项目 80% 情况</strong>不需要 Grill;只有 RFC 复杂、跨团队、需要术语统一时启用</li>
+        <li><strong>作者最推荐</strong>:<code>/grill-with-docs</code>(沉淀物 = spec-kit 黄金输入)</li>
+      </ol>
+    </div>
+
+    <div class="callout">
+      <p><strong>下一步建议</strong>:</p>
+      <ol>
+        <li>今天就装 <code>mattpocock-skills</code>(5 分钟)</li>
+        <li>下次写完 RFC 跑一遍 <code>/grill-me</code> 体验</li>
+        <li>复杂 feature 升级到 <code>/grill-with-docs</code></li>
+        <li>需要我帮你针对<strong>RFC-002 答案溯源</strong>演示一遍"grill-with-docs → ADR → /speckit-specify"的完整流程吗?</li>
+      </ol>
+    </div>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  基于 <a href="https://github.com/mattpocock/skills" target="_blank">mattpocock/skills</a>、
+  <a href="https://github.com/RobMitt/grill-me-skill" target="_blank">RobMitt/grill-me-skill</a> 等
+  7+ 个开源 Grill 实现构建 · 本文档站仅供学习与团队实践参考
+</footer>
+
+</body>
+</html>

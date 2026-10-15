@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小众工具汇总 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .category {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+    background: var(--color-bg-soft);
+  }
+  .category h4 { margin: 0 0 8px; }
+  .compat {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .compat.green { background: #dafbe1; color: #1a7f37; }
+  .compat.yellow { background: #fff8c5; color: #9a6700; }
+  .compat.red { background: #ffebe9; color: #cf222e; }
+  .compat.gray { background: #f6f8fa; color: #57606a; }
+  .scenario {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    background: var(--color-bg-soft);
+  }
+  .scenario-best {
+    border-color: #1a7f37;
+    border-width: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="../00-home/index.html" class="brand">
+      <span class="brand-logo">X</span>
+      <span>其他工具 / 决策指南</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="../00-home/index.html">首页</a></li>
+        <li class="has-dropdown">
+          <a href="../10-spec-kit/00-overview.html">Spec Kit</a>
+          <ul class="dropdown">
+          <li><a href="../10-spec-kit/00-overview.html">概览</a></li>
+          <li><a href="../10-spec-kit/01-quickstart.html">快速入门</a></li>
+          <li><a href="../10-spec-kit/02-team-collaboration.html">团队协作</a></li>
+          <li><a href="../10-spec-kit/03-constitution.html">Constitution 深度</a></li>
+          <li><a href="../10-spec-kit/04-specify.html">Specify 深度</a></li>
+          <li><a href="../10-spec-kit/05-commands.html">10 命令详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../20-mattpocock/01-grill-domain.html">Matt Pocock</a>
+          <ul class="dropdown">
+          <li><a href="../20-mattpocock/01-grill-domain.html">4 skill 深度</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a>
+          <ul class="dropdown">
+          <li><a href="../30-grill-ecosystem/01-grill-skills.html">7 个 Grill 实现对比</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../40-openspec/01-overview.html">OpenSpec</a>
+          <ul class="dropdown">
+          <li><a href="../40-openspec/01-overview.html">总览</a></li>
+          <li><a href="../40-openspec/02-commands.html">explore / propose</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../50-superpowers/01-overview.html">Superpowers</a>
+          <ul class="dropdown">
+          <li><a href="../50-superpowers/01-overview.html">总览</a></li>
+          <li><a href="../50-superpowers/02-skills.html">brainstorming 详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../60-kiro/01-overview.html">Kiro</a>
+          <ul class="dropdown">
+          <li><a href="../60-kiro/01-overview.html">Kiro 总览</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../90-others/01-awesome-skills.html" class="active">其他工具</a>
+          <ul class="dropdown">
+          <li><a href="../90-others/01-awesome-skills.html">awesome skills 集合</a></li>
+          <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景 + 矩阵</a></li>
+          <li><a href="../90-others/03-niche-tools.html" class="active">小众工具汇总</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#marvin">Marvin</a></li>
+      <li><a href="#grill-impls">4 个非 MattPocock Grill</a></li>
+      <li><a href="#grill-spec-flow">grill-spec-flow</a></li>
+      <li><a href="#idea-to-pr">idea-to-pr</a></li>
+      <li><a href="#amplifier">Amplifier</a></li>
+      <li><a href="#eigent">Eigent</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>🧩 小众工具与特殊场景</h1>
+      <p class="subtitle">RobMitt / Jekudy / MbappeWU / mcdays94 / Marvin / Amplifier / Eigent 等小众发现阶段工具汇总。</p>
+      <div class="badge-row">
+        <span class="tag">小众</span>
+        <span class="tag">特殊场景</span>
+      </div>
+    </section>
+
+    <h2 id="marvin">🐍 Marvin(Python only)</h2>
+
+            <h3>🥈 Marvin</h3>
+        <p><strong>一句话</strong>:Python 化的多 agent 框架</p>
+        <p><strong>发现阶段</strong>:<code>marvin.plan()</code> 自动分解</p>
+        <p><strong>强项</strong>:编程式控制、Pydantic 类型安全</p>
+        <p><strong>弱项</strong>:Python only、需要自己写发现逻辑</p>
+        <p><strong>安装</strong>:<code>pip install marvin</code></p>
+      </div>
+    </div>
+
+    <h3>维度对比表</h3>
+
+
+        <h3>组合 4:spec-kit + Marvin(纯 Python)</h3>
+    <div class="scenario">
+      <p><strong>分工</strong>:</p>
+      <ul>
+        <li>Marvin <code>marvin.plan()</code> — 编程式分解</li>
+        <li>Marvin <code>marvin.Agent</code> — 多个 agent 协作</li>
+        <li>spec-kit — 走 Markdown 流程</li>
+      </ul>
+      <p><strong>适用</strong>:Python 工程师,生产环境嵌入</p>
+    </div>
+
+    <!-- ================= 完整能力矩阵 ================= -->
+    <h2 id="comparison-table">📋 完整能力矩阵</h2>
+
+
+          <h4>15. Marvin (Python) <span class="compat yellow">Python only</span></h4>
+      <p><strong>定位</strong>:编程式多 agent 框架</p>
+      <p><strong>优势</strong>:✅ Python 类型安全</p>
+      <p><strong>劣势</strong>:❌ Python only / 需自己写发现逻辑</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>16. Amplifier (Microsoft) <span class="compat gray">早期</span></h4>
+
+
+    <h2 id="grill-impls">🔥 4 个非 MattPocock Grill 实现</h2>
+    <p>除 mattpocock 系列外,还有 4 个 Grill 风格的小众实现,详见 <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a> 文档对比:</p>
+    <ul>
+      <li><strong>RobMitt/grill-me-skill</strong>(推荐)</li>
+      <li><strong>Jekudy/grillme-skill</strong>(可选)</li>
+      <li><strong>MbappeWU/murder-board</strong>(可选)</li>
+      <li><strong>mcdays94/pocock-agents</strong>(小众)</li>
+    </ul>
+
+    <h2 id="grill-spec-flow">🚧 grill-spec-flow:门控 Spec 工作流</h2>
+
+          <h4>13. joslynSmall/grill-spec-flow <span class="compat yellow">特殊场景</span></h4>
+      <p><strong>定位</strong>:5 阶段 + 4 道精确门控的 spec 流程</p>
+      <p><strong>4 道精确门</strong>:必须用精确中文短语才放行</p>
+      <p><strong>产出</strong>:<code>.specs/2026-10-14-feat/{requirements,design,tasks}.md</code></p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 极致合规(每步必须批准)</li>
+        <li>✅ 留痕完整</li>
+      </ul>
+      <p><strong>劣势</strong>:</p>
+      <ul>
+        <li>❌ 学习曲线陡(精确短语)</li>
+        <li>❌ 速度慢</li>
+        <li>⚠️ 与 spec-kit 需手动桥接</li>
+      </ul>
+      <p><strong>适合</strong>:医疗/金融/政府高合规场景</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>14. pardeep-kumar94/idea-to-pr <span class="compat gray">小众</span></h4>
+
+
+    <p>grill-spec-flow(joslynSmall 出品)用 5 阶段 + 4 道门控(必须<strong>精确</strong>输入批准短语)实现高合规 Spec 工作流,适合金融/医疗等需要严格门控的场景。详见 <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a>。</p>
+
+    <h2 id="idea-to-pr">📋 idea-to-pr:pardeep-kumar94</h2>
+
+          <h4>14. pardeep-kumar94/idea-to-pr <span class="compat gray">小众</span></h4>
+      <p><strong>定位</strong>:7 阶段 idea→PR 全自动管线</p>
+      <p><strong>适合</strong>:个人项目,1 个人从 0 到 1</p>
+    </div>
+
+    <h3>📦 其他/不推荐(3 个)</h3>
+
+    <div class="radar-card">
+      <h4>15. Marvin (Python) <span class="compat yellow">Python only</span></h4>
+      <p><strong>定位</strong>:编程式多 agent 框架</p>
+      <p><strong>优势</strong>:✅ Python 类型安全</p>
+      <p><strong>劣势</strong>:❌ Python only / 需自己写发现逻辑</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>16. Amplifier (Microsoft) <span class="compat gray">早期</span></h4>
+
+
+    <h2 id="amplifier">📦 Amplifier (Microsoft 早期)</h2>
+
+          <h4>16. Amplifier (Microsoft) <span class="compat gray">早期</span></h4>
+      <p><strong>定位</strong>:微软的多 agent 框架</p>
+      <p><strong>状态</strong>:⚠️ 早期预览,无显式发现阶段</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>17. Eigent <span class="compat gray">无发现</span></h4>
+
+
+    <h2 id="eigent">🧪 Eigent(无发现阶段)</h2>
+
+          <h4>17. Eigent <span class="compat gray">无发现</span></h4>
+      <p><strong>定位</strong>:多 agent 框架</p>
+      <p><strong>劣势</strong>:❌ 无发现阶段</p>
+    </div>
+
+    <!-- ================= 11 维矩阵 ================= -->
+
+  </article>
+</main>
+
+</body>
+</html>

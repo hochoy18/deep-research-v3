@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spec Kit 命令详解 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .cmd-card {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 18px;
+    margin: 16px 0;
+    background: var(--color-bg-soft);
+  }
+  .cmd-card h3 {
+    margin: 0 0 8px;
+    color: #0969da;
+    font-family: 'SF Mono', 'Consolas', monospace;
+  }
+  .cmd-card .meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--color-text-soft);
+    margin: 6px 0;
+  }
+  .cmd-card .meta span {
+    background: rgba(9, 105, 218, 0.1);
+    padding: 2px 10px;
+    border-radius: 4px;
+    color: #0969da;
+    font-weight: 600;
+  }
+  .cmd-card .meta span.deprecated {
+    background: rgba(207, 34, 46, 0.1);
+    color: #cf222e;
+  }
+  .cmd-card .meta span.read-only {
+    background: rgba(154, 103, 0, 0.1);
+    color: #9a6700;
+  }
+  .cmd-flow {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    margin: 16px 0;
+  }
+  @media (max-width: 1100px) { .cmd-flow { grid-template-columns: repeat(5, 1fr); } }
+  @media (max-width: 600px) { .cmd-flow { grid-template-columns: repeat(2, 1fr); } }
+  .cmd-step {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 11px;
+    position: relative;
+  }
+  .cmd-step.required { border-color: #1a7f37; background: #dafbe1; }
+  .cmd-step.optional { border-color: #9a6700; background: #fff8c5; }
+  .cmd-step.readonly { border-color: #cf222e; background: #ffebe9; }
+  .cmd-step .name { font-weight: 700; color: #0969da; }
+  .cmd-step.required .name { color: #1a7f37; }
+  .cmd-step.optional .name { color: #9a6700; }
+  .cmd-step.readonly .name { color: #cf222e; }
+  .io-table th { background: var(--color-bg-card); }
+  .input-output {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 12px 0;
+  }
+  @media (max-width: 720px) { .input-output { grid-template-columns: 1fr; } }
+  .io-box {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 10px;
+    background: var(--color-bg-card);
+    font-size: 13px;
+  }
+  .io-box h5 { margin: 0 0 6px; color: #0969da; }
+  .io-box.output h5 { color: #1a7f37; }
+  .arrow-vert {
+    text-align: center;
+    color: #57606a;
+    font-size: 18px;
+    margin: 4px 0;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">
+      <span class="brand-logo">S</span>
+      <span>Spec Kit 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">首页</a></li>
+        <li><a href="overview.html">概览</a></li>
+        <li><a href="quickstart.html">快速入门</a></li>
+        <li><a href="team-collaboration.html">团队协作</a></li>
+        <li><a href="constitution.html">Constitution</a></li>
+        <li><a href="specify.html">Specify</a></li>
+        <li><a href="discovery-tools.html">发现阶段</a></li>
+        <li><a href="grill-skills.html">Grill Skills</a></li>
+        <li><a href="find-tools-compare.html">深度对比</a></li>
+        <li><a href="commands.html" class="active">命令详解</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#overview">10 个命令总览</a></li>
+      <li><a href="#flow">完整命令流水线</a></li>
+      <li><a href="#constitution">1. /speckit-constitution</a></li>
+      <li><a href="#specify">2. /speckit-specify</a></li>
+      <li><a href="#clarify">3. /speckit-clarify</a></li>
+      <li><a href="#plan">4. /speckit-plan</a></li>
+      <li><a href="#checklist">5. /speckit-checklist</a></li>
+      <li><a href="#tasks">6. /speckit-tasks</a></li>
+      <li><a href="#analyze">7. /speckit-analyze</a></li>
+      <li><a href="#implement">8. /speckit-implement</a></li>
+      <li><a href="#converge">9. /speckit-converge</a></li>
+      <li><a href="#taskstoissues">10. /speckit-taskstoissues</a></li>
+      <li><a href="#state">跨命令状态同步</a></li>
+      <li><a href="#hooks">Extension Hooks</a></li>
+      <li><a href="#rfc002">本项目完整示例</a></li>
+      <li><a href="#pitfalls">常见错误</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>📖 Spec Kit 命令详解(全 10 个)</h1>
+      <p class="subtitle">基于 <code>.claude/skills/speckit-*/</code> 真实 SKILL.md 内容,逐一拆解每个命令的输入、输出、规则、坑点。</p>
+      <div class="badge-row">
+        <span class="tag primary">10 个命令</span>
+        <span class="tag success">必读</span>
+        <span class="tag warning">含真实示例</span>
+        <span class="tag">RFC-002 实战</span>
+      </div>
+    </section>
+
+    <!-- ================= 总览 ================= -->
+    <h2 id="overview">📋 10 个命令总览</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>命令</th>
+            <th>类别</th>
+            <th>作用</th>
+            <th>何时用</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><code>/speckit-constitution</code></td>
+            <td>必做(项目级)</td>
+            <td>创建/更新项目宪法</td>
+            <td>项目初始化、治理变更时</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>/speckit-specify</code></td>
+            <td>必做(每次 feature)</td>
+            <td>创建 feature spec</td>
+            <td>每个新 feature 启动时</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>/speckit-clarify</code></td>
+            <td>强烈推荐</td>
+            <td>对 spec 提最多 5 个澄清问题</td>
+            <td>spec 有歧义时(specify 后、plan 前)</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><code>/speckit-plan</code></td>
+            <td>必做</td>
+            <td>生成技术方案 plan.md</td>
+            <td>spec 通过后</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><code>/speckit-checklist</code></td>
+            <td>选做</td>
+            <td>生成"需求的单元测试"(自定义 checklist)</td>
+            <td>需要给 reviewer 看的需求质量清单</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><code>/speckit-tasks</code></td>
+            <td>必做</td>
+            <td>生成 tasks.md(按 user story 拆)</td>
+            <td>plan 通过后</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><code>/speckit-analyze</code></td>
+            <td>选做(只读)</td>
+            <td>对 spec/plan/tasks 一致性分析</td>
+            <td>tasks 生成后、implement 前</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td><code>/speckit-implement</code></td>
+            <td>必做</td>
+            <td>按 tasks.md 执行实施</td>
+            <td>tasks 通过后</td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td><code>/speckit-converge</code></td>
+            <td>选做</td>
+            <td>对比代码和 spec,补未完成的任务</td>
+            <td>implement 后、PR 前</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td><code>/speckit-taskstoissues</code></td>
+            <td>⚠️ 弃用</td>
+            <td>(已弃用)tasks → GitHub issues</td>
+            <td>改用 <code>github</code> extension</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 流水线 ================= -->
+    <h2 id="flow">🌊 完整命令流水线</h2>
+
+    <p>10 个命令的<strong>标准执行顺序</strong>(彩色 = 必做,黄色 = 选做,红色 = 只读/弃用):</p>
+
+    <div class="cmd-flow">
+      <div class="cmd-step required">
+        <div class="name">① constitution</div>
+        <div>项目级</div>
+      </div>
+      <div class="cmd-step required">
+        <div class="name">② specify</div>
+        <div>每 feature</div>
+      </div>
+      <div class="cmd-step optional">
+        <div class="name">③ clarify</div>
+        <div>最多 5 问</div>
+      </div>
+      <div class="cmd-step required">
+        <div class="name">④ plan</div>
+        <div>技术方案</div>
+      </div>
+      <div class="cmd-step optional">
+        <div class="name">⑤ checklist</div>
+        <div>需求质量</div>
+      </div>
+      <div class="cmd-step required">
+        <div class="name">⑥ tasks</div>
+        <div>按 story 拆</div>
+      </div>
+      <div class="cmd-step readonly">
+        <div class="name">⑦ analyze</div>
+        <div>一致性检查</div>
+      </div>
+      <div class="cmd-step required">
+        <div class="name">⑧ implement</div>
+        <div>逐 task 执行</div>
+      </div>
+      <div class="cmd-step optional">
+        <div class="name">⑨ converge</div>
+        <div>补未完成</div>
+      </div>
+      <div class="cmd-step readonly" style="opacity: 0.5;">
+        <div class="name">⑩ issues</div>
+        <div>已弃用</div>
+      </div>
+    </div>
+
+    <div class="diagram-caption">图 1:Spec Kit 10 命令流水线(绿=必做,黄=选做,红=只读/弃用)</div>
+
+    <h3>完整命令流(SVG)</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 900 800" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="命令流">
+        <defs>
+          <marker id="arr-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- 阶段 1:宪法 -->
+        <rect x="40" y="40" width="200" height="70" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="140" y="65" text-anchor="middle" font-size="14" font-weight="700" fill="#1a7f37">① constitution</text>
+        <text x="140" y="85" text-anchor="middle" font-size="11" fill="#1f2328">.specify/memory/</text>
+        <text x="140" y="100" text-anchor="middle" font-size="11" fill="#1f2328">constitution.md</text>
+
+        <!-- 阶段 2:specify -->
+        <line x1="240" y1="75" x2="290" y2="75" stroke="#57606a" stroke-width="2" marker-end="url(#arr-c)"/>
+        <rect x="290" y="40" width="200" height="70" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="390" y="65" text-anchor="middle" font-size="14" font-weight="700" fill="#1a7f37">② specify</text>
+        <text x="390" y="85" text-anchor="middle" font-size="11" fill="#1f2328">specs/NNN-name/</text>
+        <text x="390" y="100" text-anchor="middle" font-size="11" fill="#1f2328">spec.md + checklists/</text>
+
+        <!-- 阶段 3:clarify -->
+        <line x1="490" y1="75" x2="540" y2="75" stroke="#57606a" stroke-width="2" marker-end="url(#arr-c)"/>
+        <rect x="540" y="40" width="180" height="70" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="630" y="65" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6700">③ clarify</text>
+        <text x="630" y="85" text-anchor="middle" font-size="11" fill="#1f2328">最多 5 个问题</text>
+        <text x="630" y="100" text-anchor="middle" font-size="11" fill="#1f2328">更新 spec</text>
+
+        <!-- 阶段 4:plan -->
+        <line x1="720" y1="75" x2="770" y2="75" stroke="#57606a" stroke-width="2" marker-end="url(#arr-c)"/>
+        <rect x="770" y="40" width="100" height="70" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="820" y="58" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">④ plan</text>
+        <text x="820" y="78" text-anchor="middle" font-size="10" fill="#1f2328">plan.md +</text>
+        <text x="820" y="93" text-anchor="middle" font-size="10" fill="#1f2328">research.md</text>
+
+        <!-- 阶段 5:checklist -->
+        <line x1="820" y1="110" x2="820" y2="150" stroke="#57606a" stroke-width="2" marker-end="url(#arr-c)"/>
+        <rect x="40" y="150" width="180" height="70" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="130" y="175" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6700">⑤ checklist</text>
+        <text x="130" y="195" text-anchor="middle" font-size="11" fill="#1f2328">checklists/</text>
+        <text x="130" y="210" text-anchor="middle" font-size="11" fill="#1f2328">ux.md / api.md ...</text>
+
+        <!-- 阶段 6:tasks -->
+        <line x1="220" y1="185" x2="290" y2="185" stroke="#57606a" stroke-width="2" marker-end="url(#arr-c)"/>
+        <rect x="290" y="150" width="200" height="70" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="390" y="175" text-anchor="middle" font-size="14" font-weight="700" fill="#1a7f37">⑥ tasks</text>
+        <text x="390" y="195" text-anchor="middle" font-size="11" fill="#1f2328">tasks.md</text>
+        <text x="390" y="210" text-anchor="middle" font-size="11" fill="#1f2328">T001-TNNN</text>
+
+        <!-- 阶段 7:analyze -->
+        <line x1="490" y1="185" x2="540" y2="185" stroke="#57606a" stroke-width="2" marker-end="url(#arr-c)"/>
+        <rect x="540" y="150" width="180" height="70" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+        <text x="630" y="175" text-anchor="middle" font-size="14" font-weight="700" fill="#cf222e">⑦ analyze</text>
+        <text x="630" y="195" text-anchor="middle" font-size="11" fill="#1f2328">只读分析报告</text>
+        <text x="630" y="210" text-anchor="middle" font-size="11" fill="#1f2328">不写文件</text>
+
+        <!-- 阶段 8:implement -->
+        <line x1="720" y1="185" x2="770" y2="185" stroke="#57606a" stroke-width="2" marker-end="url(#arr-c)"/>
+        <rect x="770" y="150" width="100" height="70" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="820" y="168" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">⑧ implement</text>
+        <text x="820" y="188" text-anchor="middle" font-size="10" fill="#1f2328">逐 task</text>
+        <text x="820" y="203" text-anchor="middle" font-size="10" fill="#1f2328">执行 + 标 [X]</text>
+
+        <!-- 阶段 9:converge -->
+        <line x1="820" y1="220" x2="820" y2="270" stroke="#57606a" stroke-width="2" marker-end="url(#arr-c)"/>
+        <rect x="290" y="270" width="500" height="70" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="540" y="295" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6700">⑨ converge</text>
+        <text x="540" y="315" text-anchor="middle" font-size="11" fill="#1f2328">对比代码与 spec,补未完成 → 追加 Phase N: Convergence 到 tasks.md</text>
+        <text x="540" y="330" text-anchor="middle" font-size="11" fill="#1f2328">然后跳回 ⑧ implement 继续</text>
+
+        <!-- 旁注:10 弃用 -->
+        <rect x="40" y="400" width="200" height="50" rx="6" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5" opacity="0.6"/>
+        <text x="140" y="420" text-anchor="middle" font-size="12" font-weight="700" fill="#57606a">⑩ taskstoissues</text>
+        <text x="140" y="440" text-anchor="middle" font-size="10" fill="#cf222e">⚠️ 已弃用</text>
+
+        <!-- 关键产物 -->
+        <text x="450" y="490" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2328">每个命令的产物</text>
+
+        <rect x="40" y="510" width="820" height="35" rx="6" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="450" y="532" text-anchor="middle" font-size="11" fill="#0969da">① constitution.md · ② spec.md + checklists/requirements.md · ③ spec.md(更新) · ④ plan.md + research.md + data-model.md + contracts/ + quickstart.md</text>
+
+        <rect x="40" y="555" width="820" height="35" rx="6" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="450" y="577" text-anchor="middle" font-size="11" fill="#0969da">⑤ checklists/{domain}.md · ⑥ tasks.md · ⑦ 无文件(报告) · ⑧ 代码 + tasks.md 标 [X] · ⑨ tasks.md 追加 Phase N</text>
+
+        <!-- 跨命令状态 -->
+        <rect x="40" y="615" width="820" height="170" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="450" y="640" text-anchor="middle" font-size="12" font-weight="700" fill="#9a6700">跨命令状态同步机制(关键!)</text>
+        <text x="60" y="665" font-size="11" fill="#1f2328">所有命令通过 <code>check-prerequisites.sh --json</code> 读取 <code>FEATURE_DIR</code> 和 <code>AVAILABLE_DOCS</code>。</text>
+        <text x="60" y="685" font-size="11" fill="#1f2328"><code>FEATURE_DIR</code> 来自 <code>.specify/feature.json</code> 的 <code>feature_directory</code> 字段(由 <code>/speckit-specify</code> 写入)。</text>
+        <text x="60" y="705" font-size="11" fill="#1f2328">所以:</text>
+        <text x="60" y="725" font-size="10" fill="#1f2328">  - 切换 feature → 重新跑 <code>/speckit-specify</code>(它会更新 <code>feature.json</code>)</text>
+        <text x="60" y="745" font-size="10" fill="#1f2328">  - 多个 feature 并行 → 每个 feature 自己的目录,各自跑完整流程</text>
+        <text x="60" y="765" font-size="10" fill="#1f2328">  - <code>constitution</code> 是<strong>全局</strong>共享,所有 feature 都遵守</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 2:命令流水线 + 跨命令状态同步</div>
+
+    <!-- ================= 1. constitution ================= -->
+    <h2 id="constitution">📜 1. /speckit-constitution</h2>
+
+    <div class="cmd-card">
+      <h3>/speckit-constitution</h3>
+      <div class="meta">
+        <span>必做</span>
+        <span>项目级(只跑 1 次,变更时再跑)</span>
+        <span>写 constitution.md</span>
+        <span>Scope Guard:只写 .specify/memory/constitution.md</span>
+      </div>
+
+      <h4>功能</h4>
+      <p>创建或更新项目<strong>宪法</strong>(governance 文档),定义原则、版本管理、修订流程。</p>
+
+      <h4>输入</h4>
+      <pre><code>/speckit-constitution
+# 或者带具体原则描述:
+/speckit-constitution 8 条原则:可观测性、TDD、ADR 留痕...</code></pre>
+
+      <h4>输出</h4>
+      <pre><code>.specify/memory/constitution.md
+  - Core Principles(原则 1-N)
+  - Governance(治理)
+  - 版本号(SemVer)
+  - Sync Impact Report(临时 HTML 注释)</code></pre>
+
+      <h4>关键规则</h4>
+      <ul>
+        <li><strong>Scope Guard</strong>:只能写 constitution.md,<strong>不能</strong>改代码或 spec</li>
+        <li><strong>SemVer</strong>:MAJOR(移除/重定义原则)/MINOR(新原则)/PATCH(措辞/typo)</li>
+        <li><strong>4 层模板解析栈</strong>:project overrides → preset layers → extension layers → core template</li>
+        <li><strong>Sync Impact Report</strong>:作为 HTML 注释加在文件顶部,<strong>commit 前必须删除</strong></li>
+        <li><strong>占位符</strong>:<code>[ALL_CAPS_IDENTIFIER]</code> 形式,必须全部替换或标记 TODO</li>
+      </ul>
+
+      <h4>本项目已有</h4>
+      <p>v1.1.0,8 条原则(详见 <a href="constitution.html">constitution.html</a>)</p>
+
+      <h4>常见坑</h4>
+      <ul>
+        <li>❌ 在宪法里写"feature 应该用 React"(太具体)→ ✅ 写"技术决策需要 ADR 留痕"(原则级)</li>
+        <li>❌ 忘记删除 Sync Impact Report → commit 污染</li>
+        <li>❌ 改宪法时混了 feature 实现请求 → Scope Guard 会拒绝</li>
+      </ul>
+    </div>
+
+    <!-- ================= 2. specify ================= -->
+    <h2 id="specify">📝 2. /speckit-specify</h2>
+
+    <div class="cmd-card">
+      <h3>/speckit-specify</h3>
+      <div class="meta">
+        <span>必做</span>
+        <span>每个 feature 1 次</span>
+        <span>写 spec.md</span>
+        <span>生成 checklists/requirements.md</span>
+      </div>
+
+      <h4>功能</h4>
+      <p>把"自然语言 feature 描述"转成结构化 <code>spec.md</code>(必填 6 段 + 选填 3 段),并生成 <strong>Spec Quality Checklist</strong>(17 项)。</p>
+
+      <h4>输入</h4>
+      <pre><code>/speckit-specify [feature 的自然语言描述]
+
+# 例子:
+/speckit-specify 段落 ID 生成器,为每个文档段落生成稳定的 hash 引用
+/speckit-specify 用户登录支持手机号 + 邮箱双因子认证
+/speckit-specify 流式定价,按 token 实时计费</code></pre>
+
+      <p><strong>参数注意事项</strong>(详见 <a href="specify.html">specify.html</a>):</p>
+      <ul>
+        <li>✅ <strong>DO</strong>:写"做什么/为什么/谁用",200-500 字最佳</li>
+        <li>❌ <strong>DON'T</strong>:写技术栈(React/PostgreSQL)、文件结构、API 路由</li>
+        <li>❌ <strong>DON'T</strong>:1-2 句话太短(无法产生有效 spec)</li>
+        <li>❌ <strong>DON'T</strong>:一上来给一个"模糊方向"(先 brainstorm)</li>
+        <li>✅ <strong>硬规则</strong>:<strong>一次</strong>/speckit-specify <strong>只能</strong>写<strong>一个</strong> feature</li>
+      </ul>
+
+      <h4>输出</h4>
+      <pre><code>specs/
+└── 003-citation-segment-id/        # 默认 NNN 顺序编号(可在 init-options.json 改 timestamp)
+    ├── spec.md
+    └── checklists/
+        └── requirements.md         # 17 项 Spec Quality Checklist</code></pre>
+
+      <h4>spec.md 6 个必填段</h4>
+      <ol>
+        <li><strong>User Scenarios &amp; Testing</strong>(用户故事 + 验收场景)</li>
+        <li><strong>Requirements</strong>(Functional Requirements,FR-### 可测)</li>
+        <li><strong>Key Entities</strong>(数据实体)</li>
+        <li><strong>Success Criteria</strong>(可量化、技术无关)</li>
+        <li><strong>Assumptions</strong>(假设)</li>
+        <li><strong>Edge Cases</strong>(边界情况)</li>
+      </ol>
+
+      <h4>3 个选填段</h4>
+      <ul>
+        <li><strong>Dependencies</strong>(依赖)</li>
+        <li><strong>Out of Scope</strong>(不做什么)</li>
+        <li><strong>Open Questions</strong>(未决问题)</li>
+      </ul>
+
+      <h4>关键规则</h4>
+      <ul>
+        <li><strong>Max 3</strong> 个 <code>[NEEDS CLARIFICATION: ...]</code> 标记</li>
+        <li><strong>17 项</strong> Spec Quality Checklist(<code>requirements.md</code>)</li>
+        <li><strong>编号规则</strong>:从 <code>.specify/init-options.json</code> 读 <code>feature_numbering</code>(默认 <code>sequential</code>,即 001,002,...)</li>
+        <li><strong>branch ≠ dir</strong>:spec 目录名和 git 分支名<strong>独立</strong>(虽然可以相同)</li>
+        <li><strong>.specify/feature.json</strong>:记当前 feature dir 路径,下游命令通过它定位</li>
+      </ul>
+    </div>
+
+    <!-- ================= 3. clarify ================= -->
+    <h2 id="clarify">❓ 3. /speckit-clarify</h2>
+
+    <div class="cmd-card">
+      <h3>/speckit-clarify</h3>
+      <div class="meta">
+        <span>强烈推荐</span>
+        <span>每个 feature 最多 1 次</span>
+        <span>更新 spec.md</span>
+        <span>最多问 5 个问题</span>
+      </div>
+
+      <h4>功能</h4>
+      <p>对当前 spec 做<strong>结构化歧义扫描</strong>,问<strong>最多 5 个</strong>高度针对性的澄清问题,答案<strong>直接写回 spec.md</strong>。</p>
+
+      <h4>输入</h4>
+      <pre><code>/speckit-clarify
+# 或者指定重点:
+/speckit-clarify 重点关注数据安全和性能</code></pre>
+
+      <h4>输出</h4>
+      <p>在 spec.md 中:</p>
+      <ul>
+        <li>新增 <code>## Clarifications</code> 段</li>
+        <li>新增 <code>### Session YYYY-MM-DD</code> 子段</li>
+        <li>每个答案一行 bullet:<code>- Q: 问题 → A: 答案</code></li>
+        <li>同步更新相关章节(Requirements / Success Criteria / Edge Cases ...)</li>
+        <li>如果有 <code>checklists/requirements.md</code>,自动重新勾选</li>
+      </ul>
+
+      <h4>13 个歧义扫描类别</h4>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><td>1. Functional Scope &amp; Behavior</td><td>核心目标 / 边界 / 用户角色</td></tr>
+            <tr><td>2. Domain &amp; Data Model</td><td>实体 / 唯一性 / 生命周期</td></tr>
+            <tr><td>3. Interaction &amp; UX Flow</td><td>关键路径 / 错误态 / 无障碍</td></tr>
+            <tr><td>4. Non-Functional Quality</td><td>性能 / 可扩展性 / 可靠性 / 可观测性 / 安全 / 合规</td></tr>
+            <tr><td>5. Integration &amp; External Deps</td><td>外部 API / 数据格式 / 协议版本</td></tr>
+            <tr><td>6. Edge Cases &amp; Failure</td><td>负面场景 / 限流 / 冲突解决</td></tr>
+            <tr><td>7. Constraints &amp; Tradeoffs</td><td>技术约束 / 拒绝的备选</td></tr>
+            <tr><td>8. Terminology &amp; Consistency</td><td>术语统一 / 避免同义词</td></tr>
+            <tr><td>9. Completion Signals</td><td>可测试的验收 / DoD</td></tr>
+            <tr><td>10. Misc / Placeholders</td><td>TODO 标记 / 模糊形容词</td></tr>
+            <tr><td>...</td><td>(共 13 类,详见 SKILL.md)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>问题格式</h4>
+      <p>每个问题遵循<strong>严格格式</strong>:</p>
+      <pre><code>**Question:** [完整问句,以 ? 结尾]? (FR-023)
+
+Why it matters: [1 句话说明为什么这影响交付]
+
+**Recommended:** Option [X] - [1-2 句理由]
+
+| Option | Description |
+|--------|-------------|
+| A | ... |
+| B | ... |
+| C | ... |
+| Short | 提供自定义短答(<=5 词) |
+
+You can reply with the option letter (e.g., "A"), accept the recommendation by saying "yes" or "recommended", or provide your own short answer.</code></pre>
+
+      <h4>硬规则</h4>
+      <ul>
+        <li><strong>最多 5 个</strong>问题(超过会停止)</li>
+        <li><strong>每次问 1 个</strong>,不一次列出全部</li>
+        <li><strong>不剧透</strong>未来问题</li>
+        <li><strong>每个问题必推荐一个</strong>选项 + 理由</li>
+        <li><strong>问题必须以 ? 结尾</strong>的完整问句(不能是标签如"Acceptance matrix")</li>
+      </ul>
+
+      <h4>何时跳过</h4>
+      <p>⚠️ 可以跳过但会警告:"下游返工风险增加"</p>
+    </div>
+
+    <!-- ================= 4. plan ================= -->
+    <h2 id="plan">🛠️ 4. /speckit-plan</h2>
+
+    <div class="cmd-card">
+      <h3>/speckit-plan</h3>
+      <div class="meta">
+        <span>必做</span>
+        <span>每个 feature 1 次</span>
+        <span>写 plan.md + research.md + data-model.md + contracts/ + quickstart.md</span>
+        <span>2 个阶段:Phase 0 研究 + Phase 1 设计</span>
+      </div>
+
+      <h4>功能</h4>
+      <p>把 spec 转成<strong>技术方案</strong>。包含 2 个阶段:</p>
+      <ul>
+        <li><strong>Phase 0: Outline &amp; Research</strong> — 提取技术上下文中的 NEEDS CLARIFICATION,产出 <code>research.md</code></li>
+        <li><strong>Phase 1: Design &amp; Contracts</strong> — 产出 <code>data-model.md</code>、<code>contracts/</code>、<code>quickstart.md</code></li>
+      </ul>
+
+      <h4>输入</h4>
+      <pre><code>/speckit-plan
+# 或者带指引:
+/speckit-plan 优先用 PostgreSQL + pgvector,因为我们已有 PG 经验</code></pre>
+
+      <h4>输出(5 个文件)</h4>
+      <pre><code>specs/003-citation-segment-id/
+├── plan.md              # 主方案(技术栈、架构、阶段、Constitution Check)
+├── research.md          # Phase 0:每个 NEEDS CLARIFICATION 的决策
+├── data-model.md        # 实体 / 字段 / 关系 / 状态机
+├── contracts/           # API 契约(若有)
+│   ├── openapi.yaml     # 例:对外 API
+│   └── events.md        # 例:事件 schema
+└── quickstart.md        # 端到端验证剧本</code></pre>
+
+      <h4>plan.md 关键段</h4>
+      <ul>
+        <li><strong>Technical Context</strong>(语言 / 框架 / 存储 / 依赖) — 未知项标 <code>NEEDS CLARIFICATION</code></li>
+        <li><strong>Constitution Check</strong>(每条原则:✅ 符合 / ⚠️ 例外 + 理由 / ❌ 违规)</li>
+        <li><strong>Project Structure</strong>(目录树)</li>
+        <li><strong>Phases</strong>(Setup / Foundational / User Story phases / Polish)</li>
+      </ul>
+
+      <h4>Constitution Check 强约束</h4>
+      <p>plan 必须<strong>逐条对账 constitution.md</strong>:</p>
+      <ul>
+        <li>✅ <strong>符合</strong>:直接列</li>
+        <li>⚠️ <strong>例外</strong>:<strong>必须</strong>给理由</li>
+        <li>❌ <strong>违规</strong>:<strong>ERROR</strong>,plan 拒绝生成</li>
+      </ul>
+
+      <h4>关键规则</h4>
+      <ul>
+        <li>绝对路径操作文件系统;相对路径写在文档里</li>
+        <li>Constitution 违规 → ERROR,不绕过</li>
+        <li>NEEDS CLARIFICATION 没解决 → ERROR</li>
+        <li>无外部接口(纯内部工具) → 跳过 contracts/</li>
+      </ul>
+    </div>
+
+    <!-- ================= 5. checklist ================= -->
+    <h2 id="checklist">📋 5. /speckit-checklist</h2>
+
+    <div class="cmd-card">
+      <h3>/speckit-checklist</h3>
+      <div class="meta">
+        <span>选做</span>
+        <span>每个 feature 多次(不同 domain)</span>
+        <span>追加到 checklists/{domain}.md</span>
+        <span>最多 5 个澄清问题</span>
+      </div>
+
+      <h4>功能</h4>
+      <p>生成<strong>"需求的单元测试"</strong>(Unit Tests for English)——<strong>测的是需求写得好不好,不是代码 work 不 work</strong>。</p>
+
+      <p class="text-soft">⚠️ <code>checklists/requirements.md</code>(由 /speckit-specify 生成)是<strong>内置</strong>的 spec 质量检查,<strong>和这个命令生成的 checklist 不同</strong>。前者由 AI 维护,后者由 reviewer 勾选。</p>
+
+      <h4>输入</h4>
+      <pre><code>/speckit-checklist UX
+/speckit-checklist API 安全
+/speckit-checklist 性能与可观测性</code></pre>
+
+      <h4>输出</h4>
+      <pre><code>specs/003-citation-segment-id/checklists/
+├── ux.md           # 每次调用生成一个 domain 文件
+├── api.md          # 可以追加
+└── security.md     # 可继续追加</code></pre>
+
+      <h4>核心原则</h4>
+      <p><strong>测需求质量,不测实现</strong>:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>❌ 错误(测实现)</th><th>✅ 正确(测需求质量)</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Verify landing page displays 3 episode cards</td>
+              <td>Are the exact number and layout of featured episodes specified? [Completeness]</td>
+            </tr>
+            <tr>
+              <td>Test hover states work on desktop</td>
+              <td>Are hover state requirements consistently defined? [Consistency]</td>
+            </tr>
+            <tr>
+              <td>Confirm logo click navigates home</td>
+              <td>Are navigation requirements clear for all clickable brand elements? [Clarity]</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>8 个质量维度</h4>
+      <ul>
+        <li>Completeness / Clarity / Consistency / Measurability</li>
+        <li>Coverage / Edge Cases / Non-Functional / Dependencies &amp; Assumptions</li>
+      </ul>
+
+      <h4>ID 编号</h4>
+      <p><code>CHK001, CHK002, ...</code> 全局递增;新文件从 001 开始,追加文件接续</p>
+
+      <h4>关键规则</h4>
+      <ul>
+        <li><strong>永不删除</strong>已有 checklist 内容,只追加</li>
+        <li><strong>每条都 [ ]</strong>(reviewer 勾选,AI 不自动标 [x])</li>
+        <li><strong>≥80%</strong> 条目必须带 traceability 引用(<code>[Spec §X.Y]</code> 或 <code>[Gap]</code>)</li>
+        <li><strong>最多 5 个</strong>澄清问题(分两轮:Q1-Q3 必问,Q4-Q5 可选)</li>
+      </ul>
+    </div>
+
+    <!-- ================= 6. tasks ================= -->
+    <h2 id="tasks">✅ 6. /speckit-tasks</h2>
+
+    <div class="cmd-card">
+      <h3>/speckit-tasks</h3>
+      <div class="meta">
+        <span>必做</span>
+        <span>每个 feature 1 次</span>
+        <span>写 tasks.md</span>
+        <span>按 user story 拆,带 [P] 并行标记</span>
+      </div>
+
+      <h4>功能</h4>
+      <p>把 plan + spec 转成<strong>可立即执行的 task 列表</strong>,按 <strong>user story</strong> 分阶段(每个 user story 独立可测)。</p>
+
+      <h4>输入</h4>
+      <pre><code>/speckit-tasks
+# 或者带约束:
+/speckit-tasks 不用 TDD,跳过测试任务</code></pre>
+
+      <h4>输出</h4>
+      <pre><code>specs/003-citation-segment-id/tasks.md
+
+# 结构:
+## Phase 1: Setup              # 项目初始化
+## Phase 2: Foundational       # 阻塞所有 user story 的前提
+## Phase 3: User Story 1 (P1)  # 一个 user story 一个 phase
+## Phase 4: User Story 2 (P2)
+## Phase 5: Polish             # 收尾</code></pre>
+
+      <h4>Task 严格格式(必填)</h4>
+      <pre><code>- [ ] T001 [P] [US1] Create User model in src/models/user.py
+     ↑     ↑    ↑
+   复选   并行  user story 标签(只在 user story 阶段)
+   框     标记  (Setup/Foundational/Polish 阶段无标签)</code></pre>
+
+      <p>5 个反例(都会被拒绝):</p>
+      <ul>
+        <li>❌ <code>- [ ] Create User model</code>(缺 ID 和 Story 标签)</li>
+        <li>❌ <code>T001 [US1] Create model</code>(缺 checkbox)</li>
+        <li>❌ <code>- [ ] [US1] Create User model</code>(缺 Task ID)</li>
+        <li>❌ <code>- [ ] T001 [US1] Create model</code>(缺文件路径)</li>
+        <li>❌ <code>- [ ] T001 Create project structure per implementation plan</code>(Setup 阶段 OK,但缺 Story 标签在其他阶段)</li>
+      </ul>
+
+      <h4>关键规则</h4>
+      <ul>
+        <li><strong>每个 user story 必须独立可测</strong></li>
+        <li><strong>[P] 标记</strong> = 不同文件 + 无未完成依赖</li>
+        <li><strong>Tests 可选</strong>:spec 没要求或 user 没明确要求 TDD → 不生成</li>
+        <li><strong>MVP 范围</strong>:通常 = User Story 1</li>
+        <li>总数 ≤ 40(若 > 40,合并低优项)</li>
+        <li>data-model.md 中的约束(如 max length)必须<strong>逐字引用</strong>在 task 描述里</li>
+      </ul>
+    </div>
+
+    <!-- ================= 7. analyze ================= -->
+    <h2 id="analyze">🔍 7. /speckit-analyze</h2>
+
+    <div class="cmd-card">
+      <h3>/speckit-analyze</h3>
+      <div class="meta">
+        <span>选做</span>
+        <span class="read-only">只读 / 不改文件</span>
+        <span>输出分析报告</span>
+        <span>≤ 50 条 finding</span>
+      </div>
+
+      <h4>功能</h4>
+      <p>对 <strong>spec.md + plan.md + tasks.md</strong> 做<strong>非破坏性</strong>一致性 + 质量分析,输出报告(不写文件)。</p>
+
+      <h4>输入</h4>
+      <pre><code>/speckit-analyze
+# 或指定重点:
+/speckit-analyze 重点检查 constitution 一致性</code></pre>
+
+      <h4>输出</h4>
+      <p>仅<strong>屏幕报告</strong>(无文件):</p>
+      <pre><code>## Specification Analysis Report
+| ID | Category | Severity | Location | Summary | Recommendation |
+|----|----------|----------|----------|---------|----------------|
+| A1 | Duplication | HIGH | spec.md:L120 | ... | ... |
+| B2 | Ambiguity | MEDIUM | spec.md:L89 | "fast" 未量化 | ... |
+| ... |
+
+## Coverage Summary
+| Requirement Key | Has Task? | Task IDs |
+| FR-001 | ✅ | T012, T013 |
+| FR-008 | ❌ | - |   ← 覆盖缺失!
+
+## Constitution Alignment Issues
+- ⚠️ plan.md §3 与 Constitution II(测试覆盖率)冲突
+
+## Metrics
+- Total Requirements: 12
+- Total Tasks: 47
+- Coverage: 11/12 = 92%</code></pre>
+
+      <h4>6 个检测通道</h4>
+      <ul>
+        <li><strong>A. Duplication</strong> — 重复需求(找可合并)</li>
+        <li><strong>B. Ambiguity</strong> — "fast/scalable/secure" 等模糊形容词</li>
+        <li><strong>C. Underspecification</strong> — 缺对象 / 缺可测结果</li>
+        <li><strong>D. Constitution Alignment</strong> — 违反 constitution MUST 原则</li>
+        <li><strong>E. Coverage Gaps</strong> — 需求 0 task / task 0 需求</li>
+        <li><strong>F. Inconsistency</strong> — 术语漂移 / 任务顺序冲突 / 实体缺失</li>
+      </ul>
+
+      <h4>4 个严重度</h4>
+      <ul>
+        <li>🔴 <strong>CRITICAL</strong>:Constitution MUST 违反 / P1 story 阻塞</li>
+        <li>🟠 <strong>HIGH</strong>:重复 / 冲突 / 安全模糊 / 不可测</li>
+        <li>🟡 <strong>MEDIUM</strong>:术语漂移 / 缺非功能 / 边缘 case 模糊</li>
+        <li>🟢 <strong>LOW</strong>:措辞 / 风格</li>
+      </ul>
+
+      <h4>关键规则</h4>
+      <ul>
+        <li><strong>严格只读</strong>:不改任何文件</li>
+        <li><strong>≤ 50 条 finding</strong>:超出汇总在 overflow summary</li>
+        <li><strong>建议修复</strong>:报告末尾提供(用户明确批准后才动)</li>
+        <li><strong>Constitution 不可协商</strong>:冲突永远是 CRITICAL</li>
+      </ul>
+    </div>
+
+    <!-- ================= 8. implement ================= -->
+    <h2 id="implement">⚙️ 8. /speckit-implement</h2>
+
+    <div class="cmd-card">
+      <h3>/speckit-implement</h3>
+      <div class="meta">
+        <span>必做</span>
+        <span>每个 feature 1 次</span>
+        <span>写代码 + 标 [X]</span>
+        <span>检查 checklist 门控</span>
+      </div>
+
+      <h4>功能</h4>
+      <p>按 <code>tasks.md</code> 逐 task 执行实施。每完成一个 task,把 <code>[ ]</code> 改成 <code>[X]</code>。</p>
+
+      <h4>输入</h4>
+      <pre><code>/speckit-implement
+# 或带筛选:
+/speckit-implement 只跑 T012-T020</code></pre>
+
+      <h4>执行流程</h4>
+      <ol>
+        <li>检查 prerequisites(spec/plan/tasks 存在)</li>
+        <li>检查 <code>checklists/</code> 状态(全 [x] 才允许;否则询问)</li>
+        <li>检测 git/docker/eslint 等,创建/补全 ignore 文件</li>
+        <li>按 phase 顺序执行:
+          <ul>
+            <li>Phase 1: Setup</li>
+            <li>Phase 2: Foundational(blocking)</li>
+            <li>Phase 3-N: User Stories(按优先级)</li>
+            <li>Final: Polish</li>
+          </ul>
+        </li>
+        <li>每个 task 完成后标 <code>[X]</code></li>
+      </ol>
+
+      <h4>Checklist 门控</h4>
+      <p>如果 <code>checklists/</code> 目录里有<strong>未完成</strong>的项:</p>
+      <pre><code>| Checklist   | Total | Checked | Unchecked | Status |
+|-------------|-------|---------|-----------|--------|
+| ux.md       | 12    | 12      | 0         | ✓ PASS |
+| test.md     | 8     | 5       | 3         | ✗ FAIL |
+
+Some checklists have unchecked items.
+Do you want to proceed with implementation anyway? (yes/no)</code></pre>
+
+      <p>只有用户回答 <code>yes/proceed/continue</code> 才继续。</p>
+
+      <h4>执行规则</h4>
+      <ul>
+        <li><strong>Setup 先于所有 user story</strong></li>
+        <li><strong>Foundational 必须完成</strong>才能跑 user story</li>
+        <li><strong>[P] 任务</strong>可并行(不同文件,无依赖)</li>
+        <li><strong>TDD</strong>(若 spec 要求):测试任务先于实现</li>
+        <li><strong>失败停止</strong>:非并行任务失败即停</li>
+        <li><strong>完成后必标 [X]</strong></li>
+      </ul>
+
+      <h4>ignore 文件自动检测</h4>
+      <p>检测项目栈,自动创建/补全:</p>
+      <ul>
+        <li>git repo → <code>.gitignore</code></li>
+        <li>Node.js → <code>node_modules/</code>、<code>dist/</code> 等</li>
+        <li>Python → <code>__pycache__/</code>、<code>.venv/</code> 等</li>
+        <li>Docker → <code>.dockerignore</code></li>
+        <li>ESLint / Prettier → 对应 ignore</li>
+        <li>...</li>
+      </ul>
+    </div>
+
+    <!-- ================= 9. converge ================= -->
+    <h2 id="converge">🔁 9. /speckit-converge</h2>
+
+    <div class="cmd-card">
+      <h3>/speckit-converge</h3>
+      <div class="meta">
+        <span>选做</span>
+        <span>每个 feature 多次</span>
+        <span>追加 Phase N: Convergence 到 tasks.md</span>
+        <span>append-only,不重写</span>
+      </div>
+
+      <h4>功能</h4>
+      <p>对比<strong>当前代码</strong>和 <strong>spec.md + plan.md + tasks.md</strong>,找出<strong>未完成</strong>的工作,追加到 tasks.md,然后跳回 /speckit-implement 继续做。</p>
+
+      <h4>输入</h4>
+      <pre><code>/speckit-converge</code></pre>
+
+      <h4>输出</h4>
+      <p><strong>追加</strong>(不改、不删、不重排)到 tasks.md:</p>
+      <pre><code>## Phase 99: Convergence
+
+- [ ] T042 Add append-only guard in path/to/tasks.py per FR-003 (missing)
+- [ ] T043 Fix race condition in concurrent writes per SC-002 (partial)
+- [ ] T044 CRITICAL: Remove hardcoded API key per Constitution V (contradicts)
+- [ ] T045 Review and remove unused helper util_X per plan §3.2 (unrequested)</code></pre>
+
+      <h4>4 个 gap 类型</h4>
+      <ul>
+        <li><code>missing</code> — 代码完全没有</li>
+        <li><code>partial</code> — 有但不完整</li>
+        <li><code>contradicts</code> — 代码与 spec/constitution 冲突</li>
+        <li><code>unrequested</code> — 代码做了 spec/plan/tasks 没要求的事(只追加,提示 review)</li>
+      </ul>
+
+      <h4>3 个结局</h4>
+      <ul>
+        <li><strong>converged</strong> — 没找到 actionable finding,报告 "✅ Converged"</li>
+        <li><strong>tasks_appended</strong> — 追加了 N 个 task,建议跑 /speckit-implement 继续</li>
+        <li><strong>prerequisite_missing</strong> — spec/plan/tasks 缺一个,直接 abort 提示跑哪个</li>
+      </ul>
+
+      <h4>关键规则</h4>
+      <ul>
+        <li><strong>append-only</strong>:<strong>永远不重写</strong> tasks.md 已存在内容</li>
+        <li><strong>不动 spec/plan</strong>:converge 只动 tasks.md</li>
+        <li><strong>不动代码</strong>:补全是 /speckit-implement 的活</li>
+        <li><strong>Constitution 必须最先</strong>且标 CRITICAL</li>
+        <li><strong>若已 converged</strong>:tasks.md 字节级不变(连空 header 都不加)</li>
+      </ul>
+    </div>
+
+    <!-- ================= 10. taskstoissues ================= -->
+    <h2 id="taskstoissues">🐙 10. /speckit-taskstoissues ⚠️ 弃用</h2>
+
+    <div class="cmd-card">
+      <h3>/speckit-taskstoissues</h3>
+      <div class="meta">
+        <span class="deprecated">⚠️ 已弃用</span>
+        <span>将被移除</span>
+        <span>改用 github extension</span>
+      </div>
+
+      <h4>功能</h4>
+      <p>把 tasks.md 里的 task 转成 GitHub issues(每个 task 一个 issue,标题格式 <code>T001: Description</code>)。</p>
+
+      <h4>弃用警告</h4>
+      <p>命令执行时<strong>首先显示</strong>:</p>
+      <pre><code>⚠️ `/speckit-taskstoissues` is deprecated and will be removed in a
+future minor release. Use the bundled `github` extension instead:
+run `specify extension add github`, then invoke
+`/speckit-github-taskstoissues`.</code></pre>
+
+      <h4>替代方案</h4>
+      <pre><code>specify extension add github
+/speckit-github-taskstoissues</code></pre>
+
+      <h4>关键规则</h4>
+      <ul>
+        <li><strong>必须</strong> GitHub remote(否则 abort)</li>
+        <li><strong>去重</strong>:跑前查现有 issues,<code>T\d{3,}</code> 模式匹配 task ID</li>
+        <li><strong>分页</strong>:cursor-based,直到所有 task ID 匹配或无下一页</li>
+        <li><strong>标题</strong>:<code>T001: &lt;description&gt;</code>(ID 写一次)</li>
+      </ul>
+    </div>
+
+    <!-- ================= 跨命令状态 ================= -->
+    <h2 id="state">🔗 跨命令状态同步(关键概念)</h2>
+
+    <p>10 个命令看似独立,实际通过 3 个机制紧密耦合:</p>
+
+    <h3>机制 1:.specify/feature.json</h3>
+    <p><strong>由 /speckit-specify 写入</strong>:</p>
+    <pre><code>{
+  "feature_directory": "specs/003-citation-segment-id"
+}</code></pre>
+    <p>下游所有命令(<code>clarify</code> / <code>plan</code> / <code>tasks</code> / <code>implement</code> / <code>converge</code> ...)通过它找到当前 feature。</p>
+
+    <h3>机制 2:check-prerequisites.sh</h3>
+    <p>大多数命令调用的<strong>通用前置检查脚本</strong>:</p>
+    <pre><code>.specify/scripts/bash/check-prerequisites.sh --json --paths-only
+#  返回 JSON:
+{
+  "FEATURE_DIR": "/abs/path/to/specs/003-citation-segment-id",
+  "FEATURE_SPEC": "/abs/path/to/spec.md",
+  "IMPL_PLAN": "/abs/path/to/plan.md",
+  "TASKS": "/abs/path/to/tasks.md",
+  "AVAILABLE_DOCS": ["spec.md", "plan.md", "tasks.md", ...]
+}</code></pre>
+
+    <p>不同 flag 控制严格度:</p>
+    <ul>
+        <li><code>--json --paths-only</code>:只返路径(plan 阶段用)</li>
+        <li><code>--require-tasks --include-tasks</code>:要求 tasks.md 存在(implement/converge)</li>
+        <li><code>--require-spec --require-tasks</code>:两个都要(analyze/converge)</li>
+    </ul>
+
+    <h3>机制 3:Constitution 共享</h3>
+    <p><code>.specify/memory/constitution.md</code> 是<strong>全局</strong>文件,所有 feature 命令都会读。</p>
+
+    <h3>总结</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="跨命令状态">
+        <defs>
+          <marker id="arr-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <text x="400" y="20" text-anchor="middle" font-size="14" font-weight="700">3 个共享状态机制</text>
+
+        <rect x="40" y="50" width="200" height="180" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="140" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#0969da">① .specify/feature.json</text>
+        <text x="140" y="110" text-anchor="middle" font-size="11">{</text>
+        <text x="140" y="130" text-anchor="middle" font-size="10">"feature_directory":</text>
+        <text x="140" y="148" text-anchor="middle" font-size="10">"specs/003-xxx"</text>
+        <text x="140" y="170" text-anchor="middle" font-size="11">}</text>
+        <text x="140" y="200" text-anchor="middle" font-size="10" fill="#57606a">由 specify 写入</text>
+        <text x="140" y="215" text-anchor="middle" font-size="10" fill="#57606a">所有命令读它</text>
+
+        <line x1="240" y1="140" x2="290" y2="140" stroke="#57606a" stroke-width="2" marker-end="url(#arr-s)"/>
+
+        <rect x="290" y="50" width="220" height="180" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="400" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#0969da">② check-prerequisites.sh</text>
+        <text x="400" y="110" text-anchor="middle" font-size="11">--json --paths-only</text>
+        <text x="400" y="135" text-anchor="middle" font-size="10">返回 FEATURE_DIR、</text>
+        <text x="400" y="150" text-anchor="middle" font-size="10">AVAILABLE_DOCS 等</text>
+        <text x="400" y="180" text-anchor="middle" font-size="10" fill="#57606a">每个命令的"前置检查"</text>
+        <text x="400" y="200" text-anchor="middle" font-size="10" fill="#57606a">决定是否 abort</text>
+        <text x="400" y="215" text-anchor="middle" font-size="10" fill="#57606a">+ 提供绝对路径</text>
+
+        <line x1="510" y1="140" x2="560" y2="140" stroke="#57606a" stroke-width="2" marker-end="url(#arr-s)"/>
+
+        <rect x="560" y="50" width="200" height="180" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="660" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#0969da">③ constitution.md</text>
+        <text x="660" y="110" text-anchor="middle" font-size="11">.specify/memory/</text>
+        <text x="660" y="130" text-anchor="middle" font-size="11">constitution.md</text>
+        <text x="660" y="160" text-anchor="middle" font-size="10" fill="#57606a">全局共享</text>
+        <text x="660" y="180" text-anchor="middle" font-size="10" fill="#57606a">所有 feature 都读</text>
+        <text x="660" y="200" text-anchor="middle" font-size="10" fill="#57606a">Constitution Check 强约束</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 3:3 个跨命令状态共享机制</div>
+
+    <!-- ================= Extension Hooks ================= -->
+    <h2 id="hooks">🪝 Extension Hooks(扩展点)</h2>
+
+    <p>每个 spec-kit 命令都有<strong>前/后 hook 点</strong>,可通过 <code>.specify/extensions.yml</code> 注册自定义行为。</p>
+
+    <h3>配置格式</h3>
+    <pre><code># .specify/extensions.yml
+hooks:
+  before_specify:
+    - extension: git.branch.create
+      enabled: true
+      optional: false  # 必须执行
+  after_plan:
+    - extension: slack.notify
+      enabled: true
+      optional: true   # 提示但不阻塞
+  before_implement:
+    - extension: tdd.run_tests
+      enabled: true
+      optional: false</code></pre>
+
+    <h3>命令 → Hook 点对照</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>命令</th><th>before hook</th><th>after hook</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>constitution</td><td>✅</td><td>✅</td></tr>
+          <tr><td>specify</td><td>✅</td><td>✅</td></tr>
+          <tr><td>clarify</td><td>✅</td><td>✅</td></tr>
+          <tr><td>plan</td><td>✅</td><td>✅</td></tr>
+          <tr><td>tasks</td><td>✅</td><td>✅</td></tr>
+          <tr><td>checklist</td><td>✅</td><td>✅</td></tr>
+          <tr><td>analyze</td><td>✅</td><td>✅</td></tr>
+          <tr><td>implement</td><td>✅</td><td>✅</td></tr>
+          <tr><td>converge</td><td>✅</td><td>✅</td></tr>
+          <tr><td>taskstoissues</td><td>✅</td><td>✅</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Hook 调用规则</h3>
+    <ul>
+        <li><code>optional: false</code> → <strong>必须</strong>执行,失败阻塞命令</li>
+        <li><code>optional: true</code> → 提示用户可手动执行,不阻塞</li>
+        <li>Hook 名 <code>a.b.c</code> → 命令 <code>/speckit-a-b-c</code>(点换横线)</li>
+        <li>YAML 解析失败 → <strong>不静默</strong>,告知用户没跑过哪些 mandatory hook</li>
+        <li><code>enabled: false</code> → 跳过(缺省视为 enabled)</li>
+    </ul>
+
+    <!-- ================= RFC-002 实战 ================= -->
+    <h2 id="rfc002">🎯 本项目实战:RFC-002 答案溯源</h2>
+
+    <p>假设我们要给 Deep Research Agent 加"答案溯源"功能(对应 RFC-002),完整跑一遍 9 个核心命令(跳过弃用的 taskstoissues):</p>
+
+    <pre><code># ====== Step 0:宪法(已有,跳过) ======
+# 宪法 v1.1.0 已就绪,8 条原则
+
+# ====== Step 1:specify(3 个 feature 之一) ======
+/speckit-specify 段落 ID 生成器,为每个文档段落生成稳定的 hash 引用
+
+# 产出:
+#   specs/007-segment-id-generator/spec.md
+#   specs/007-segment-id-generator/checklists/requirements.md
+#   .specify/feature.json: {"feature_directory": "specs/007-segment-id-generator"}
+
+# ====== Step 2:clarify(可选但推荐) ======
+/speckit-clarify
+
+# AI 问最多 5 个问题(比如:段落粒度?hash 算法?空段落处理?)
+# 答完后自动更新 spec.md
+
+# ====== Step 3:plan ======
+/speckit-plan 优先用 SHA-256 + PostgreSQL UUID
+
+# 产出:
+#   specs/007-segment-id-generator/plan.md
+#   specs/007-segment-id-generator/research.md
+#   specs/007-segment-id-generator/data-model.md
+#   specs/007-segment-id-generator/quickstart.md
+#   (无外部 API → 跳过 contracts/)
+
+# ====== Step 4:checklist(可选) ======
+/speckit-checklist UX
+/speckit-checklist 性能
+
+# 产出:
+#   specs/007-segment-id-generator/checklists/ux.md
+#   specs/007-segment-id-generator/checklists/performance.md
+
+# ====== Step 5:tasks ======
+/speckit-tasks
+
+# 产出:
+#   specs/007-segment-id-generator/tasks.md
+#   (按 US1/US2/US3 拆 3 个 phase)
+
+# ====== Step 6:analyze(可选,只读) ======
+/speckit-analyze
+
+# 屏幕输出报告(不写文件),比如发现:
+#   - T012 任务缺文件路径
+#   - US1/AC2 与 FR-005 措辞不一致
+# 建议:补全 T012、调整 AC2 措辞
+
+# ====== Step 7:implement ======
+/speckit-implement
+
+# 检查 checklist 状态 → 询问是否继续
+# 跑 Phase 1 → Phase 2 → Phase 3 (US1) → Phase 4 (US2) → Phase 5 (US3) → Polish
+# 完成任务后 [X] 标
+
+# ====== Step 8:converge(可选) ======
+/speckit-converge
+
+# 对比代码 vs spec/plan/tasks,追加:
+#   ## Phase 99: Convergence
+#   - [ ] T042 ... (missing)
+#   - [ ] T043 ... (partial)
+# 没遗漏 → "✅ Converged"
+
+# ====== Step 9:再次 implement(完成 converge 追加的 task) ======
+/speckit-implement
+
+# 再跑一次,只完成追加的 task
+
+# ====== Done! ======
+# 提 PR → review → merge → spec 落地 ✅</code></pre>
+
+    <!-- ================= 常见错误 ================= -->
+    <h2 id="pitfalls">⚠️ 10 个常见错误(从 SKILL.md 抽取)</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>错误</th><th>影响</th><th>正确做法</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>❌ /speckit-specify 时一句话模糊方向</td>
+            <td>spec 质量差,plan 阶段要重写</td>
+            <td>先用 brainstorm / grill,出 200+ 字再 specify</td>
+          </tr>
+          <tr>
+            <td>❌ /speckit-specify 时混了多 feature</td>
+            <td>违反 1 invoke = 1 feature 硬规则</td>
+            <td>每个 feature 独立跑 1 次</td>
+          </tr>
+          <tr>
+            <td>❌ /speckit-specify 时写了技术栈</td>
+            <td>spec 阶段混入实现细节</td>
+            <td>spec 只写 WHAT/WHY,不写 HOW</td>
+          </tr>
+          <tr>
+            <td>❌ /speckit-clarify 跳过</td>
+            <td>下游返工风险增加</td>
+            <td>至少跑 1 轮,把 [NEEDS CLARIFICATION] 清掉</td>
+          </tr>
+          <tr>
+            <td>❌ /speckit-clarify 一次性问完所有</td>
+            <td>违反"每次问 1 个"规则</td>
+            <td>AI 自然会一次问 1 个,别催</td>
+          </tr>
+          <tr>
+            <td>❌ /speckit-plan 不做 Constitution Check</td>
+            <td>违反 constitution MUST 时应该 ERROR</td>
+            <td>确保 plan §Constitution Check 全部 ✅ 或 ⚠️ + 理由</td>
+          </tr>
+          <tr>
+            <td>❌ /speckit-tasks 写"X 阶段:加个功能"等模糊任务</td>
+            <td>无法独立测试 / 无法定位文件</td>
+            <td>严格格式:<code>- [ ] T### [P?] [US?] 描述 with file/path</code></td>
+          </tr>
+          <tr>
+            <td>❌ /speckit-implement 时未跑 /speckit-analyze</td>
+            <td>隐藏的一致性问题到 implement 才暴露</td>
+            <td>implement 前必跑 analyze</td>
+          </tr>
+          <tr>
+            <td>❌ /speckit-implement 跳过 checklist 门控</td>
+            <td>需求质量未验证就开始写代码</td>
+            <td>让 checklist 全部 [x] 再继续(或显式 yes)</td>
+          </tr>
+          <tr>
+            <td>❌ /speckit-converge 后没跑 implement</td>
+            <td>追加的 task 永远躺在那</td>
+            <td>converge 后必跑 implement 一次</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <div class="callout success">
+      <p><strong>🎓 一句话总结</strong>:</p>
+      <ul>
+        <li><strong>5 必做</strong>:constitution(1 次)、specify(每 feature)、plan、tasks、implement</li>
+        <li><strong>3 强烈推荐</strong>:clarify(扫歧义)、checklist(需求测试)、analyze(一致性)</li>
+        <li><strong>1 选做</strong>:converge(PR 前补漏)</li>
+        <li><strong>1 弃用</strong>:taskstoissues(用 github extension)</li>
+        <li><strong>3 共享机制</strong>:feature.json + check-prerequisites.sh + constitution.md</li>
+        <li><strong>10 扩展点</strong>:每个命令都有 before/after hook</li>
+      </ul>
+    </div>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  基于 <a href="https://github.github.io/spec-kit/" target="_blank">GitHub Spec Kit</a> 官方 SKILL.md 构建 ·
+  本文档站仅供学习与团队实践参考
+</footer>
+
+</body>
+</html>

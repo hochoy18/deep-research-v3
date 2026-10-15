@@ -1,0 +1,348 @@
+openapi: 3.0.3
+info:
+  title: Deep Research Agent M1 API
+  version: 0.1.0-m1
+  description: |
+    M1 阶段 API 契约（仅 mock 对话流，不接真实 LLM）。
+    本文档为 spec.md FR-006 ~ FR-011 的契约落地，M1 集成日作为「契约 freeze」基线。
+    变更需走 RFC 流程（constitution VI）。
+
+    Spec ID: FEATURE-001-m1-infra
+    Constitution 引用: Principle VI (API Contract 优先)
+
+servers:
+  - url: http://localhost:8000
+    description: 本地后端（docker-compose v1）
+
+tags:
+  - name: threads
+    description: 会话线程管理
+  - name: messages
+    description: 对话消息（含 SSE 流式）
+  - name: health
+    description: 健康检查
+
+paths:
+  /health:
+    get:
+      tags: [health]
+      summary: 后端健康检查
+      responses:
+        '200':
+          description: 服务正常
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, degraded]
+                  dependencies:
+                    type: object
+                    description: 各依赖服务状态
+                    additionalProperties:
+                      type: string
+                      enum: [up, down]
+
+  /threads:
+    post:
+      tags: [threads]
+      summary: 创建新 thread
+      description: 创建一个新会话线程，自动与 cookie 中的 user_id 绑定
+      responses:
+        '201':
+          description: thread 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thread'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    get:
+      tags: [threads]
+      summary: 列出当前用户的所有 thread
+      description: 仅返回 cookie user_id 所属的 thread（防越权）
+      responses:
+        '200':
+          description: thread 列表
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [threads]
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /threads/{thread_id}:
+    get:
+      tags: [threads]
+      summary: 获取单个 thread 详情
+      parameters:
+        - $ref: '#/components/parameters/ThreadId'
+      responses:
+        '200':
+          description: thread 详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thread'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: thread 不属于当前 user（越权）
+        '404':
+          description: thread 不存在
+
+  /threads/{thread_id}/messages:
+    post:
+      tags: [messages]
+      summary: 发送消息（触发 mock 流式响应）
+      description: |
+        用户提交 query；后端通过 SSE 流式返回 mock 响应。
+        M1 阶段 mock 行为 = 单 LangGraph 节点 echo，按 token 切片流式回显用户 query。
+
+        流式响应 event types:
+          - `message` — 单个 token 切片（Markdown fragment）
+          - `state_update` — 状态变化（如 status: streaming → complete）
+          - `done` — 流式结束
+          - `error` — 错误
+      parameters:
+        - $ref: '#/components/parameters/ThreadId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageCreate'
+      responses:
+        '200':
+          description: SSE 流式响应
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/SSEEvent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: thread 不属于当前 user
+        '404':
+          description: thread 不存在
+        '413':
+          description: query 过长（>10,000 字符）
+        '422':
+          description: query 校验失败（constitution I 白名单）
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /threads/{thread_id}/messages:
+    get:
+      tags: [messages]
+      summary: 列出 thread 下所有消息
+      parameters:
+        - $ref: '#/components/parameters/ThreadId'
+      responses:
+        '200':
+          description: 消息列表
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [messages]
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: thread 不属于当前 user
+
+components:
+  parameters:
+    ThreadId:
+      name: thread_id
+      in: path
+      required: true
+      description: 会话线程 UUID
+      schema:
+        type: string
+        format: uuid
+        example: '550e8400-e29b-41d4-a716-446655440000'
+
+  responses:
+    Unauthorized:
+      description: 未携带 user_id cookie
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: 触发限流（每分 10 次 / 每小时 100 次）
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            rate_limited:
+              value:
+                error: rate_limited
+                message: 操作太频繁，请稍后再试
+                retry_after_seconds: 30
+
+  schemas:
+    Thread:
+      type: object
+      required: [thread_id, user_id, status, created_at, updated_at]
+      properties:
+        thread_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+          description: 所属用户（与 cookie user_id 一致）
+        title:
+          type: string
+          maxLength: 200
+          default: '新对话'
+        status:
+          type: string
+          enum: [active, archived]
+          default: active
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        message_count:
+          type: integer
+          minimum: 0
+          description: 该 thread 下的消息数（可选字段）
+
+    MessageCreate:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 10000
+          description: |
+            用户 query（M1 阶段 1-10000 字符）。
+            MUST 经过白名单校验：允许 ASCII printable + 常见中日韩字符 + 换行；禁止控制字符。
+
+    Message:
+      type: object
+      required: [message_id, thread_id, role, content, status, created_at]
+      properties:
+        message_id:
+          type: string
+          format: uuid
+        thread_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum: [user, assistant, system]
+        content:
+          type: string
+        status:
+          type: string
+          enum: [streaming, complete, failed]
+        created_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    SSEEvent:
+      type: object
+      description: Server-Sent Event（M1 极简 echo）
+      required: [event, data]
+      properties:
+        event:
+          type: string
+          enum: [message, state_update, done, error]
+        data:
+          type: object
+          oneOf:
+            - description: message event
+              properties:
+                message_id:
+                  type: string
+                  format: uuid
+                chunk:
+                  type: string
+                  description: 单个 token 切片（Markdown fragment）
+                index:
+                  type: integer
+                  description: chunk 序号（0-based）
+            - description: state_update event
+              properties:
+                message_id:
+                  type: string
+                  format: uuid
+                status:
+                  type: string
+                  enum: [streaming, complete, failed]
+            - description: done event
+              properties:
+                message_id:
+                  type: string
+                  format: uuid
+                total_chunks:
+                  type: integer
+                latency_ms:
+                  type: integer
+            - description: error event
+              properties:
+                code:
+                  type: string
+                  enum: [internal_error, llm_error, timeout]
+                message:
+                  type: string
+
+    Error:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+          description: 错误码
+        message:
+          type: string
+          description: 用户友好的错误信息
+        details:
+          type: object
+          additionalProperties: true
+
+  securitySchemes:
+    UserCookie:
+      type: apiKey
+      in: cookie
+      name: user_id
+      description: |
+        后端首次访问时通过 Set-Cookie 写入；格式 `user_id=<uuid>; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000`。
+        前端不需要主动管理，由浏览器自动携带。
+
+security:
+  - UserCookie: []
+
+# Contract freeze 规则（constitution VI）：
+# - Major 变更：必须走 RFC + 跨团队评审
+# - Minor 变更：直接 PR + Code Review
+# - Patch 变更：直接 commit
+# - M1 集成日 freeze 此契约为 v0.1.0-m1 baseline

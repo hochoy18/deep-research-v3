@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快速入门 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="../00-home/index.html" class="brand">
+      <span class="brand-logo">S</span>
+      <span>Spec Kit 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="../00-home/index.html">首页</a></li>
+        <li class="has-dropdown">
+          <a href="../10-spec-kit/00-overview.html" class="active">Spec Kit</a>
+          <ul class="dropdown">
+          <li><a href="../10-spec-kit/00-overview.html">概览</a></li>
+          <li><a href="../10-spec-kit/01-quickstart.html" class="active">快速入门</a></li>
+          <li><a href="../10-spec-kit/02-team-collaboration.html">团队协作</a></li>
+          <li><a href="../10-spec-kit/03-constitution.html">Constitution 深度</a></li>
+          <li><a href="../10-spec-kit/04-specify.html">Specify 深度</a></li>
+          <li><a href="../10-spec-kit/05-commands.html">10 命令详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../20-mattpocock/01-grill-domain.html">Matt Pocock</a>
+          <ul class="dropdown">
+          <li><a href="../20-mattpocock/01-grill-domain.html">4 skill 深度</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a>
+          <ul class="dropdown">
+          <li><a href="../30-grill-ecosystem/01-grill-skills.html">7 个 Grill 实现对比</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../40-openspec/01-overview.html">OpenSpec</a>
+          <ul class="dropdown">
+          <li><a href="../40-openspec/01-overview.html">总览</a></li>
+          <li><a href="../40-openspec/02-commands.html">explore / propose</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../50-superpowers/01-overview.html">Superpowers</a>
+          <ul class="dropdown">
+          <li><a href="../50-superpowers/01-overview.html">总览</a></li>
+          <li><a href="../50-superpowers/02-skills.html">brainstorming 详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../60-kiro/01-overview.html">Kiro</a>
+          <ul class="dropdown">
+          <li><a href="../60-kiro/01-overview.html">Kiro 总览</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../90-others/01-awesome-skills.html">其他工具</a>
+          <ul class="dropdown">
+          <li><a href="../90-others/01-awesome-skills.html">awesome skills 集合</a></li>
+          <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景 + 矩阵</a></li>
+          <li><a href="../90-others/03-niche-tools.html">小众工具汇总</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#intro">翻译与简介</a></li>
+      <li><a href="#paths">两条路径</a></li>
+      <li><a href="#install">安装</a></li>
+      <li><a href="#flowchart">完整9步流程图</a></li>
+      <li><a href="#steps">每步详解</a></li>
+      <li><a href="#principles">核心原则</a></li>
+      <li><a href="#next">下一步</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>Spec-Driven Development 快速入门</h1>
+      <p class="subtitle">9 步走通一个完整特性:从 constitution 到 converge。</p>
+      <div class="badge-row">
+        <span class="tag primary">quickstart 翻译</span>
+        <span class="tag success">9 步流程</span>
+        <span class="tag warning">含可读示例</span>
+      </div>
+    </section>
+
+    <!-- ================= 翻译简介 ================= -->
+    <h2 id="intro">📜 quickstart 页翻译与简介</h2>
+    <p>本指南帮助你使用 Spec Kit 开启规格驱动开发。整个过程用一个持续演进的示例 <strong>Taskify</strong>(小型团队生产力平台)进行演示。</p>
+
+    <div class="callout">
+      <div class="callout-title">ℹ️ 关于流程独立性</div>
+      <p>使用 SDD 从规格构建特性或应用。若要修复缺陷,参考 Bug 修复流程;若要判断想法是否值得投入,参考想法评估流程。这些是<strong>独立流程</strong>,不是本指南的前置依赖。</p>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-title">💡 关于脚本与命令调用</div>
+      <p>自动化脚本同时提供 Bash(`.sh`)、PowerShell(`.ps1`)和 Python(`.py`)三种版本。交互式 <code>specify init</code> 会提示你选择;非交互模式(没有 TTY 或带 <code>--non-interactive</code>)默认按当前操作系统选 shell 版本。可以用 <code>--script sh|ps|py</code> 显式指定。</p>
+      <p>本流程的步骤基于 GitHub Copilot 的默认 skills 模式(<code>/speckit-*</code>)。在你的智能体聊天中,<strong>逐个调用</strong>每个 skill,并在进入下一步前先 review 产出结果。</p>
+    </div>
+
+    <div class="callout warning">
+      <div class="callout-title">🧠 上下文感知关键点</div>
+      <p>Spec Kit 通过 <code>.specify/feature.json</code> 中记录的 feature 目录来识别当前激活特性(可用 <code>SPECIFY_FEATURE_DIRECTORY</code> 环境变量覆盖)。命令解析的 feature <strong>来自这个状态</strong>,<strong>而非</strong> Git 当前分支 —— <strong>不需要 Git</strong>。</p>
+      <p>可选的 <strong>git 扩展</strong>会增加编号命名的功能分支用于组织版本控制,但"激活特性"仍取决于状态文件所指向的目录。要切换特性,请更新 <code>.specify/feature.json</code>。</p>
+    </div>
+
+    <hr>
+
+    <!-- ================= 两条路径 ================= -->
+    <h2 id="paths">🛤️ 两条推荐路径</h2>
+    <p>无论哪条路径,<strong>在项目开始前先建立 constitution(宪法)</strong>。</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h4>简短路径 · 小型特性</h4>
+        <ol>
+          <li><code>/speckit-specify</code></li>
+          <li><code>/speckit-plan</code></li>
+          <li><code>/speckit-tasks</code></li>
+          <li><code>/speckit-implement</code></li>
+          <li><code>/speckit-converge</code></li>
+        </ol>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏗️</div>
+        <h4>完整路径 · 生产特性</h4>
+        <ol>
+          <li><code>/speckit-constitution</code>(项目级一次)</li>
+          <li><code>/speckit-specify</code></li>
+          <li><code>/speckit-clarify</code></li>
+          <li><code>/speckit-plan</code></li>
+          <li><code>/speckit-checklist</code></li>
+          <li><code>/speckit-tasks</code></li>
+          <li><code>/speckit-analyze</code></li>
+          <li><code>/speckit-implement</code></li>
+          <li><code>/speckit-converge</code></li>
+        </ol>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ================= 安装 ================= -->
+    <h2 id="install">📥 安装 Specify</h2>
+    <pre><code># 安装 CLI(基于 uv)
+uv tool install specify-cli
+
+# 初始化项目
+specify init taskify --integration copilot
+
+# 进入项目
+cd taskify</code></pre>
+
+    <p><code>init</code> 可交互式选择编码智能体,也可用 <code>--integration</code> 显式指定。<strong>CI 和 AI agent harness 场景请加 <code>--non-interactive</code></strong>。</p>
+
+    <div class="callout">
+      <p>📚 如偏好 <code>pipx</code>、一次性 <code>uvx</code> 运行或离线安装,参考 <a href="https://github.github.io/spec-kit/installation.html">安装指南</a>。把 Spec Kit 加入既有仓库请参考 <a href="https://github.github.io/spec-kit/guides/existing-projects.html">既有项目中采用 Spec Kit</a>。</p>
+    </div>
+
+    <hr>
+
+    <!-- ================= 9步流程图 ================= -->
+    <h2 id="flowchart">🔁 完整 9 步流程图</h2>
+
+    <figure>
+      <svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Spec Kit 完整9步流程图">
+        <defs>
+          <marker id="arrow3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+          <marker id="arrowLoop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#cf222e"/>
+          </marker>
+        </defs>
+
+        <!-- Constitution -->
+        <rect x="20" y="40" width="160" height="70" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="100" y="62" text-anchor="middle" font-size="11" fill="#9a6700">① 项目级一次</text>
+        <text x="100" y="82" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">constitution</text>
+        <text x="100" y="98" text-anchor="middle" font-size="10" fill="#57606a">基本规则</text>
+
+        <!-- Specify -->
+        <rect x="200" y="40" width="160" height="70" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="280" y="62" text-anchor="middle" font-size="11" fill="#0969da">② 描述什么</text>
+        <text x="280" y="82" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">specify</text>
+        <text x="280" y="98" text-anchor="middle" font-size="10" fill="#57606a">spec.md</text>
+
+        <!-- Clarify -->
+        <rect x="380" y="40" width="160" height="70" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="460" y="62" text-anchor="middle" font-size="11" fill="#0969da">③ 消除歧义</text>
+        <text x="460" y="82" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">clarify</text>
+        <text x="460" y="98" text-anchor="middle" font-size="10" fill="#57606a">补全规格</text>
+
+        <!-- Plan -->
+        <rect x="560" y="40" width="160" height="70" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="640" y="62" text-anchor="middle" font-size="11" fill="#0969da">④ 技术方案</text>
+        <text x="640" y="82" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">plan</text>
+        <text x="640" y="98" text-anchor="middle" font-size="10" fill="#57606a">plan.md</text>
+
+        <!-- Checklist -->
+        <rect x="200" y="160" width="160" height="70" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="280" y="182" text-anchor="middle" font-size="11" fill="#1a7f37">⑤ 质量门</text>
+        <text x="280" y="202" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">checklist</text>
+        <text x="280" y="218" text-anchor="middle" font-size="10" fill="#57606a">需求完整性</text>
+
+        <!-- Tasks -->
+        <rect x="380" y="160" width="160" height="70" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="460" y="182" text-anchor="middle" font-size="11" fill="#1a7f37">⑥ 拆解任务</text>
+        <text x="460" y="202" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">tasks</text>
+        <text x="460" y="218" text-anchor="middle" font-size="10" fill="#57606a">tasks.md</text>
+
+        <!-- Analyze -->
+        <rect x="560" y="160" width="160" height="70" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="640" y="182" text-anchor="middle" font-size="11" fill="#1a7f37">⑦ 一致性</text>
+        <text x="640" y="202" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">analyze</text>
+        <text x="640" y="218" text-anchor="middle" font-size="10" fill="#57606a">跨产物审计</text>
+
+        <!-- Implement -->
+        <rect x="380" y="280" width="160" height="70" rx="8" fill="#f5e8ff" stroke="#8250df" stroke-width="2"/>
+        <text x="460" y="302" text-anchor="middle" font-size="11" fill="#8250df">⑧ 执行实现</text>
+        <text x="460" y="322" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">implement</text>
+        <text x="460" y="338" text-anchor="middle" font-size="10" fill="#57606a">代码 + 测试</text>
+
+        <!-- Converge -->
+        <rect x="560" y="280" width="160" height="70" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+        <text x="640" y="302" text-anchor="middle" font-size="11" fill="#cf222e">⑨ 收敛验证</text>
+        <text x="640" y="322" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">converge</text>
+        <text x="640" y="338" text-anchor="middle" font-size="10" fill="#57606a">对账 · Converged?</text>
+
+        <!-- 主箭头连线 -->
+        <line x1="180" y1="75" x2="200" y2="75" stroke="#57606a" stroke-width="2" marker-end="url(#arrow3)"/>
+        <line x1="360" y1="75" x2="380" y2="75" stroke="#57606a" stroke-width="2" marker-end="url(#arrow3)"/>
+        <line x1="540" y1="75" x2="560" y2="75" stroke="#57606a" stroke-width="2" marker-end="url(#arrow3)"/>
+        <line x1="640" y1="110" x2="280" y2="160" stroke="#57606a" stroke-width="2" marker-end="url(#arrow3)"/>
+        <line x1="360" y1="195" x2="380" y2="195" stroke="#57606a" stroke-width="2" marker-end="url(#arrow3)"/>
+        <line x1="540" y1="195" x2="560" y2="195" stroke="#57606a" stroke-width="2" marker-end="url(#arrow3)"/>
+        <line x1="640" y1="230" x2="460" y2="280" stroke="#57606a" stroke-width="2" marker-end="url(#arrow3)"/>
+        <line x1="540" y1="315" x2="560" y2="315" stroke="#57606a" stroke-width="2" marker-end="url(#arrow3)"/>
+
+        <!-- 回环箭头:未 Converged 则回头追加任务 -->
+        <path d="M 640 350 Q 640 420 320 420 Q 220 420 220 380 Q 220 350 380 350" fill="none" stroke="#cf222e" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrowLoop)"/>
+        <text x="450" y="442" text-anchor="middle" font-size="11" fill="#cf222e" font-weight="600">未 Converged → 追加任务 → 回到 implement</text>
+
+        <!-- 阶段分组标签 -->
+        <text x="120" y="22" font-size="12" font-weight="700" fill="#9a6700">规则</text>
+        <text x="440" y="22" font-size="12" font-weight="700" fill="#0969da">规格</text>
+        <text x="460" y="148" font-size="12" font-weight="700" fill="#1a7f37">拆解</text>
+        <text x="460" y="266" font-size="12" font-weight="700" fill="#8250df">实施</text>
+        <text x="640" y="266" font-size="12" font-weight="700" fill="#cf222e">验证</text>
+      </svg>
+      <figcaption>图 4 · Spec Kit 完整 9 步流程:constitution → specify/clarify/plan → checklist/tasks/analyze → implement ↔ converge</figcaption>
+    </figure>
+
+    <hr>
+
+    <!-- ================= 每步详解 ================= -->
+    <h2 id="steps">📋 每步详解</h2>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <h4>Step 1 · <code>/speckit-constitution</code> — 设定基本规则</h4>
+        <p>建立项目的指导原则(guiding principles)。<strong>项目开始时运行一次</strong>,把你的原则作为参数传给它。</p>
+        <p class="text-soft">产出:<code>.specify/memory/constitution.md</code>(提交到 Git,所有人均需遵守)</p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 2 · <code>/speckit-specify</code> — 描述要构建什么</h4>
+        <p>从自然语言描述创建特性规格。<strong>聚焦"做什么"和"为什么",不要纠结技术栈</strong>。</p>
+        <p class="text-soft">产出:<code>features/NNN-feature/spec.md</code></p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 3 · <code>/speckit-clarify</code> — 消除歧义</h4>
+        <p>针对规格中欠明确的地方,提出有针对性的问题,并把答案整合回规格。</p>
+        <div class="callout tip">
+          <div class="callout-title">💡 关键设计</div>
+          <p>AI 会主动反问你"实时协作意味着 WebSocket 还是短轮询?" —— 把模糊点变成可决策点。</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 4 · <code>/speckit-plan</code> — 选择技术栈</h4>
+        <p>基于规格生成设计产物。<strong>提供技术栈和架构选型</strong>(如 PostgreSQL + Node.js + React)。</p>
+        <p class="text-soft">产出:<code>plan.md</code>(技术方案、架构、权衡)</p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 5 · <code>/speckit-checklist</code> — 验证规格</h4>
+        <p>生成定制的质量检查清单,确认规格在拆解任务前是<strong>完整、清晰、一致</strong>的。这些是<strong>由 review 负责人维护</strong>的"需求质量评审产物"。</p>
+        <p class="text-soft">产出:<code>checklists/requirements.md</code>(可勾选)</p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 6 · <code>/speckit-tasks</code> — 拆解任务</h4>
+        <p>基于设计产物,产出<strong>按依赖顺序排列</strong>的可执行 <code>tasks.md</code>。</p>
+        <div class="callout">
+          <div class="callout-title">📌 任务标签解读</div>
+          <ul>
+            <li><code>[P]</code> 表示<strong>可并行</strong>的任务</li>
+            <li><code>[US1]</code> 表示关联到某个<strong>用户故事</strong></li>
+            <li><code>[US1,US3]</code> 表示<strong>跨多个故事</strong>的任务</li>
+          </ul>
+        </div>
+        <pre><code># tasks.md 示例片段
+- [ ] T01 [P] [US1] 搭建 PostgreSQL Schema
+- [ ] T02 [P] [US1] 实现 REST API:CRUD 任务
+- [ ] T03 [US2] 集成 Socket.io 服务端
+- [ ] T04 [P] [US2] 实现拖拽 UI 组件
+- [ ] T05 [US3] 集成 Socket.io 客户端
+- [ ] T06 [US1,US2,US3] 端到端测试</code></pre>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 7 · <code>/speckit-analyze</code> — 一致性检查</h4>
+        <p>横跨 <code>spec.md</code>、<code>plan.md</code>、<code>tasks.md</code> 报告冲突、缺口和歧义。<strong>只读</strong> —— 在源头修复后再次运行,再开始实现。</p>
+        <div class="callout warning">
+          <div class="callout-title">⚠️ Lead 介入节点</div>
+          <p>这是 Review 的核心节点:Lead 在这一步介入,而不是等代码写完才发现问题。</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 8 · <code>/speckit-implement</code> — 执行实现</h4>
+        <p>按 <code>tasks.md</code> 中的依赖顺序执行任务。<strong>会以 checklist 复选框的状态作为门禁</strong>(未勾上的不能继续)。</p>
+        <p class="text-soft">可指定子集执行:<code>/speckit-implement --filter T01,T02</code></p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 9 · <code>/speckit-converge</code> — 验证完整性</h4>
+        <p>将代码库与规格、方案、任务逐项核对。若发现缺口,会自动<strong>追加新任务到 <code>tasks.md</code></strong>;之后再次运行 <code>/speckit-implement</code> 并继续收敛,直到输出 <strong>Converged</strong>。</p>
+        <div class="callout success">
+          <div class="callout-title">✅ Converged 才算完成</div>
+          <p>如果首次 converge 失败,继续实现新增任务,再次 converge — 直到真正收敛。<strong>这是规格与实现的"对账"过程</strong>,跳过会让技术债积累。</p>
+        </div>
+      </div>
+
+    </div>
+
+    <hr>
+
+    <!-- ================= 核心原则 ================= -->
+    <h2 id="principles">🔑 核心原则</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h4>Be explicit</h4>
+        <p>明确表达你在构建什么、为什么 —— 把意图固化在文档里。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚫</div>
+        <h4>Don't focus on tech</h4>
+        <p>规格阶段不要聚焦技术栈 —— 技术决策属于 plan.md。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔄</div>
+        <h4>Iterate & refine</h4>
+        <p>编码前先迭代完善规格 —— clarify 阶段不要省。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">✅</div>
+        <h4>Validate first</h4>
+        <p>编码开始前先验证需求和方案 —— analyze 是关键门。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h4>Let agent handle</h4>
+        <p>让编码智能体去处理实现细节 —— 人类聚焦意图与证据。</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ================= 下一步 ================= -->
+    <h2 id="next">🚀 下一步</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">📖</div>
+        <h4>Agentic SDD</h4>
+        <p>查看 <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html">Agentic SDD 参考</a>,了解智能体如何执行流程。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛠️</div>
+        <h4>定制流程</h4>
+        <p>学习 <a href="https://github.github.io/spec-kit/guides/customization.html">如何定制 Spec Kit</a> 以适配团队。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <h4>完整方法论</h4>
+        <p>阅读 <a href="https://github.com/github/spec-kit/blob/main/spec-driven.md">完整方法论</a>。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎬</div>
+        <h4>视频概览</h4>
+        <p>观看 <a href="https://www.youtube.com/watch?v=a9eR1xsfvHg">Spec Kit 视频概览</a>。</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 32px; text-align: center;">
+      👉 接下来:<a href="02-team-collaboration.html"><strong>团队协作实战方案</strong></a>
+    </p>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  基于 <a href="https://github.github.io/spec-kit/" target="_blank">GitHub Spec Kit</a> 官方文档构建 ·
+  本文档站仅供学习与团队实践参考
+</footer>
+
+</body>
+</html>

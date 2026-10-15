@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Superpowers Skills · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .category {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+    background: var(--color-bg-soft);
+  }
+  .category h4 { margin: 0 0 8px; }
+  .compat {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .compat.green { background: #dafbe1; color: #1a7f37; }
+  .compat.yellow { background: #fff8c5; color: #9a6700; }
+  .compat.red { background: #ffebe9; color: #cf222e; }
+  .compat.gray { background: #f6f8fa; color: #57606a; }
+  .scenario {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    background: var(--color-bg-soft);
+  }
+  .scenario-best {
+    border-color: #1a7f37;
+    border-width: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="../00-home/index.html" class="brand">
+      <span class="brand-logo">S</span>
+      <span>Superpowers 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="../00-home/index.html">首页</a></li>
+        <li class="has-dropdown">
+          <a href="../10-spec-kit/00-overview.html">Spec Kit</a>
+          <ul class="dropdown">
+          <li><a href="../10-spec-kit/00-overview.html">概览</a></li>
+          <li><a href="../10-spec-kit/01-quickstart.html">快速入门</a></li>
+          <li><a href="../10-spec-kit/02-team-collaboration.html">团队协作</a></li>
+          <li><a href="../10-spec-kit/03-constitution.html">Constitution 深度</a></li>
+          <li><a href="../10-spec-kit/04-specify.html">Specify 深度</a></li>
+          <li><a href="../10-spec-kit/05-commands.html">10 命令详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../20-mattpocock/01-grill-domain.html">Matt Pocock</a>
+          <ul class="dropdown">
+          <li><a href="../20-mattpocock/01-grill-domain.html">4 skill 深度</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a>
+          <ul class="dropdown">
+          <li><a href="../30-grill-ecosystem/01-grill-skills.html">7 个 Grill 实现对比</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../40-openspec/01-overview.html">OpenSpec</a>
+          <ul class="dropdown">
+          <li><a href="../40-openspec/01-overview.html">总览</a></li>
+          <li><a href="../40-openspec/02-commands.html">explore / propose</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../50-superpowers/01-overview.html" class="active">Superpowers</a>
+          <ul class="dropdown">
+          <li><a href="../50-superpowers/01-overview.html">总览</a></li>
+          <li><a href="../50-superpowers/02-skills.html" class="active">brainstorming 详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../60-kiro/01-overview.html">Kiro</a>
+          <ul class="dropdown">
+          <li><a href="../60-kiro/01-overview.html">Kiro 总览</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../90-others/01-awesome-skills.html">其他工具</a>
+          <ul class="dropdown">
+          <li><a href="../90-others/01-awesome-skills.html">awesome skills 集合</a></li>
+          <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景 + 矩阵</a></li>
+          <li><a href="../90-others/03-niche-tools.html">小众工具汇总</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#brainstorming">brainstorming</a></li>
+      <li><a href="#related">相关 skills</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>🧠 Superpowers · brainstorming 详解</h1>
+      <p class="subtitle">brainstorming 是 Superpowers 的核心 skill,用苏格拉底式追问把模糊想法变成清晰需求。</p>
+      <div class="badge-row">
+        <span class="tag primary">brainstorming</span>
+        <span class="tag success">推荐</span>
+      </div>
+    </section>
+
+    <h2 id="brainstorming">1. Superpowers brainstorming</h2>
+
+          <h4>1. Superpowers brainstorming <span class="compat green">强烈推荐</span></h4>
+      <p><strong>定位</strong>:Claude Code 官方 plugin 市场的方法论级 skill,SDD 的"标准前置"</p>
+      <p><strong>核心能力</strong>:温和引导式提问,问 5-10 个关键问题</p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 与 spec-kit <strong>零冲突</strong>(完美配对)</li>
+        <li>✅ 强制发现,不让团队跳过</li>
+        <li>✅ 配合 TDD、Code Review 全套</li>
+        <li>✅ 社区最大(299K stars)</li>
+      </ul>
+      <p><strong>劣势</strong>:❌ 仅 Claude Code</p>
+      <p><strong>适合</strong>:任何 spec-kit 项目的"发现阶段"</p>
+    </div>
+
+    <div class="radar-card">
+
+
+    <h2 id="related">🔗 相关 Superpowers skills(简述)</h2>
+    <p>除 brainstorming 外,Superpowers 还提供多个高质量 skill:</p>
+    <ul>
+      <li><strong>writing-plans</strong>:把 spec 拆成可执行 plan</li>
+      <li><strong>test-driven-development</strong>:TDD 循环</li>
+      <li><strong>using-git-worktrees</strong>:安全开发</li>
+      <li><strong>verification-before-completion</strong>:完成前自查</li>
+      <li><strong>requesting-code-review</strong>:触发代码评审</li>
+    </ul>
+    <p>完整 skill 列表见 Superpowers 官方仓库。</p>
+  </article>
+</main>
+
+</body>
+</html>

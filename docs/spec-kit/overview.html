@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概览 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">
+      <span class="brand-logo">S</span>
+      <span>Spec Kit 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">首页</a></li>
+        <li><a href="overview.html" class="active">概览</a></li>
+        <li><a href="quickstart.html">快速入门</a></li>
+        <li><a href="team-collaboration.html">团队协作</a></li>
+        <li><a href="constitution.html">Constitution</a></li>
+        <li><a href="specify.html">Specify</a></li>
+        <li><a href="discovery-tools.html">发现阶段</a></li>
+        <li><a href="grill-skills.html">Grill Skills</a></li>
+        <li><a href="find-tools-compare.html">深度对比</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页转换到这里目录</div>
+    <ul>
+      <li><a href="#translation">主页内容翻译</a></li>
+      <li><a href="#principle">核心设计理念</a></li>
+      <li><a href="#problems">要解决的三大问题</a></li>
+      <li><a href="#architecture">分层架构</a></li>
+      <li><a href="#comparison">与传统方式对比</a></li>
+      <li><a href="#installation">安装与初始化</a></li>
+      <li><a href="#summary">总结</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>Spec Kit 概览</h1>
+      <p class="subtitle">主页内容翻译 + 深度解读:理解 Spec Kit 是什么、为什么存在。</p>
+      <div class="badge-row">
+        <span class="tag primary">官方主页翻译</span>
+        <span class="tag">架构设计</span>
+        <span class="tag success">核心原则</span>
+      </div>
+    </section>
+
+    <!-- ================= 主页翻译 ================= -->
+    <h2 id="translation">📜 主页内容中文翻译</h2>
+
+    <h3>主标题区</h3>
+    <div class="callout">
+      <p><strong>GitHub Spec Kit</strong></p>
+      <p><strong>用规格(spec)构建、修复 bug,或评估一个想法 — 与你的编码智能体一起。</strong></p>
+      <p>Spec Kit 为你的编码智能体提供结构化的流程,让"意图"和"证据"始终领先于"实现"。你可以从规格驱动开发(SDD)、Bug 修复或想法评估任意一个入口开始。你可以一步一步执行,也可以自动化,甚至可以定制属于你自己的流程 — 包括软件研发之外的其他领域。</p>
+    </div>
+
+    <h3>选择你的流程</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>你需要做什么</th><th>从这里开始</th><th>你将获得</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>构建一个新功能或应用</td>
+            <td><strong>规格驱动开发(SDD)</strong></td>
+            <td>一份贯穿规划、实施与收敛全过程的规格说明</td>
+          </tr>
+          <tr>
+            <td>诊断并修复缺陷行为</td>
+            <td><strong>Bug 修复</strong></td>
+            <td>经过评估的根因、限定范围的修复方案,以及留存的验证记录</td>
+          </tr>
+          <tr>
+            <td>判断一个想法是否值得投入</td>
+            <td><strong>想法评估</strong></td>
+            <td>有证据支撑的"推进 / 澄清 / 停止"决策</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-soft">这三者是<strong>独立的入口</strong>,不是强制的连续阶段。SDD 是核心内置流程;Bug 修复和想法评估是捆绑提供的、可选用开启的扩展。</p>
+
+    <h3>三大特性</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h4>默认即"按规格驱动"</h4>
+        <p>核心 SDD 流程开箱即用:Specify → Plan → Tasks → Implement → Converge。每个阶段产出 Markdown 产物。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔌</div>
+        <h4>兼容任何编码智能体</h4>
+        <p>38 种集成(Copilot、Gemini、Codex、Claude 等),单条命令切换,无锁定。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛠️</div>
+        <h4>改造为你自己的</h4>
+        <p>157 社区扩展、33 预设,流程本身是数据,可以被组合、替换、版本化。</p>
+      </div>
+    </div>
+
+    <h3>社区规模</h3>
+    <div class="cards">
+      <div class="card"><div class="card-icon">⭐</div><h4>130K+</h4><p class="text-soft">GitHub Stars</p></div>
+      <div class="card"><div class="card-icon">👥</div><h4>270+</h4><p class="text-soft">贡献者</p></div>
+      <div class="card"><div class="card-icon">🔌</div><h4>38</h4><p class="text-soft">智能体集成</p></div>
+      <div class="card"><div class="card-icon">🧩</div><h4>157</h4><p class="text-soft">社区扩展</p></div>
+    </div>
+
+    <hr>
+
+    <!-- ================= 核心理念 ================= -->
+    <h2 id="principle">🎯 核心设计理念</h2>
+    <p>Spec Kit 不是一个 AI 编码工具,而是一个 <strong>"让 AI 编码可被治理"</strong> 的流程框架。它的核心思路是:用结构化的规格(spec)与证据(evidence),让 AI 编码智能体的产出可被工程化地管理。</p>
+
+    <figure>
+      <svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Spec Kit 核心三角:意图、证据、实现">
+        <defs>
+          <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#0969da"/>
+          </marker>
+        </defs>
+        <!-- 三角 -->
+        <polygon points="400,40 760,200 40,200" fill="none" stroke="#0969da" stroke-width="2"/>
+
+        <!-- 三个顶点 -->
+        <circle cx="400" cy="40" r="60" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="400" y="36" text-anchor="middle" font-size="14" font-weight="700" fill="#0969da">意图</text>
+        <text x="400" y="56" text-anchor="middle" font-size="11" fill="#1f2328">spec.md</text>
+
+        <circle cx="760" cy="200" r="60" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="760" y="196" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6700">证据</text>
+        <text x="760" y="216" text-anchor="middle" font-size="11" fill="#1f2328">converge</text>
+
+        <circle cx="40" cy="200" r="60" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="40" y="196" text-anchor="middle" font-size="14" font-weight="700" fill="#1a7f37">实现</text>
+        <text x="40" y="216" text-anchor="middle" font-size="11" fill="#1f2328">code</text>
+
+        <!-- 箭头 -->
+        <line x1="350" y1="80" x2="100" y2="180" stroke="#0969da" stroke-width="1.5" marker-end="url(#arrow2)" stroke-dasharray="4,4"/>
+        <line x1="450" y1="80" x2="700" y2="180" stroke="#0969da" stroke-width="1.5" marker-end="url(#arrow2)" stroke-dasharray="4,4"/>
+        <line x1="100" y1="220" x2="700" y2="220" stroke="#0969da" stroke-width="1.5" marker-end="url(#arrow2)" stroke-dasharray="4,4"/>
+
+        <text x="400" y="232" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2328">意图 → 实现 → 证据,三者相互校验</text>
+      </svg>
+      <figcaption>图 2 · Spec Kit 的核心三角:意图先于实现,证据闭合实现</figcaption>
+    </figure>
+
+    <hr>
+
+    <!-- ================= 三大问题 ================= -->
+    <h2 id="problems">⚠️ 要解决的三大问题</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>痛点</th><th>表现</th><th>Spec Kit 的对策</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>意图漂移</strong></td>
+            <td>一句话需求 → 直接生成代码 → 实现跑偏</td>
+            <td>先用 Markdown 规格把"要做什么"固化下来</td>
+          </tr>
+          <tr>
+            <td><strong>证据缺失</strong></td>
+            <td>AI 改完代码无法回答"为什么改、改得是否正确"</td>
+            <td>每个阶段产出可追溯的 Markdown artifact</td>
+          </tr>
+          <tr>
+            <td><strong>流程锁定</strong></td>
+            <td>团队被迫使用某一种开发模式</td>
+            <td>流程本身是数据(presets / extensions),可换可拼</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <!-- ================= 架构 ================= -->
+    <h2 id="architecture">🏛️ 分层架构</h2>
+    <p>Spec Kit 采用 <strong>"内核 + 插件 + 包"</strong> 的分层设计,流程本身是数据。</p>
+
+    <figure>
+      <svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Spec Kit 分层架构">
+        <!-- 底层:内核 -->
+        <rect x="40" y="280" width="720" height="60" rx="6" fill="#1a3a23" stroke="#1a7f37" stroke-width="1.5"/>
+        <text x="400" y="316" text-anchor="middle" font-size="16" font-weight="700" fill="#3fb950">Core SDD 内核(不可变的基础流程)</text>
+
+        <!-- 集成 -->
+        <rect x="40" y="210" width="720" height="60" rx="6" fill="#0f2a4a" stroke="#1f6feb" stroke-width="1.5"/>
+        <text x="400" y="246" text-anchor="middle" font-size="16" font-weight="700" fill="#58a6ff">Integrations · 38 种 AI 工具对接</text>
+
+        <!-- 扩展 -->
+        <rect x="40" y="140" width="720" height="60" rx="6" fill="#3d2e00" stroke="#d29922" stroke-width="1.5"/>
+        <text x="400" y="176" text-anchor="middle" font-size="16" font-weight="700" fill="#e3b341">Extensions · 能力增强(157+)</text>
+
+        <!-- 预设与工作流 -->
+        <rect x="40" y="70" width="350" height="60" rx="6" fill="#1f6feb" stroke="#1f6feb" stroke-width="1.5" opacity="0.85"/>
+        <text x="215" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="white">Workflows 工作流</text>
+
+        <rect x="410" y="70" width="350" height="60" rx="6" fill="#8250df" stroke="#8250df" stroke-width="1.5" opacity="0.85"/>
+        <text x="585" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="white">Presets 预设</text>
+
+        <!-- Bundles 顶层 -->
+        <rect x="200" y="10" width="400" height="48" rx="24" fill="#0969da" stroke="#0969da" stroke-width="1.5"/>
+        <text x="400" y="40" text-anchor="middle" font-size="14" font-weight="700" fill="white">📦 Bundles · 可分享的角色化打包</text>
+
+        <!-- 箭头连接 -->
+        <line x1="400" y1="58" x2="400" y2="70" stroke="#8b949e" stroke-width="1.5"/>
+        <line x1="215" y1="130" x2="215" y2="140" stroke="#8b949e" stroke-width="1.5"/>
+        <line x1="585" y1="130" x2="585" y2="140" stroke="#8b949e" stroke-width="1.5"/>
+        <line x1="400" y1="200" x2="400" y2="210" stroke="#8b949e" stroke-width="1.5"/>
+        <line x1="400" y1="270" x2="400" y2="280" stroke="#8b949e" stroke-width="1.5"/>
+
+        <text x="780" y="346" text-anchor="end" font-size="11" fill="#8b949e">从下到上:越往上越可定制</text>
+      </svg>
+      <figcaption>图 3 · Spec Kit 五层架构,Bundles 在最顶层,可跨场景复用整套流程</figcaption>
+    </figure>
+
+    <div class="callout tip">
+      <div class="callout-title">🌟 为什么这是关键设计</div>
+      <p>Spec Kit 把流程当作数据,因此能容纳"小说写作流程"——只要能拆成 Define → Plan → Tasks → Implement → Converge(或近似版),就可以用 Spec Kit 来跑。</p>
+    </div>
+
+    <hr>
+
+    <!-- ================= 对比 ================= -->
+    <h2 id="comparison">📊 与传统方式对比</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>维度</th><th>传统开发模式</th><th>Spec Kit 模式</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>需求表达</strong></td>
+            <td>口头/即时消息,易丢失</td>
+            <td>Markdown spec.md,可 diff 可版本化</td>
+          </tr>
+          <tr>
+            <td><strong>方案评审</strong></td>
+            <td>PR 阶段才介入</td>
+            <td>spec 阶段即可介入,Lead 提前仲裁</td>
+          </tr>
+          <tr>
+            <td><strong>任务拆解</strong></td>
+            <td>Issue 列表,依赖关系弱</td>
+            <td>tasks.md 显式依赖图,可并行任务标 [P]</td>
+          </tr>
+          <tr>
+            <td><strong>质量门禁</strong></td>
+            <td>靠 CI + 手动 review</td>
+            <td>/speckit-converge 自动对账</td>
+          </tr>
+          <tr>
+            <td><strong>跨智能体迁移</strong></td>
+            <td>上下文易断</td>
+            <td>规格即上下文,任何智能体接手都能理解</td>
+          </tr>
+          <tr>
+            <td><strong>流程定制</strong></td>
+            <td>改源码/换工具</td>
+            <td>装 preset/extension,无需改源码</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <!-- ================= 安装 ================= -->
+    <h2 id="installation">💻 安装与初始化</h2>
+    <pre><code># 1. 安装 CLI(基于 uv,Python 生态的现代包管理)
+uv tool install specify-cli
+
+# 2. 初始化项目(指定你用的 AI 智能体)
+specify init my-project --integration copilot
+
+# 3. 进入项目
+cd my-project</code></pre>
+
+    <p>执行完后,Spec Kit 会自动在你的仓库里:</p>
+    <ul>
+      <li>创建 <code>.specify/</code> 目录(存放规格、计划、任务等 Markdown 产物)</li>
+      <li>根据 <code>--integration</code> 生成对应 AI 工具的命令文件(如 <code>.github/prompts/</code> 或 <code>.claude/commands/</code>)</li>
+      <li>准备好模板和质量检查清单</li>
+    </ul>
+
+    <hr>
+
+    <h2 id="summary">📌 总结</h2>
+    <div class="callout success">
+      <div class="callout-title">🎓 核心要点</div>
+      <ul>
+        <li><strong>三大入口</strong>:SDD(新建)、Bug Fix(修复)、Assessment(评估)正交可选</li>
+        <li><strong>九步内核</strong>:Constitution → Specify → Clarify → Plan → Checklist → Implement → Converge</li>
+        <li><strong>可扩展架构</strong>:流程是数据,可由 Bundles / Workflows / Presets / Extensions 组合</li>
+        <li><strong>38 种兼容</strong>:Copilot / Claude / Gemini / Codex / Cursor 等,无锁定</li>
+        <li><strong>企业可用</strong>:离线、防火墙、自托管目录,Windows / macOS / Linux 全平台</li>
+      </ul>
+    </div>
+
+    <p style="margin-top: 32px; text-align: center;">
+      👉 下一步:<a href="quickstart.html"><strong>快速入门(9 步走通)</strong></a> →
+      <a href="team-collaboration.html"><strong>团队协作实战</strong></a>
+    </p>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  基于 <a href="https://github.github.io/spec-kit/" target="_blank">GitHub Spec Kit</a> 官方文档构建 ·
+  本文档站仅供学习与团队实践参考
+</footer>
+
+</body>
+</html>

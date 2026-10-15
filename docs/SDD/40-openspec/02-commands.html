@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenSpec 命令详解 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .category {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+    background: var(--color-bg-soft);
+  }
+  .category h4 { margin: 0 0 8px; }
+  .compat {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .compat.green { background: #dafbe1; color: #1a7f37; }
+  .compat.yellow { background: #fff8c5; color: #9a6700; }
+  .compat.red { background: #ffebe9; color: #cf222e; }
+  .compat.gray { background: #f6f8fa; color: #57606a; }
+  .scenario {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    background: var(--color-bg-soft);
+  }
+  .scenario-best {
+    border-color: #1a7f37;
+    border-width: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="../00-home/index.html" class="brand">
+      <span class="brand-logo">O</span>
+      <span>OpenSpec 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="../00-home/index.html">首页</a></li>
+        <li class="has-dropdown">
+          <a href="../10-spec-kit/00-overview.html">Spec Kit</a>
+          <ul class="dropdown">
+          <li><a href="../10-spec-kit/00-overview.html">概览</a></li>
+          <li><a href="../10-spec-kit/01-quickstart.html">快速入门</a></li>
+          <li><a href="../10-spec-kit/02-team-collaboration.html">团队协作</a></li>
+          <li><a href="../10-spec-kit/03-constitution.html">Constitution 深度</a></li>
+          <li><a href="../10-spec-kit/04-specify.html">Specify 深度</a></li>
+          <li><a href="../10-spec-kit/05-commands.html">10 命令详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../20-mattpocock/01-grill-domain.html">Matt Pocock</a>
+          <ul class="dropdown">
+          <li><a href="../20-mattpocock/01-grill-domain.html">4 skill 深度</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a>
+          <ul class="dropdown">
+          <li><a href="../30-grill-ecosystem/01-grill-skills.html">7 个 Grill 实现对比</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../40-openspec/01-overview.html" class="active">OpenSpec</a>
+          <ul class="dropdown">
+          <li><a href="../40-openspec/01-overview.html">总览</a></li>
+          <li><a href="../40-openspec/02-commands.html" class="active">explore / propose</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../50-superpowers/01-overview.html">Superpowers</a>
+          <ul class="dropdown">
+          <li><a href="../50-superpowers/01-overview.html">总览</a></li>
+          <li><a href="../50-superpowers/02-skills.html">brainstorming 详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../60-kiro/01-overview.html">Kiro</a>
+          <ul class="dropdown">
+          <li><a href="../60-kiro/01-overview.html">Kiro 总览</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../90-others/01-awesome-skills.html">其他工具</a>
+          <ul class="dropdown">
+          <li><a href="../90-others/01-awesome-skills.html">awesome skills 集合</a></li>
+          <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景 + 矩阵</a></li>
+          <li><a href="../90-others/03-niche-tools.html">小众工具汇总</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#explore">/opsx:explore</a></li>
+      <li><a href="#propose">/opsx:propose</a></li>
+      <li><a href="#flow">命令协作流程</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>📖 OpenSpec 命令详解(explore + propose)</h1>
+      <p class="subtitle">从"模糊想法"到"可执行 spec"的两条命令路径,以及它们在 spec-kit 流程中的位置。</p>
+      <div class="badge-row">
+        <span class="tag primary">/opsx:explore</span>
+        <span class="tag primary">/opsx:propose</span>
+        <span class="tag success">含示例</span>
+      </div>
+    </section>
+
+    <h2 id="explore">🔍 /opsx:explore · 把想法变成结构化探索</h2>
+
+          <h4>4. OpenSpec explore <span class="compat green">强烈推荐</span></h4>
+      <p><strong>定位</strong>:SDD 框架,4 命令轻量流程</p>
+      <p><strong>核心能力</strong>:<code>/opsx:explore</code> 读你的代码,给 2-3 个方案对比 + tradeoffs</p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 轻量(4 命令)</li>
+        <li>✅ <strong>唯一会读你代码</strong>的 brainstorm 工具</li>
+        <li>✅ 30+ IDE 支持</li>
+      </ul>
+      <p><strong>劣势</strong>:⚠️ 与 spec-kit 输出格式略不同(单 change 目录 vs specs/)</p>
+      <p><strong>适合</strong>:已有项目加新功能,需要"读代码给方案"</p>
+    </div>
+
+
+
+    <h2 id="propose">📝 /opsx:propose · 把探索固化为 spec</h2>
+
+          <h4>12. OpenSpec propose <span class="compat green">推荐</span></h4>
+      <p><strong>定位</strong>:OpenSpec 的后半段,把 explore 出的方案变 change 包</p>
+      <p><strong>核心能力</strong>:</p>
+      <pre><code>openspec/changes/answer-citation/
+├── proposal.md
+├── specs/
+├── design.md
+└── tasks.md</code></pre>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 完整 change 包(可一次性 review)</li>
+        <li>✅ 30+ IDE</li>
+        <li>✅ <strong>结构上类似 spec-kit</strong></li>
+      </ul>
+      <p><strong>劣势</strong>:⚠️ 与 spec-kit 思路略不同(单 change 目录)</p>
+      <p><strong>适合</strong>:同时用 OpenSpec + spec-kit 的人群</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>13. joslynSmall/grill-spec-flow <span class="compat yellow">特殊场景</span></h4>
+
+
+    <h2 id="flow">🔄 命令协作流程</h2>
+    <p>典型用法:先用 explore 探索多个方向,确定后用 propose 固化为 spec。spec-kit 流程中,propose 输出可直接作为 spec-kit specify 命令的输入。</p>
+    <div class="scenario">
+      <p><strong>Step 1</strong>:用户说"我想加一个功能"</p>
+      <p><strong>Step 2</strong>:Claude 调 <code>/opsx:explore</code> 问 3-5 个关键问题</p>
+      <p><strong>Step 3</strong>:用户答完后,Claude 生成 <code>explore.md</code></p>
+      <p><strong>Step 4</strong>:用户确认方向,调 <code>/opsx:propose</code></p>
+      <p><strong>Step 5</strong>:Claude 生成 <code>proposal.md</code> + <code>tasks.md</code></p>
+      <p><strong>Step 6</strong>:把 proposal 喂给 spec-kit 的 <code>/speckit-specify</code></p>
+    </div>
+  </article>
+</main>
+
+</body>
+</html>

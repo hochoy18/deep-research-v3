@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kiro 总览 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .category {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+    background: var(--color-bg-soft);
+  }
+  .category h4 { margin: 0 0 8px; }
+  .compat {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .compat.green { background: #dafbe1; color: #1a7f37; }
+  .compat.yellow { background: #fff8c5; color: #9a6700; }
+  .compat.red { background: #ffebe9; color: #cf222e; }
+  .compat.gray { background: #f6f8fa; color: #57606a; }
+  .scenario {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    background: var(--color-bg-soft);
+  }
+  .scenario-best {
+    border-color: #1a7f37;
+    border-width: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="../00-home/index.html" class="brand">
+      <span class="brand-logo">K</span>
+      <span>Kiro (AWS) 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="../00-home/index.html">首页</a></li>
+        <li class="has-dropdown">
+          <a href="../10-spec-kit/00-overview.html">Spec Kit</a>
+          <ul class="dropdown">
+          <li><a href="../10-spec-kit/00-overview.html">概览</a></li>
+          <li><a href="../10-spec-kit/01-quickstart.html">快速入门</a></li>
+          <li><a href="../10-spec-kit/02-team-collaboration.html">团队协作</a></li>
+          <li><a href="../10-spec-kit/03-constitution.html">Constitution 深度</a></li>
+          <li><a href="../10-spec-kit/04-specify.html">Specify 深度</a></li>
+          <li><a href="../10-spec-kit/05-commands.html">10 命令详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../20-mattpocock/01-grill-domain.html">Matt Pocock</a>
+          <ul class="dropdown">
+          <li><a href="../20-mattpocock/01-grill-domain.html">4 skill 深度</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../30-grill-ecosystem/01-grill-skills.html">Grill 生态</a>
+          <ul class="dropdown">
+          <li><a href="../30-grill-ecosystem/01-grill-skills.html">7 个 Grill 实现对比</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../40-openspec/01-overview.html">OpenSpec</a>
+          <ul class="dropdown">
+          <li><a href="../40-openspec/01-overview.html">总览</a></li>
+          <li><a href="../40-openspec/02-commands.html">explore / propose</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../50-superpowers/01-overview.html">Superpowers</a>
+          <ul class="dropdown">
+          <li><a href="../50-superpowers/01-overview.html">总览</a></li>
+          <li><a href="../50-superpowers/02-skills.html">brainstorming 详解</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../60-kiro/01-overview.html" class="active">Kiro</a>
+          <ul class="dropdown">
+          <li><a href="../60-kiro/01-overview.html" class="active">Kiro 总览</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="../90-others/01-awesome-skills.html">其他工具</a>
+          <ul class="dropdown">
+          <li><a href="../90-others/01-awesome-skills.html">awesome skills 集合</a></li>
+          <li><a href="../90-others/02-decision-tree.html">决策树 + 5 场景 + 矩阵</a></li>
+          <li><a href="../90-others/03-niche-tools.html">小众工具汇总</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#overview">Kiro 是什么</a></li>
+      <li><a href="#detailed">详细能力</a></li>
+      <li><a href="#with-spec-kit">spec-kit + Kiro</a></li>
+      <li><a href="#pros-cons">优缺点</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>🥈 Kiro (AWS) · AI IDE 中的 spec-driven 模式</h1>
+      <p class="subtitle">Kiro 是 AWS 推出的 AI IDE,把 spec-driven development 思想融入 IDE 本身,适合"在 IDE 里一站式完成"的场景。</p>
+      <div class="badge-row">
+        <span class="tag primary">AWS 出品</span>
+        <span class="tag">IDE 集成</span>
+        <span class="tag">看场景</span>
+      </div>
+    </section>
+
+            <h3>🥈 Kiro (AWS)</h3>
+        <p><strong>一句话</strong>:AWS 出的 SDD 完整 IDE 工具</p>
+        <p><strong>发现阶段</strong>:Specs 三件套(requirements / design / tasks)</p>
+        <p><strong>强项</strong>:企业级、UI 完整、Requirements-First/Design-First 两种</p>
+        <p><strong>弱项</strong>:绑定 Kiro IDE、生态封闭</p>
+        <p><strong>安装</strong>:Kiro IDE</p>
+      </div>
+
+      <div>
+        <h3>🥇 awesome-claude-skills</h3>
+
+
+    <h2 id="detailed">📑 Kiro 详细能力</h2>
+
+          <h4>11. Kiro (AWS) <span class="compat yellow">看场景</span></h4>
+      <p><strong>定位</strong>:AWS 的 SDD 完整 IDE 工具,Specs 三件套</p>
+      <p><strong>核心能力</strong>:requirements.md / design.md / tasks.md</p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 企业级、UI 完整</li>
+        <li>✅ Requirements-First / Design-First 两种模式</li>
+      </ul>
+      <p><strong>劣势</strong>:</p>
+      <ul>
+        <li>❌ 绑定 Kiro IDE(生态封闭)</li>
+        <li>❌ 闭源(AWS)</li>
+        <li>❌ 与 spec-kit 互斥</li>
+      </ul>
+      <p><strong>适合</strong>:愿意换 IDE 的企业团队</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>12. OpenSpec propose <span class="compat green">推荐</span></h4>
+
+
+    <h2 id="with-spec-kit">🔗 spec-kit + Kiro 组合</h2>
+    <p>Kiro 自身已包含 spec 流程,通常不需要再叠加 spec-kit。但 Kiro 输出的 spec 文档可以喂给 spec-kit 的 <code>/speckit-specify</code> 命令做后续拆解。</p>
+
+    <h2 id="pros-cons">⚖️ 优缺点总结</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>维度</th><th>评价</th></tr></thead>
+        <tbody>
+          <tr><td>易上手</td><td>🟢 IDE 装上即用</td></tr>
+          <tr><td>与 spec-kit 协作</td><td>🟡 自身已含 spec 流程</td></tr>
+          <tr><td>IDE 锁定</td><td>🔴 需用 Kiro IDE</td></tr>
+          <tr><td>生态成熟度</td><td>🟡 新兴,AWS 背书</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+</main>
+
+</body>
+</html>

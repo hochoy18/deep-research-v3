@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发现阶段 Skill 选型决策树 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .radar-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 16px 0;
+  }
+  @media (max-width: 720px) { .radar-grid { grid-template-columns: 1fr; } }
+  .scenario {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    background: var(--color-bg-soft);
+  }
+  .scenario-best {
+    border-color: #1a7f37;
+    border-width: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">
+      <span class="brand-logo">S</span>
+      <span>Spec Kit 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">首页</a></li>
+        <li><a href="overview.html">概览</a></li>
+        <li><a href="quickstart.html">快速入门</a></li>
+        <li><a href="team-collaboration.html">团队协作</a></li>
+        <li><a href="constitution.html">Constitution</a></li>
+        <li><a href="specify.html">Specify</a></li>
+        <li><a href="discovery-tools.html" class="active">发现阶段工具</a></li>
+        <li><a href="grill-skills.html">Grill Skills</a></li>
+        <li><a href="find-tools-compare.html">深度对比</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#overview">总览</a></li>
+      <li><a href="#comparison">6 大方案核心对比</a></li>
+      <li><a href="#decision-tree">选型决策树</a></li>
+      <li><a href="#scenario-1">场景 1:从零开始新项目</a></li>
+      <li><a href="#scenario-2">场景 2:加新功能</a></li>
+      <li><a href="#scenario-3">场景 3:跨团队 RFC 前</a></li>
+      <li><a href="#scenario-4">场景 4:技术 POC</a></li>
+      <li><a href="#scenario-5">场景 5:已有 PRD</a></li>
+      <li><a href="#combinations">spec-kit + 工具的 4 种组合</a></li>
+      <li><a href="#comparison-table">完整能力矩阵</a></li>
+      <li><a href="#recommendation">本项目推荐</a></li>
+      <li><a href="#action">立即可执行</a></li>
+      <li><a href="#pitfalls">选型常见错误</a></li>
+      <li><a href="#checklist">选型检查清单</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>🧭 发现阶段 Skill 选型决策树</h1>
+      <p class="subtitle">基于对 OpenSpec / Superpowers / Kiro / awesome-claude-skills / agentic-awesome-skills / Marvin 的真实调研,给出从模糊到清晰路径的工具选型决策。</p>
+      <div class="badge-row">
+        <span class="tag primary">6 大方案对比</span>
+        <span class="tag success">5 种场景适配</span>
+        <span class="tag warning">含决策树 SVG</span>
+        <span class="tag">spec-kit 友好</span>
+      </div>
+    </section>
+
+    <!-- ================= 总览 ================= -->
+    <h2 id="overview">📋 总览</h2>
+
+    <p>在用 <code>/speckit-specify</code> 之前,如果项目/功能很模糊,你需要<strong>"发现阶段"的工具</strong>来辅助。</p>
+
+    <p>经过对业界 8 个主流方案的调研(<code>OpenSpec</code>、<code>Superpowers</code>、<code>Kiro</code>、<code>ComposioHQ/awesome-claude-skills</code>、<code>agentic-awesome-skills</code>、<code>Marvin</code>、<code>Amplifier</code>、<code>Eigent</code>),按"发现阶段能力"分 3 个梯队:</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="3 个梯队">
+        <defs>
+          <marker id="arr-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- 第一梯队 -->
+        <rect x="40" y="40" width="720" height="50" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="60" y="63" font-size="13" font-weight="700" fill="#1a7f37">第一梯队 ⭐⭐⭐⭐⭐(强烈推荐)</text>
+        <text x="60" y="80" font-size="11" fill="#1f2328">OpenSpec · Superpowers · agentic-awesome-skills(精选) ·  awesome-claude-skills</text>
+
+        <!-- 第二梯队 -->
+        <rect x="40" y="110" width="720" height="50" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="60" y="133" font-size="13" font-weight="700" fill="#9a6700">第二梯队 ⭐⭐⭐(有特色,看场景)</text>
+        <text x="60" y="150" font-size="11" fill="#1f2328">Kiro (AWS,需换 IDE) · Marvin (Python 工程师)</text>
+
+        <!-- 第三梯队 -->
+        <rect x="40" y="180" width="720" height="40" rx="8" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+        <text x="60" y="203" font-size="13" font-weight="700" fill="#57606a">第三梯队 ⭐⭐(无显式发现阶段)</text>
+        <text x="60" y="218" font-size="11" fill="#1f2328">Amplifier (MS,早期预览) · Eigent (多 agent 框架,无发现阶段)</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 1:业界 8 个方案的发现阶段能力梯队</div>
+
+    <!-- ================= 6 大方案对比 ================= -->
+    <h2 id="comparison">📊 6 大方案核心对比</h2>
+
+    <div class="radar-grid">
+      <div>
+        <h3>🥇 OpenSpec</h3>
+        <p><strong>一句话</strong>:SDD 框架,4 命令轻量流程</p>
+        <p><strong>发现阶段命令</strong>:<code>/opsx:explore</code></p>
+        <p><strong>强项</strong>:轻量、灵活、无重型仪式</p>
+        <p><strong>弱项</strong>:与 spec-kit 思路略不同(单 change 目录 vs specs/ 目录)</p>
+        <p><strong>安装</strong>:<code>npm install -g @fission-ai/openspec@latest</code></p>
+      </div>
+
+      <div>
+        <h3>🥇 Superpowers</h3>
+        <p><strong>一句话</strong>:Claude Code 官方插件市场的方法论 + skills 框架</p>
+        <p><strong>发现阶段 skill</strong>:<code>brainstorming</code></p>
+        <p><strong>强项</strong>:强制发现、TDD、Code Review 全套</p>
+        <p><strong>弱项</strong>:绑定 Claude Code(不支持其他 IDE)</p>
+        <p><strong>安装</strong>:<code>/plugin install superpowers@claude-plugins-official</code></p>
+      </div>
+
+      <div>
+        <h3>🥈 Kiro (AWS)</h3>
+        <p><strong>一句话</strong>:AWS 出的 SDD 完整 IDE 工具</p>
+        <p><strong>发现阶段</strong>:Specs 三件套(requirements / design / tasks)</p>
+        <p><strong>强项</strong>:企业级、UI 完整、Requirements-First/Design-First 两种</p>
+        <p><strong>弱项</strong>:绑定 Kiro IDE、生态封闭</p>
+        <p><strong>安装</strong>:Kiro IDE</p>
+      </div>
+
+      <div>
+        <h3>🥇 awesome-claude-skills</h3>
+        <p><strong>一句话</strong>:1000+ Claude Skills 目录</p>
+        <p><strong>发现阶段 skill</strong>:<code>brainstorming</code>、<code>deep-research</code>、<code>recursive-research</code></p>
+        <p><strong>强项</strong>:中英文混合、覆盖面广</p>
+        <p><strong>弱项</strong>:不是完整 SDD,需要自己拼装</p>
+        <p><strong>安装</strong>:<code>cp -r skill-name ~/.config/claude-code/skills/</code></p>
+      </div>
+
+      <div>
+        <h3>🥇 agentic-awesome-skills</h3>
+        <p><strong>一句话</strong>:2689+ skills 大全,场景化</p>
+        <p><strong>发现阶段 skill</strong>:<code>brainstorming</code>、<code>before-you-build</code>、<code>idea-autopsy</code>、<code>what-could-break</code>、<code>rich-elicitation</code></p>
+        <p><strong>强项</strong>:精准场景化(skills 可按需挑)</p>
+        <p><strong>弱项</strong>:需要自己挑,新手不知道选哪个</p>
+        <p><strong>安装</strong>:<code>npx agentic-awesome-skills --skills brainstorming,before-you-build</code></p>
+      </div>
+
+      <div>
+        <h3>🥈 Marvin</h3>
+        <p><strong>一句话</strong>:Python 化的多 agent 框架</p>
+        <p><strong>发现阶段</strong>:<code>marvin.plan()</code> 自动分解</p>
+        <p><strong>强项</strong>:编程式控制、Pydantic 类型安全</p>
+        <p><strong>弱项</strong>:Python only、需要自己写发现逻辑</p>
+        <p><strong>安装</strong>:<code>pip install marvin</code></p>
+      </div>
+    </div>
+
+    <h3>维度对比表</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th>OpenSpec</th>
+            <th>Superpowers</th>
+            <th>Kiro</th>
+            <th>awesome-claude-skills</th>
+            <th>agentic-awesome-skills</th>
+            <th>Marvin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>发现能力</strong></td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>轻量度</strong></td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+            <td>⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>spec-kit 兼容</strong></td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>学习曲线</strong></td>
+            <td>平</td>
+            <td>中</td>
+            <td>陡</td>
+            <td>平</td>
+            <td>平</td>
+            <td>陡(要懂 Python)</td>
+          </tr>
+          <tr>
+            <td><strong>多 IDE 支持</strong></td>
+            <td>✅ 30+</td>
+            <td>❌ 仅 Claude Code</td>
+            <td>❌ Kiro IDE</td>
+            <td>✅ Claude 全家</td>
+            <td>✅ 16+ 平台</td>
+            <td>✅ Python 任意</td>
+          </tr>
+          <tr>
+            <td><strong>中文支持</strong></td>
+            <td>中等</td>
+            <td>中等</td>
+            <td>英文为主</td>
+            <td>强</td>
+            <td>强(部分 skill 中文)</td>
+            <td>强</td>
+          </tr>
+          <tr>
+            <td><strong>生态活跃度</strong></td>
+            <td>高</td>
+            <td>高(299K stars)</td>
+            <td>中</td>
+            <td>高</td>
+            <td>高</td>
+            <td>中</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 决策树 ================= -->
+    <h2 id="decision-tree">🌳 选型决策树(主图)</h2>
+
+    <p>用一张大决策图,根据你的项目状态直接选型。</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 800 1000" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="选型决策树">
+        <defs>
+          <marker id="arr-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- 起点 -->
+        <rect x="280" y="20" width="240" height="44" rx="22" fill="#fff8c5" stroke="#9a6700" stroke-width="3"/>
+        <text x="400" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6700">你的项目状态?</text>
+
+        <!-- Q1 -->
+        <line x1="400" y1="64" x2="400" y2="100" stroke="#57606a" stroke-width="2" marker-end="url(#arr-m)"/>
+        <rect x="280" y="105" width="240" height="50" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="400" y="128" text-anchor="middle" font-size="12" font-weight="700" fill="#0969da">Q1. 项目方向清楚吗?</text>
+        <text x="400" y="145" text-anchor="middle" font-size="10" fill="#57606a">(知道要做大概什么)</text>
+
+        <!-- Q1 → Q1a / Q1b -->
+        <line x1="340" y1="155" x2="120" y2="200" stroke="#cf222e" stroke-width="2" marker-end="url(#arr-m)"/>
+        <text x="220" y="180" text-anchor="middle" font-size="10" font-weight="600" fill="#cf222e">完全不清楚</text>
+
+        <line x1="460" y1="155" x2="680" y2="200" stroke="#1a7f37" stroke-width="2" marker-end="url(#arr-m)"/>
+        <text x="580" y="180" text-anchor="middle" font-size="10" font-weight="600" fill="#1a7f37">方向清晰</text>
+
+        <!-- Q1a: 完全模糊 → brainstorming / before-you-build -->
+        <rect x="40" y="205" width="240" height="80" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+        <text x="160" y="230" text-anchor="middle" font-size="12" font-weight="700" fill="#cf222e">🅰️ 完全模糊</text>
+        <text x="160" y="252" text-anchor="middle" font-size="10" fill="#1f2328">Superpowers brainstorming</text>
+        <text x="160" y="268" text-anchor="middle" font-size="10" fill="#1f2328">+ awesome-claude-skills</text>
+
+        <!-- Q1b: 方向清晰 → Q2 -->
+        <rect x="520" y="205" width="240" height="80" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="640" y="230" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">🅱️ 方向清晰</text>
+        <text x="640" y="252" text-anchor="middle" font-size="10" fill="#1f2328">Q2. 知道具体功能吗?</text>
+
+        <!-- Q2 -->
+        <line x1="580" y1="285" x2="120" y2="330" stroke="#cf222e" stroke-width="2" marker-end="url(#arr-m)"/>
+        <text x="350" y="310" text-anchor="middle" font-size="10" font-weight="600" fill="#cf222e">功能模糊</text>
+
+        <line x1="700" y1="285" x2="700" y2="330" stroke="#1a7f37" stroke-width="2" marker-end="url(#arr-m)"/>
+        <text x="730" y="320" text-anchor="middle" font-size="10" font-weight="600" fill="#1a7f37">功能清晰</text>
+
+        <!-- Q2a: 功能模糊 → OpenSpec explore / idea-autopsy -->
+        <rect x="40" y="335" width="240" height="80" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+        <text x="160" y="360" text-anchor="middle" font-size="12" font-weight="700" fill="#cf222e">🅲️ 功能模糊</text>
+        <text x="160" y="382" text-anchor="middle" font-size="10" fill="#1f2328">OpenSpec explore</text>
+        <text x="160" y="398" text-anchor="middle" font-size="10" fill="#1f2328">+ idea-autopsy</text>
+
+        <!-- Q2b: 功能清晰 → Q3 -->
+        <rect x="520" y="335" width="240" height="80" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="640" y="360" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">🅳️ 功能清晰</text>
+        <text x="640" y="382" text-anchor="middle" font-size="10" fill="#1f2328">Q3. 已拆 feature 列表?</text>
+
+        <!-- Q3 -->
+        <line x1="580" y1="415" x2="120" y2="460" stroke="#9a6700" stroke-width="2" marker-end="url(#arr-m)"/>
+        <text x="350" y="440" text-anchor="middle" font-size="10" font-weight="600" fill="#9a6700">未拆</text>
+
+        <line x1="700" y1="415" x2="700" y2="460" stroke="#1a7f37" stroke-width="2" marker-end="url(#arr-m)"/>
+        <text x="730" y="450" text-anchor="middle" font-size="10" font-weight="600" fill="#1a7f37">已拆</text>
+
+        <!-- Q3a: 未拆 → 5 步法 / what-could-break -->
+        <rect x="40" y="465" width="240" height="80" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="160" y="490" text-anchor="middle" font-size="12" font-weight="700" fill="#9a6700">🅴️ 未拆 feature</text>
+        <text x="160" y="512" text-anchor="middle" font-size="10" fill="#1f2328">rich-elicitation</text>
+        <text x="160" y="528" text-anchor="middle" font-size="10" fill="#1f2328">+ what-could-break</text>
+
+        <!-- Q3b: 已拆 → 直接 spec-kit -->
+        <rect x="520" y="465" width="240" height="80" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="640" y="490" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">🅵️ 已拆 feature</text>
+        <text x="640" y="512" text-anchor="middle" font-size="10" fill="#1f2328">直接 /speckit-specify</text>
+        <text x="640" y="528" text-anchor="middle" font-size="10" fill="#1f2328">每个 feature 1 次</text>
+
+        <!-- 中间竖线:进入 spec-kit -->
+        <line x1="400" y1="560" x2="400" y2="600" stroke="#0969da" stroke-width="3" marker-end="url(#arr-m)"/>
+        <rect x="220" y="610" width="360" height="44" rx="22" fill="#0969da"/>
+        <text x="400" y="638" text-anchor="middle" font-size="14" font-weight="700" fill="white">→ /speckit-specify 进入 spec-kit 流程</text>
+
+        <!-- 详细能力区 -->
+        <text x="400" y="690" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2328">每个分支的详细适配(见下方 5 个场景)</text>
+
+        <rect x="40" y="710" width="720" height="40" rx="8" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="400" y="735" text-anchor="middle" font-size="11" fill="#0969da">🅰️ 全模糊 → Superpowers brainstorming + before-you-build</text>
+
+        <rect x="40" y="760" width="720" height="40" rx="8" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="400" y="785" text-anchor="middle" font-size="11" fill="#0969da">🅲️ 方向清楚但功能模糊 → OpenSpec explore + idea-autopsy</text>
+
+        <rect x="40" y="810" width="720" height="40" rx="8" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="400" y="835" text-anchor="middle" font-size="11" fill="#0969da">🅴️ 功能清晰但未拆 → rich-elicitation + 5 步划分法</text>
+
+        <rect x="40" y="860" width="720" height="40" rx="8" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="400" y="885" text-anchor="middle" font-size="11" fill="#0969da">🅵️ 已拆 feature → 直接 /speckit-specify(每个 1 次)</text>
+
+        <rect x="40" y="910" width="720" height="50" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="400" y="935" text-anchor="middle" font-size="11" font-weight="700" fill="#9a6700">🅱️ 任意分支都可以叠加 Superpowers brainstorming 做"压力测试"</text>
+        <text x="400" y="952" text-anchor="middle" font-size="10" fill="#57606a">即使方向清晰,也建议跑一遍 brainstorming 看有没有遗漏的边界情况</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 2:发现阶段 Skill 选型决策树(主图)</div>
+
+    <!-- ================= 场景 1 ================= -->
+    <h2 id="scenario-1">🌱 场景 1:从零开始的新项目</h2>
+
+    <div class="scenario scenario-best">
+      <h3 style="margin-top:0">🅰️ 状态:项目方向完全模糊</h3>
+      <p><strong>典型表现</strong>:"我想做一个 AI 助手,但不知道具体要什么"</p>
+      <p><strong>推荐组合</strong>:<strong>Superpowers brainstorming + awesome-claude-skills 的 deep-research</strong></p>
+
+      <h4>实操步骤</h4>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Step 1 · 安装(5 分钟)</h4>
+          <pre><code># 在 Claude Code 中:
+/plugin install superpowers@claude-plugins-official
+
+# 装 deep-research skill:
+mkdir -p ~/.config/claude-code/skills/
+cp -r deep-research ~/.config/claude-code/skills/
+claude</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 2 · brainstorming 启动(1-2 小时)</h4>
+          <pre><code>> 我想做一个 AI 文档助手
+
+# brainstorming 自动激活,问 5-10 个问题:
+Q1: 给谁用?企业/个人/开发者?
+Q2: 最痛场景?
+Q3: 如果只有 1 个功能?
+Q4: 不做什么?
+Q5: 3 个月后成功了,长什么样?
+...</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 3 · deep-research 验证(1-2 天)</h4>
+          <pre><code>> 用 deep-research 调研 AI 文档助手竞品</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 4 · 产出 design doc</h4>
+          <p>输出 <code>docs/superpowers/specs/2026-10-14-ai-doc-assistant-design.md</code></p>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 5 · 进入 spec-kit</h4>
+          <pre><code>> /speckit-constitution  # 制定宪法
+> /speckit-specify 文档上传功能
+> /speckit-specify 智能摘要
+...</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 场景 2 ================= -->
+    <h2 id="scenario-2">🆕 场景 2:已有项目加新功能(本项目常遇到)</h2>
+
+    <div class="scenario">
+      <h3 style="margin-top:0">🅲️ 状态:方向清楚,具体功能模糊</h3>
+      <p><strong>典型表现</strong>:"我们 Deep Research Agent 要加答案溯源功能,大概怎么设计?"</p>
+      <p><strong>推荐组合</strong>:<strong>OpenSpec explore + idea-autopsy</strong>(agentic-awesome-skills)</p>
+
+      <h4>实操步骤</h4>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Step 1 · 安装(2 分钟)</h4>
+          <pre><code>npm install -g @fission-ai/openspec@latest
+cd /path/to/project
+openspec init
+
+# 装 idea-autopsy:
+npx agentic-awesome-skills --skills idea-autopsy</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 2 · OpenSpec explore(30-60 分钟)</h4>
+          <pre><code>> /opsx:explore 我们想加答案溯源功能,有什么方案?
+   - 阅读现有检索/推理/渲染代码
+   - 给出 2-3 个方案对比
+   - 列出 tradeoffs
+   - 等你确认后进入 propose</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 3 · idea-autopsy 压力测试(15 分钟)</h4>
+          <pre><code>> 用 idea-autopsy 检查答案溯源想法:
+"如果只能 1 句话杀死这个想法,会是什么?"</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 4 · 写 RFC(1-2 天)</h4>
+          <p>基于 explore 的输出,写 RFC 文档(用上一轮我们讨论的 RFC 模板)</p>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 5 · OpenSpec propose(30 分钟)</h4>
+          <pre><code>> /opsx:propose 答案溯源
+   - 创建 openspec/changes/answer-citation/
+   - 自动产出 proposal.md, specs/, design.md, tasks.md</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 6 · 进入 spec-kit(逐个 feature)</h4>
+          <pre><code>> /speckit-specify 片段 ID 生成器  # FEATURE-007
+> /speckit-specify 引用映射插入     # FEATURE-008
+> /speckit-specify 引用渲染组件     # FEATURE-009
+...</code></pre>
+        </div>
+      </div>
+
+      <p><strong>为什么这个组合最合适</strong>:</p>
+      <ul>
+        <li>OpenSpec explore <strong>读你的代码</strong>,给具体方案</li>
+        <li>idea-autopsy <strong>找盲点</strong>,防止"漏掉"边界情况</li>
+        <li>OpenSpec propose 产出<strong>完整 change 包</strong>(proposal/specs/design/tasks)</li>
+        <li>spec-kit 接手<strong>逐个 feature</strong>的精细化</li>
+      </ul>
+    </div>
+
+    <!-- ================= 场景 3 ================= -->
+    <h2 id="scenario-3">🤝 场景 3:跨团队 RFC 前的发现</h2>
+
+    <div class="scenario">
+      <h3 style="margin-top:0">🅱️ + 🅲️ 状态:跨团队影响,需要"压力测试"想法</h3>
+      <p><strong>典型表现</strong>:"这个功能涉及 3 个团队,我们要不要做?做了有什么坑?"</p>
+      <p><strong>推荐组合</strong>:<strong>Superpowers brainstorming + what-could-break + before-you-build</strong></p>
+
+      <h4>实操步骤</h4>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Step 1 · 装所有"建前审查"skill</h4>
+          <pre><code>npx agentic-awesome-skills \
+  --skills brainstorming,before-you-build,what-could-break,idea-autopsy</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 2 · before-you-build(30 分钟)</h4>
+          <pre><code>> 用 before-you-build 审查答案溯源想法:
+   - 需求验证:用户真的需要吗?
+   - 替代方案:其他实现路径?
+   - 切换成本:用户怎么迁移?
+   - 渠道:怎么触达用户?</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 3 · what-could-break(20 分钟)</h4>
+          <pre><code>> 用 what-could-break 评估爆炸半径:
+   - 检索服务挂了怎么办?
+   - 引用错位会怎样?
+   - 性能影响?</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 4 · brainstorming 跨团队讨论(1-2 小时)</h4>
+          <pre><code>> 拉 3 个团队的 Tech Lead 一起 brainstorming
+   - 每个团队提 3 个"我们关心的问题"
+   - brainstorming 自动组织讨论</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 5 · 产出 RFC + spec-kit</h4>
+          <p>基于以上发现,写 RFC 文档,跨团队评审,通过后用 spec-kit 拆 spec</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 场景 4 ================= -->
+    <h2 id="scenario-4">🧪 场景 4:技术 POC 阶段</h2>
+
+    <div class="scenario">
+      <h3 style="margin-top:0">🧪 状态:技术可行性未知</h3>
+      <p><strong>典型表现</strong>:"我们不确定 RAG 检索能达到 95% 准确率,先验证一下"</p>
+      <p><strong>推荐组合</strong>:<strong>brainstorming(POC 模式) + recursive-research + Marvin(可选)</strong></p>
+
+      <h4>实操步骤</h4>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Step 1 · 决定"spike"还是"项目"</h4>
+          <pre><code>> brainstorming:这是 spike(快速验证)
+   还是项目(完整 SDD)?
+   → 大多数 POC 是 spike</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 2 · recursive-research 调研方案(1-2 天)</h4>
+          <pre><code>> 用 recursive-research 调研 RAG 检索的 5 个方案
+   - BM25 传统
+   - 向量检索(FAISS/Qdrant)
+   - 混合检索
+   - 排序学习
+   - ReRank</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 3 · 选 2-3 个方案做 POC(3-7 天)</h4>
+          <p>不用走 spec-kit,直接写代码验证</p>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 4 · POC 评估(1 天)</h4>
+          <p>基于结果选 1 个方案,再走 spec-kit</p>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 5 · 进入 spec-kit</h4>
+          <pre><code>> /speckit-specify RAG 检索功能
+   (基于 POC 验证的方案)</code></pre>
+        </div>
+      </div>
+
+      <p><strong>关键</strong>:POC 阶段<strong>不要</strong>走 spec-kit(POC 不一定成)。brainstorming 明确区分"spike"和"项目"。</p>
+    </div>
+
+    <!-- ================= 场景 5 ================= -->
+    <h2 id="scenario-5">📑 场景 5:已有 PRD,直接拆 spec</h2>
+
+    <div class="scenario">
+      <h3 style="margin-top:0">📑 状态:PRD 完整,功能清晰</h3>
+      <p><strong>典型表现</strong>:"PM 已经把 PRD 写好了,我们直接拆 feature"</p>
+      <p><strong>推荐组合</strong>:<strong>rich-elicitation(快速收边界) + 直接 spec-kit</strong></p>
+
+      <h4>实操步骤</h4>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Step 1 · 装 rich-elicitation</h4>
+          <pre><code>npx agentic-awesome-skills --skills rich-elicitation</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 2 · rich-elicitation 扫 PRD(30 分钟)</h4>
+          <pre><code>> 用 rich-elicitation 扫 [粘贴 PRD 路径]:
+   - 列出 5-10 个不清楚的点
+   - 按优先级排序
+   - 等你回答后,补充 spec 输入</code></pre>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 3 · 拆 feature 列表(1-2 小时)</h4>
+          <p>用上一轮我们讨论的 5 步法 / 6 步实操法,拆出 feature 列表</p>
+        </div>
+
+        <div class="timeline-item">
+          <h4>Step 4 · 直接 /speckit-specify</h4>
+          <pre><code>> /speckit-specify 第一个 feature
+> /speckit-specify 第二个 feature
+...</code></pre>
+        </div>
+      </div>
+
+      <p><strong>关键</strong>:这种情况<strong>不需要重型发现工具</strong>,rich-elicitation + 5 步法就够。</p>
+    </div>
+
+    <!-- ================= 组合 ================= -->
+    <h2 id="combinations">🔗 spec-kit + 工具的 4 种组合</h2>
+
+    <p>spec-kit 不与上述工具冲突,完全可以组合使用。4 种推荐组合:</p>
+
+    <h3>组合 1:spec-kit + Superpowers ⭐⭐⭐⭐⭐(最推荐)</h3>
+    <div class="scenario scenario-best">
+      <p><strong>分工</strong>:</p>
+      <ul>
+        <li>Superpowers <code>brainstorming</code> — 强制发现阶段</li>
+        <li>Superpowers <code>writing-plans</code> — 任务拆分(替代 /speckit-tasks)</li>
+        <li>Superpowers <code>test-driven-development</code> — 强制 TDD</li>
+        <li>Superpowers <code>requesting-code-review</code> — Code Review</li>
+        <li>spec-kit <code>/speckit-constitution</code> — 项目级宪法</li>
+        <li>spec-kit <code>/speckit-specify</code> — feature spec(超 1 个时用)</li>
+        <li>spec-kit <code>/speckit-plan</code> — 技术方案</li>
+        <li>spec-kit <code>/speckit-converge</code> — 收敛判定</li>
+      </ul>
+      <p><strong>适用</strong>:本项目,大多数场景</p>
+    </div>
+
+    <h3>组合 2:spec-kit + OpenSpec</h3>
+    <div class="scenario">
+      <p><strong>分工</strong>:</p>
+      <ul>
+        <li>OpenSpec <code>explore</code> — 探索阶段</li>
+        <li>OpenSpec <code>propose</code> — 创建 change(可选,如果想用 OpenSpec 格式)</li>
+        <li>spec-kit <code>/speckit-constitution</code> — 宪法</li>
+        <li>spec-kit <code>/speckit-specify</code> — feature spec</li>
+      </ul>
+      <p><strong>适用</strong>:同时用 OpenSpec + spec-kit 的人群</p>
+    </div>
+
+    <h3>组合 3:spec-kit + agentic-awesome-skills(按需挑)</h3>
+    <div class="scenario">
+      <p><strong>分工</strong>:</p>
+      <ul>
+        <li><code>brainstorming</code> — 任何需要发现时</li>
+        <li><code>before-you-build</code> — RFC 之前审查</li>
+        <li><code>idea-autopsy</code> — 想法尸检</li>
+        <li><code>what-could-break</code> — 爆炸半径评估</li>
+        <li><code>rich-elicitation</code> — 扫 PRD 收边界</li>
+        <li>spec-kit — 走完整流程</li>
+      </ul>
+      <p><strong>适用</strong>:想要"按场景挑 skill"的人</p>
+    </div>
+
+    <h3>组合 4:spec-kit + Marvin(纯 Python)</h3>
+    <div class="scenario">
+      <p><strong>分工</strong>:</p>
+      <ul>
+        <li>Marvin <code>marvin.plan()</code> — 编程式分解</li>
+        <li>Marvin <code>marvin.Agent</code> — 多个 agent 协作</li>
+        <li>spec-kit — 走 Markdown 流程</li>
+      </ul>
+      <p><strong>适用</strong>:Python 工程师,生产环境嵌入</p>
+    </div>
+
+    <!-- ================= 完整能力矩阵 ================= -->
+    <h2 id="comparison-table">📋 完整能力矩阵</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>能力</th>
+            <th>OpenSpec</th>
+            <th>Superpowers</th>
+            <th>Kiro</th>
+            <th>awesome-claude-skills</th>
+            <th>agentic-awesome-skills</th>
+            <th>Marvin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>强制发现</strong></td>
+            <td>✅ explore</td>
+            <td>✅ brainstorming</td>
+            <td>✅ Specs</td>
+            <td>✅ brainstorming</td>
+            <td>✅ brainstorming</td>
+            <td>❌ 无强制</td>
+          </tr>
+          <tr>
+            <td><strong>读现有代码</strong></td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+          </tr>
+          <tr>
+            <td><strong>多方案对比</strong></td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅(plan)</td>
+          </tr>
+          <tr>
+            <td><strong>压力测试想法</strong></td>
+            <td>⚠️ 有限</td>
+            <td>✅</td>
+            <td>❌</td>
+            <td>✅ shark/court</td>
+            <td>✅ idea-autopsy</td>
+            <td>❌</td>
+          </tr>
+          <tr>
+            <td><strong>产出 spec 文档</strong></td>
+            <td>✅ proposal/specs/design/tasks</td>
+            <td>✅ design doc</td>
+            <td>✅ requirements/design/tasks</td>
+            <td>❌ 需要自己写</td>
+            <td>❌ 需要自己写</td>
+            <td>✅ Python 对象</td>
+          </tr>
+          <tr>
+            <td><strong>与 spec-kit 兼容</strong></td>
+            <td>✅ 可共存</td>
+            <td>✅ 可共存</td>
+            <td>❌ 互斥</td>
+            <td>✅ 可共存</td>
+            <td>✅ 可共存</td>
+            <td>⚠️ 需 glue</td>
+          </tr>
+          <tr>
+            <td><strong>支持 Claude Code</strong></td>
+            <td>✅</td>
+            <td>✅(原生)</td>
+            <td>❌</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>⚠️ 需集成</td>
+          </tr>
+          <tr>
+            <td><strong>多平台支持</strong></td>
+            <td>✅ 30+</td>
+            <td>❌ Claude only</td>
+            <td>❌ Kiro only</td>
+            <td>✅ Claude 全家</td>
+            <td>✅ 16+ 平台</td>
+            <td>✅ Python 任意</td>
+          </tr>
+          <tr>
+            <td><strong>中文支持</strong></td>
+            <td>中</td>
+            <td>中</td>
+            <td>英</td>
+            <td>强</td>
+            <td>强</td>
+            <td>强</td>
+          </tr>
+          <tr>
+            <td><strong>开源协议</strong></td>
+            <td>MIT</td>
+            <td>MIT</td>
+            <td>闭源(AWS)</td>
+            <td>Apache 2.0</td>
+            <td>MIT</td>
+            <td>MIT</td>
+          </tr>
+          <tr>
+            <td><strong>Stars(参考)</strong></td>
+            <td>新兴</td>
+            <td>299K</td>
+            <td>N/A</td>
+            <td>1K+</td>
+            <td>2.6K+</td>
+            <td>5K+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 本项目推荐 ================= -->
+    <h2 id="recommendation">🎯 本项目推荐</h2>
+
+    <h3>现状分析</h3>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>项目</td><td>Deep Research Agent</td></tr>
+          <tr><td>Constitution</td><td>v1.1.0(8 条原则,已稳定)</td></tr>
+          <tr><td>团队</td><td>3 个研发团队</td></tr>
+          <tr><td>现有功能</td><td>检索/推理/生成/渲染</td></tr>
+          <tr><td>待加功能</td><td>答案溯源(RFC-002)、流式定价等</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>推荐组合(2 选 1)</h3>
+
+    <div class="scenario scenario-best">
+      <h4 style="margin-top:0">方案 A:轻量(默认推荐)</h4>
+      <p>本项目功能较成熟,大部分新增 feature 都有 RFC,不需要重型发现工具。</p>
+      <pre><code># 1. Claude Code 对话 + rich-elicitation(可选)
+# 2. 写 RFC(如未写)
+# 3. /speckit-specify 逐个 feature
+# 4. /speckit-converge
+
+工具:仅 spec-kit(已安装)
+时间:0 额外安装
+适合:80% 的情况</code></pre>
+    </div>
+
+    <div class="scenario scenario-best">
+      <h4 style="margin-top:0">方案 B:加 Superpowers(复杂 feature 推荐)</h4>
+      <p>当遇到模糊度高的新功能(如"AI 工作台"这种大型项目)时启用。</p>
+      <pre><code># 1. 在 Claude Code 中安装 superpowers:
+/plugin install superpowers@claude-plugins-official
+
+# 2. brainstorming 自动激活
+# 3. writing-plans / TDD / Code Review 全套
+# 4. spec-kit 仍负责 spec/constitution/converge
+
+工具:spec-kit + Superpowers
+时间:5 分钟安装
+适合:跨团队复杂 feature</code></pre>
+    </div>
+
+    <h3>具体到下一个 feature(RFC-002 答案溯源)</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <h4>Step 1 · 不需要发现阶段(已写 RFC)</h4>
+        <p>RFC-002 已 Approved,功能清晰。跳过发现工具。</p>
+      </div>
+      <div class="timeline-item">
+        <h4>Step 2 · 直接 /speckit-specify</h4>
+        <pre><code>> /speckit-specify 片段 ID 生成器
+# RFC-002 拆出的第一个 feature</code></pre>
+      </div>
+      <div class="timeline-item">
+        <h4>Step 3 · 后续(plan / tasks / implement / converge)</h4>
+        <p>按 spec-kit 流程走</p>
+      </div>
+    </div>
+
+    <p><strong>结论</strong>:本项目<strong>80% 情况不需要额外发现工具</strong>。只在 2 种情况考虑加:</p>
+    <ol>
+      <li>新功能<strong>完全模糊</strong>(如"AI 工作台"这种大型项目)</li>
+      <li>想<strong>强制团队</strong>过 brainstorming 才能动手</li>
+    </ol>
+
+    <!-- ================= 立即可执行 ================= -->
+    <h2 id="action">🚀 立即可执行</h2>
+
+    <h3>5 分钟起步:试用 Superpowers brainstorming</h3>
+    <pre><code># 1. 在 Claude Code 中:
+/plugin install superpowers@claude-plugins-official
+
+# 2. 重启 Claude Code
+exit  # 退出当前会话
+claude  # 重新进入
+
+# 3. 试试 brainstorming:
+> 我想做一个新功能
+
+# (brainstorming 自动激活,问 5-10 个问题)
+```</code></pre>
+
+    <h3>10 分钟起步:试用 OpenSpec explore</h3>
+    <pre><code># 1. 安装:
+npm install -g @fission-ai/openspec@latest
+cd /path/to/your-project
+openspec init
+
+# 2. 试试 explore:
+> /opsx:explore 我们想做一个新功能,有什么方案?
+```</code></pre>
+
+    <h3>1 分钟起步:只装 brainstorming skill</h3>
+    <pre><code># 1. 复制 skill:
+mkdir -p ~/.config/claude-code/skills/
+# 从 awesome-claude-skills 或 agentic-awesome-skills 复制 brainstorming
+
+# 2. 重启 Claude Code
+claude
+
+# 3. 试试:
+> 我想做一个新功能
+# (brainstorming 自动激活)
+```</code></pre>
+
+    <!-- ================= 选型错误 ================= -->
+    <h2 id="pitfalls">⚠️ 选型常见错误</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>错误</th><th>后果</th><th>正确做法</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>❌ 装太多 skill,挑花眼</td>
+            <td>2 周还在选,没开始</td>
+            <td>先装 1-2 个最常用,跑通再加</td>
+          </tr>
+          <tr>
+            <td>❌ 不评估项目状态直接选</td>
+            <td>用错工具,产出无效</td>
+            <td>先看决策树,定位项目状态</td>
+          </tr>
+          <tr>
+            <td>❌ 用 Kiro 但要切换 IDE</td>
+            <td>团队抵触,推不动</td>
+            <td>已经在 Claude Code 生态,选 Superpowers / OpenSpec</td>
+          </tr>
+          <tr>
+            <td>❌ 选了发现工具但跳过 spec-kit</td>
+            <td>产出无结构化,无法 Converge</td>
+            <td>发现阶段 → spec-kit 是连续流程</td>
+          </tr>
+          <tr>
+            <td>❌ POC 阶段走 spec-kit</td>
+            <td>POC 失败,白写 spec</td>
+            <td>POC 阶段用 brainstorming + recursive-research</td>
+          </tr>
+          <tr>
+            <td>❌ 用 Marvin 写非 Python 项目</td>
+            <td>不匹配</td>
+            <td>非 Python 项目用 OpenSpec / Superpowers</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 选型检查清单 ================= -->
+    <h2 id="checklist">✅ 选型检查清单</h2>
+
+    <h3>选型前 3 个核心问题</h3>
+    <ul>
+      <li><input type="checkbox" disabled> Q1. 我的项目状态是 5 种场景中的哪个?</li>
+      <li><input type="checkbox" disabled> Q2. 我在哪个 IDE?(Claude Code / Kiro / 其他)</li>
+      <li><input type="checkbox" disabled> Q3. 团队/个人使用?(影响学习曲线容忍度)</li>
+    </ul>
+
+    <h3>实操前 3 个准备</h3>
+    <ul>
+      <li><input type="checkbox" disabled> 准备 1 段自然语言描述(2-5 句)</li>
+      <li><input type="checkbox" disabled> 决定装 1 个还是多个工具</li>
+      <li><input type="checkbox" disabled> 决定安装路径(全局 vs 项目级)</li>
+    </ul>
+
+    <h3>验证选型正确 3 个信号</h3>
+    <ul>
+      <li><input type="checkbox" disabled> 跑 1 次能产出可用的"发现输出"(design doc / feature 列表)</li>
+      <li><input type="checkbox" disabled> 输出能直接作为 /speckit-specify 的输入</li>
+      <li><input type="checkbox" disabled> 团队成员都能用(学习曲线可接受)</li>
+    </ul>
+
+    <h3>需要切换工具的 3 个信号</h3>
+    <ul>
+      <li><input type="checkbox" disabled> 用 1 周后,产出的 spec 质量反而更差</li>
+      <li><input type="checkbox" disabled> 团队成员抱怨"太复杂了"</li>
+      <li><input type="checkbox" disabled> 工具的输出与 spec-kit 格式冲突</li>
+    </ul>
+
+    <hr>
+
+    <div class="callout success">
+      <p><strong>关键总结</strong>:</p>
+      <ol>
+        <li><strong>本项目 80% 情况不需要额外发现工具</strong>(已有 RFC + Constitution)</li>
+        <li><strong>推荐默认方案</strong>:spec-kit + Superpowers(brainstorming 按需启用)</li>
+        <li><strong>决策树</strong>:用图 2 的 4 个分支(🅰️🅲️🅴️🅵️)快速定位</li>
+        <li><strong>5 个场景</strong>:分别有对应工具组合,直接套用</li>
+        <li><strong>安装时间</strong>:5-10 分钟即可上手</li>
+      </ol>
+    </div>
+
+    <div class="callout">
+      <p><strong>下一步建议</strong>:</p>
+      <ol>
+        <li>今天就试用 <code>Superpowers brainstorming</code>(5 分钟)</li>
+        <li>下次遇到模糊需求时,先走决策树再选工具</li>
+        <li>如果想用 OpenSpec,先在小项目验证</li>
+        <li>需要我帮你针对<strong>你的下一个 feature</strong>演示一遍"决策树 → 选工具 → 产出 → 接入 spec-kit"的完整流程吗?</li>
+      </ol>
+    </div>
+
+  </article>
+</main>
+
+</body>
+</html>

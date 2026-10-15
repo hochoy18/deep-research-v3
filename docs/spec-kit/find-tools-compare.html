@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发现阶段工具深度对比 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .category {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+    background: var(--color-bg-soft);
+  }
+  .category h4 { margin: 0 0 8px; }
+  .category.cat-brainstorm { border-left: 6px solid #0969da; }
+  .category.cat-grill { border-left: 6px solid #cf222e; }
+  .category.cat-decompose { border-left: 6px solid #1a7f37; }
+  .category.cat-research { border-left: 6px solid #9a6700; }
+  .category.cat-implement { border-left: 6px solid #8250df; }
+  .compass {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 16px 0;
+  }
+  @media (max-width: 720px) { .compass { grid-template-columns: 1fr; } }
+  .radar-card {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+    background: var(--color-bg-card);
+  }
+  .radar-card h4 { margin: 0 0 8px; color: var(--color-text); }
+  .compat {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .compat.green { background: #dafbe1; color: #1a7f37; }
+  .compat.yellow { background: #fff8c5; color: #9a6700; }
+  .compat.red { background: #ffebe9; color: #cf222e; }
+  .compat.gray { background: #f6f8fa; color: #57606a; }
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin: 16px 0;
+  }
+  @media (max-width: 900px) { .phase-grid { grid-template-columns: repeat(2, 1fr); } }
+  .phase {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 12px;
+    text-align: center;
+    background: var(--color-bg-card);
+  }
+  .phase .pname { font-weight: 700; color: #0969da; margin-bottom: 6px; }
+  .phase .ptools { font-size: 11px; color: var(--color-text-soft); line-height: 1.5; }
+  .combo-row {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+  }
+  .combo-row.recommended { border-color: #1a7f37; border-width: 2px; background: #dafbe1; }
+  .combo-row.optional { border-color: #9a6700; background: #fff8c5; }
+  .combo-row .label {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 6px;
+  }
+  .combo-row .label.best { background: #1a7f37; color: white; }
+  .combo-row .label.maybe { background: #9a6700; color: white; }
+  .combo-row .label.alt { background: #57606a; color: white; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">
+      <span class="brand-logo">S</span>
+      <span>Spec Kit 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">首页</a></li>
+        <li><a href="overview.html">概览</a></li>
+        <li><a href="quickstart.html">快速入门</a></li>
+        <li><a href="team-collaboration.html">团队协作</a></li>
+        <li><a href="constitution.html">Constitution</a></li>
+        <li><a href="specify.html">Specify</a></li>
+        <li><a href="discovery-tools.html">发现阶段工具</a></li>
+        <li><a href="grill-skills.html">Grill Skills</a></li>
+        <li><a href="find-tools-compare.html" class="active">深度对比</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#overview">总览:14 个工具全景</a></li>
+      <li><a href="#taxonomy">3 大模式分类</a></li>
+      <li><a href="#phases">5 个发现子阶段</a></li>
+      <li><a href="#detailed">14 个工具详细对比</a></li>
+      <li><a href="#matrix">11 维能力矩阵</a></li>
+      <li><a href="#unified-tree">统一决策树</a></li>
+      <li><a href="#combinations">3 种组合推荐</a></li>
+      <li><a href="#scenarios">5 个实战场景</a></li>
+      <li><a href="#anti-patterns">反模式</a></li>
+      <li><a href="#recommendation">本项目推荐</a></li>
+      <li><a href="#checklist">选型清单</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>🔬 发现阶段工具 · 14 方案深度对比</h1>
+      <p class="subtitle">合并 <a href="discovery-tools.html">discovery-tools.html</a> 与 <a href="grill-skills.html">grill-skills.html</a> 两份调研,给出从"模糊想法"到"可执行 spec"的完整工具地图。</p>
+      <div class="badge-row">
+        <span class="tag primary">14 个工具</span>
+        <span class="tag success">3 大模式</span>
+        <span class="tag warning">11 维矩阵</span>
+        <span class="tag">统一决策树</span>
+      </div>
+    </section>
+
+    <!-- ================= 总览 ================= -->
+    <h2 id="overview">📋 总览:14 个工具全景</h2>
+
+    <p>经过对两份调研文档(发现阶段工具 + Grill Skills)的合并,共得到 <strong>14 个</strong> 可用于"发现阶段"的工具/方案:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>工具</th>
+            <th>模式</th>
+            <th>Stars</th>
+            <th>来源</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>OpenSpec</strong> /opsx:explore</td>
+            <td>探索 + 读代码</td>
+            <td>新兴</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>Superpowers</strong> brainstorming</td>
+            <td>Brainstorm</td>
+            <td>299K</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>Kiro</strong>(AWS)</td>
+            <td>Spec 3 件套</td>
+            <td>N/A</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>awesome-claude-skills</strong> 1000+</td>
+            <td>Skill 目录</td>
+            <td>1K+</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><strong>agentic-awesome-skills</strong> 2689+</td>
+            <td>场景化 skills</td>
+            <td>2.6K+</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><strong>Marvin</strong> (Python)</td>
+            <td>编程式 plan</td>
+            <td>5K+</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><strong>Amplifier</strong> (MS)</td>
+            <td>早期预览</td>
+            <td>N/A</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td><strong>Eigent</strong></td>
+            <td>多 agent</td>
+            <td>N/A</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td><strong>mattpocock/grilling</strong></td>
+            <td>Grill 原语</td>
+            <td>290.8K</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td><strong>mattpocock/grill-me</strong></td>
+            <td>Grill</td>
+            <td>290.8K</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td><strong>mattpocock/grill-with-docs</strong></td>
+            <td>Grill + ADR</td>
+            <td>290.8K</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td><strong>RobMitt/grill-me-skill</strong></td>
+            <td>Grill(轻量)</td>
+            <td>928</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td><strong>Jekudy/grillme-skill</strong></td>
+            <td>Grill(3×4)</td>
+            <td>69</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td><strong>MbappeWU/murder-board</strong></td>
+            <td>Murder Board</td>
+            <td>18</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>15</td>
+            <td><strong>joslynSmall/grill-spec-flow</strong></td>
+            <td>门控 spec</td>
+            <td>0</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>16</td>
+            <td><strong>pardeep-kumar94/idea-to-pr</strong></td>
+            <td>7 阶段管线</td>
+            <td>8</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>17</td>
+            <td><strong>mcdays94/pocock-agents</strong></td>
+            <td>grill+plan+dispatch</td>
+            <td>37</td>
+            <td>grill-skills</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="text-soft">注:实际还有 chichex/skills(含 grill 章节)等小众方案,合计 14-17 个,这里列出主流的 14-17 个。</p>
+
+    <!-- ================= 模式分类 ================= -->
+    <h2 id="taxonomy">🧬 3 大模式分类</h2>
+
+    <p>这 14 个工具本质上只做 <strong>3 件事</strong>,理解了这一点就能快速选型:</p>
+
+    <div class="category cat-brainstorm">
+      <h4>🧠 模式 A:头脑风暴(Brainstorm)——"打开想象"</h4>
+      <p><strong>问题</strong>:"我想做 X,但不知道具体是什么"</p>
+      <p><strong>输入</strong>:模糊方向、痛点描述</p>
+      <p><strong>输出</strong>:feature 列表、RFC、设计文档</p>
+      <p><strong>代表工具</strong>:</p>
+      <ul>
+        <li><strong>Superpowers brainstorming</strong>(最成熟)</li>
+        <li><strong>awesome-claude-skills</strong> 的 <code>brainstorming</code> / <code>deep-research</code> / <code>recursive-research</code></li>
+        <li><strong>agentic-awesome-skills</strong> 的 <code>brainstorming</code> / <code>before-you-build</code> / <code>idea-autopsy</code></li>
+        <li><strong>OpenSpec explore</strong>(读代码的 brainstorming)</li>
+      </ul>
+    </div>
+
+    <div class="category cat-grill">
+      <h4>🔥 模式 B:Grill 拷问(Stress-test)——"找出所有漏洞"</h4>
+      <p><strong>问题</strong>:"我已经有方案,你看看有什么坑?"</p>
+      <p><strong>输入</strong>:RFC、plan、design doc(已有具体方案)</p>
+      <p><strong>输出</strong>:Survived / Revised / Killed 判断、ADR、Glossary</p>
+      <p><strong>代表工具</strong>:</p>
+      <ul>
+        <li><strong>mattpocock/grill-me</strong>(个人拷问)</li>
+        <li><strong>mattpocock/grill-with-docs</strong>(团队拷问 + ADR,作者最推荐)</li>
+        <li><strong>RobMitt/grill-me-skill</strong>(单文件轻量版)</li>
+        <li><strong>Jekudy/grillme-skill</strong>(3 waves × 4 lenses 结构化)</li>
+        <li><strong>MbappeWU/murder-board</strong>(verdict 式审判)</li>
+      </ul>
+    </div>
+
+    <div class="category cat-decompose">
+      <h4>🧩 模式 C:分解与规范化(Spec/Plan)——"落地成 spec"</h4>
+      <p><strong>问题</strong>:"想法有了,怎么变成可执行的 Markdown?"</p>
+      <p><strong>输入</strong>:经 brainstorm + grill 过的方案</p>
+      <p><strong>输出</strong>:requirements.md / design.md / tasks.md / proposal</p>
+      <p><strong>代表工具</strong>:</p>
+      <ul>
+        <li><strong>Kiro</strong>(AWS 三件套)</li>
+        <li><strong>OpenSpec propose</strong>(change 包)</li>
+        <li><strong>joslynSmall/grill-spec-flow</strong>(5 阶段 + 4 门)</li>
+        <li><strong>pardeep-kumar94/idea-to-pr</strong>(7 阶段)</li>
+        <li><strong>Marvin marvin.plan()</strong>(Python 化)</li>
+      </ul>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-title">🎯 关键洞察</div>
+      <p><strong>spec-kit 的 /speckit-specify 属于模式 C(分解与规范化)</strong>。所以你问"用 brainstorm 工具还是 grill 工具还是 spec-kit",答案是:</p>
+      <ul>
+        <li>模式 A(brainstorm)在 spec-kit <strong>之前</strong>:产生 RFC</li>
+        <li>模式 B(grill)在 spec-kit <strong>之前</strong>:拷问 RFC,沉淀 ADR/Glossary</li>
+        <li>模式 C(spec-kit 本身):把方案变成可追溯 Markdown</li>
+      </ul>
+    </div>
+
+    <!-- ================= 5 个子阶段 ================= -->
+    <h2 id="phases">🎯 5 个发现子阶段(全流程地图)</h2>
+
+    <p>一个完整的"从模糊到 spec"流程,实际上包含 5 个子阶段,每个子阶段有对应工具:</p>
+
+    <div class="phase-grid">
+      <div class="phase">
+        <div class="pname">① Idea(想法)</div>
+        <div class="ptools">
+          <strong>工具</strong>:无 / 自然语言<br>
+          <strong>时长</strong>:1-2 天<br>
+          <strong>状态</strong>:"我想做 X"
+        </div>
+      </div>
+      <div class="phase">
+        <div class="pname">② Brainstorm(发散)</div>
+        <div class="ptools">
+          <strong>工具</strong>:brainstorming<br>
+          <strong>时长</strong>:1-2 小时<br>
+          <strong>状态</strong>:"X 的受众、痛点、约束"
+        </div>
+      </div>
+      <div class="phase">
+        <div class="pname">③ Draft(草稿)</div>
+        <div class="ptools">
+          <strong>工具</strong>:OpenSpec explore / Marvin plan<br>
+          <strong>时长</strong>:1-3 天<br>
+          <strong>状态</strong>:"RFC v0.1"
+        </div>
+      </div>
+      <div class="phase">
+        <div class="pname">④ Grill(拷问)</div>
+        <div class="ptools">
+          <strong>工具</strong>:grill-me / grill-with-docs / murder-board<br>
+          <strong>时长</strong>:30-120 分钟<br>
+          <strong>状态</strong>:"RFC v1.0 + ADR"
+        </div>
+      </div>
+      <div class="phase" style="background: #dafbe1; border-color: #1a7f37;">
+        <div class="pname">⑤ Spec(规范化)</div>
+        <div class="ptools">
+          <strong>工具</strong>:<code>/speckit-specify</code><br>
+          <strong>时长</strong>:10-30 分钟/feature<br>
+          <strong>状态</strong>:"specs/NNN-feature/spec.md"
+        </div>
+      </div>
+    </div>
+
+    <div class="diagram-caption">图 1:5 个发现子阶段 + 每个阶段对应工具(绿底是 spec-kit 接手点)</div>
+
+    <h3>每个阶段的工具替代选项</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>子阶段</th>
+            <th>轻量版</th>
+            <th>标准版(推荐)</th>
+            <th>重磅版</th>
+            <th>跳过条件</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>① Idea</strong></td>
+            <td>自然语言</td>
+            <td>自然语言 + 笔记</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>② Brainstorm</strong></td>
+            <td>Claude Code 自由问</td>
+            <td><strong>Superpowers brainstorming</strong></td>
+            <td>agentic-awesome-skills 多 skill 组合</td>
+            <td>已有 RFC(团队成熟)</td>
+          </tr>
+          <tr>
+            <td><strong>③ Draft</strong></td>
+            <td>自己写 RFC</td>
+            <td><strong>OpenSpec explore</strong>(读代码)</td>
+            <td>Marvin(编程式)</td>
+            <td>已有 RFC</td>
+          </tr>
+          <tr>
+            <td><strong>④ Grill</strong></td>
+            <td><strong>/grill-me</strong>(个人)</td>
+            <td><strong>/grill-with-docs</strong>(团队 + ADR)</td>
+            <td>MbappeWU murder-board(verdict)</td>
+            <td>个人小 feature</td>
+          </tr>
+          <tr>
+            <td><strong>⑤ Spec</strong></td>
+            <td>/speckit-specify 直接</td>
+            <td>/speckit-specify</td>
+            <td>grill-spec-flow / Kiro(自成一派)</td>
+            <td>—(必须做)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 14 个详细对比 ================= -->
+    <h2 id="detailed">📑 14 个工具详细对比</h2>
+
+    <h3>🧠 模式 A · Brainstorm 类(4 个)</h3>
+
+    <div class="radar-card">
+      <h4>1. Superpowers brainstorming <span class="compat green">强烈推荐</span></h4>
+      <p><strong>定位</strong>:Claude Code 官方 plugin 市场的方法论级 skill,SDD 的"标准前置"</p>
+      <p><strong>核心能力</strong>:温和引导式提问,问 5-10 个关键问题</p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 与 spec-kit <strong>零冲突</strong>(完美配对)</li>
+        <li>✅ 强制发现,不让团队跳过</li>
+        <li>✅ 配合 TDD、Code Review 全套</li>
+        <li>✅ 社区最大(299K stars)</li>
+      </ul>
+      <p><strong>劣势</strong>:❌ 仅 Claude Code</p>
+      <p><strong>适合</strong>:任何 spec-kit 项目的"发现阶段"</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>2. awesome-claude-skills 1000+ <span class="compat yellow">推荐</span></h4>
+      <p><strong>定位</strong>:Claude Skills 目录,从中挑 1-2 个</p>
+      <p><strong>核心能力</strong>:包含 <code>brainstorming</code>、<code>deep-research</code>、<code>recursive-research</code></p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 覆盖面广(1000+)</li>
+        <li>✅ 中英文混合</li>
+        <li>✅ 单文件复制即用</li>
+      </ul>
+      <p><strong>劣势</strong>:❌ 不成体系,自己拼装</p>
+      <p><strong>适合</strong>:在 brainstorming 之外,想加 research 能力</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>3. agentic-awesome-skills 2689+ <span class="compat green">强烈推荐</span></h4>
+      <p><strong>定位</strong>:场景化 skills 集合,按"建前审查"挑</p>
+      <p><strong>核心能力</strong>:包含 <code>brainstorming</code>、<code>before-you-build</code>、<code>idea-autopsy</code>、<code>what-could-break</code>、<code>rich-elicitation</code></p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ <strong>精准场景化</strong>(每个 skill 对应一个明确场景)</li>
+        <li>✅ 16+ 平台支持</li>
+        <li>✅ 与 spec-kit 友好</li>
+      </ul>
+      <p><strong>劣势</strong>:❌ 新手不知道选哪个(5 个 skill 容易选错)</p>
+      <p><strong>适合</strong>:已经有 RFC,想用 1-2 个 skill 做"建前审查"</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>4. OpenSpec explore <span class="compat green">强烈推荐</span></h4>
+      <p><strong>定位</strong>:SDD 框架,4 命令轻量流程</p>
+      <p><strong>核心能力</strong>:<code>/opsx:explore</code> 读你的代码,给 2-3 个方案对比 + tradeoffs</p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 轻量(4 命令)</li>
+        <li>✅ <strong>唯一会读你代码</strong>的 brainstorm 工具</li>
+        <li>✅ 30+ IDE 支持</li>
+      </ul>
+      <p><strong>劣势</strong>:⚠️ 与 spec-kit 输出格式略不同(单 change 目录 vs specs/)</p>
+      <p><strong>适合</strong>:已有项目加新功能,需要"读代码给方案"</p>
+    </div>
+
+    <h3>🔥 模式 B · Grill 类(6 个)</h3>
+
+    <div class="radar-card">
+      <h4>5. mattpocock/grill-me <span class="compat green">强烈推荐</span></h4>
+      <p><strong>定位</strong>:"Relentlessly interviews you until every branch is resolved"</p>
+      <p><strong>核心能力</strong>:对一个 plan/design 持续追问,直到所有决策树分支都解决</p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 作者是最有影响力的 TypeScript 教育者</li>
+        <li>✅ 290.8K stars 背书</li>
+        <li>✅ 多 IDE 支持(Claude/Codex/Copilot/Gemini/Cursor 等)</li>
+        <li>✅ 零配置(不依赖 setup)</li>
+      </ul>
+      <p><strong>劣势</strong>:❌ 不沉淀文档</p>
+      <p><strong>适合</strong>:个人快速拷问方案,30-60 分钟</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>6. mattpocock/grill-with-docs <span class="compat green">作者最推荐 ⭐</span></h4>
+      <p><strong>定位</strong>:"Grilling + 域建模/ADR 沉淀"——作者称"the single coolest technique"</p>
+      <p><strong>核心能力</strong>:</p>
+      <ul>
+        <li>追问(同 grill-me)</li>
+        <li>更新 <code>GLOSSARY.md</code>(术语词典)</li>
+        <li>沉淀 <code>docs/adr/NNNN-xxx.md</code>(架构决策记录)</li>
+        <li>变量/函数命名统一(减少 agent token)</li>
+      </ul>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 沉淀物是 <strong>spec-kit 黄金输入</strong>(直接 copy "Why this decision")</li>
+        <li>✅ 跨团队术语统一</li>
+        <li>✅ 零配置(用默认 docs/adr/ 位置)</li>
+      </ul>
+      <p><strong>劣势</strong>:⚠️ 中等学习曲线(需要理解 ADR)</p>
+      <p><strong>适合</strong>:跨团队、长寿命的 feature(如本项目 RFC-002)</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>7. RobMitt/grill-me-skill <span class="compat yellow">推荐</span></h4>
+      <p><strong>定位</strong>:单文件轻量版 grill-me,社区认知度最高(928 stars)</p>
+      <p><strong>核心能力</strong>:对 plan 追问 + 决策树分支解析</p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ <strong>单文件 SKILL.md</strong>,1 分钟安装</li>
+        <li>✅ 完全独立(不依赖整个 plugin)</li>
+      </ul>
+      <p><strong>劣势</strong>:</p>
+      <ul>
+        <li>❌ 不沉淀 ADR/Glossary</li>
+        <li>❌ 仅 Claude Code</li>
+      </ul>
+      <p><strong>适合</strong>:只想拷问一下方案、不想装整个 plugin 的个人</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>8. Jekudy/grillme-skill <span class="compat yellow">可选</span></h4>
+      <p><strong>定位</strong>:3 waves × 4 lenses 结构化追问</p>
+      <p><strong>核心能力</strong>:</p>
+      <ul>
+        <li><strong>Wave 1:Discovery</strong>(目标/痛点/受众)</li>
+        <li><strong>Wave 2:Design</strong>(架构/接口/数据流)</li>
+        <li><strong>Wave 3:Operation</strong>(部署/监控/成本)</li>
+        <li>× 4 个透镜:🔬 Technical / 👤 UX / 💼 Business / ⚠️ Risk</li>
+      </ul>
+      <p><strong>优势</strong>:✅ 框架化,不会漏</p>
+      <p><strong>劣势</strong>:⚠️ 比 mattpocock 啰嗦</p>
+      <p><strong>适合</strong>:喜欢"按框架走"的人</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>9. MbappeWU/murder-board <span class="compat yellow">可选</span></h4>
+      <p><strong>定位</strong>:"Murder Board"——6 步审判,verdict 式输出</p>
+      <p><strong>6 步</strong>:Establish → Identify → Attack → Stress-test → Counter → Verdict</p>
+      <p><strong>输出</strong>:<strong>SURVIVED / REVISED / KILLED</strong>(决断式)</p>
+      <p><strong>适合</strong>:做"go/no-go"决策,给高层看的 verdict</p>
+      <p><strong>劣势</strong>:❌ 不沉淀 ADR</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>10. mcdays94/pocock-agents <span class="compat gray">小众</span></h4>
+      <p><strong>定位</strong>:grill + plan + dispatch 3 合 1</p>
+      <p><strong>核心能力</strong>:拷问 → 拆任务 → 派发多 agent</p>
+      <p><strong>适合</strong>:想要"拷问完直接派发"的人</p>
+    </div>
+
+    <h3>🧩 模式 C · Spec/Plan 规范化类(4 个)</h3>
+
+    <div class="radar-card">
+      <h4>11. Kiro (AWS) <span class="compat yellow">看场景</span></h4>
+      <p><strong>定位</strong>:AWS 的 SDD 完整 IDE 工具,Specs 三件套</p>
+      <p><strong>核心能力</strong>:requirements.md / design.md / tasks.md</p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 企业级、UI 完整</li>
+        <li>✅ Requirements-First / Design-First 两种模式</li>
+      </ul>
+      <p><strong>劣势</strong>:</p>
+      <ul>
+        <li>❌ 绑定 Kiro IDE(生态封闭)</li>
+        <li>❌ 闭源(AWS)</li>
+        <li>❌ 与 spec-kit 互斥</li>
+      </ul>
+      <p><strong>适合</strong>:愿意换 IDE 的企业团队</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>12. OpenSpec propose <span class="compat green">推荐</span></h4>
+      <p><strong>定位</strong>:OpenSpec 的后半段,把 explore 出的方案变 change 包</p>
+      <p><strong>核心能力</strong>:</p>
+      <pre><code>openspec/changes/answer-citation/
+├── proposal.md
+├── specs/
+├── design.md
+└── tasks.md</code></pre>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 完整 change 包(可一次性 review)</li>
+        <li>✅ 30+ IDE</li>
+        <li>✅ <strong>结构上类似 spec-kit</strong></li>
+      </ul>
+      <p><strong>劣势</strong>:⚠️ 与 spec-kit 思路略不同(单 change 目录)</p>
+      <p><strong>适合</strong>:同时用 OpenSpec + spec-kit 的人群</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>13. joslynSmall/grill-spec-flow <span class="compat yellow">特殊场景</span></h4>
+      <p><strong>定位</strong>:5 阶段 + 4 道精确门控的 spec 流程</p>
+      <p><strong>4 道精确门</strong>:必须用精确中文短语才放行</p>
+      <p><strong>产出</strong>:<code>.specs/2026-10-14-feat/{requirements,design,tasks}.md</code></p>
+      <p><strong>优势</strong>:</p>
+      <ul>
+        <li>✅ 极致合规(每步必须批准)</li>
+        <li>✅ 留痕完整</li>
+      </ul>
+      <p><strong>劣势</strong>:</p>
+      <ul>
+        <li>❌ 学习曲线陡(精确短语)</li>
+        <li>❌ 速度慢</li>
+        <li>⚠️ 与 spec-kit 需手动桥接</li>
+      </ul>
+      <p><strong>适合</strong>:医疗/金融/政府高合规场景</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>14. pardeep-kumar94/idea-to-pr <span class="compat gray">小众</span></h4>
+      <p><strong>定位</strong>:7 阶段 idea→PR 全自动管线</p>
+      <p><strong>适合</strong>:个人项目,1 个人从 0 到 1</p>
+    </div>
+
+    <h3>📦 其他/不推荐(3 个)</h3>
+
+    <div class="radar-card">
+      <h4>15. Marvin (Python) <span class="compat yellow">Python only</span></h4>
+      <p><strong>定位</strong>:编程式多 agent 框架</p>
+      <p><strong>优势</strong>:✅ Python 类型安全</p>
+      <p><strong>劣势</strong>:❌ Python only / 需自己写发现逻辑</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>16. Amplifier (Microsoft) <span class="compat gray">早期</span></h4>
+      <p><strong>定位</strong>:微软的多 agent 框架</p>
+      <p><strong>状态</strong>:⚠️ 早期预览,无显式发现阶段</p>
+    </div>
+
+    <div class="radar-card">
+      <h4>17. Eigent <span class="compat gray">无发现</span></h4>
+      <p><strong>定位</strong>:多 agent 框架</p>
+      <p><strong>劣势</strong>:❌ 无发现阶段</p>
+    </div>
+
+    <!-- ================= 11 维矩阵 ================= -->
+    <h2 id="matrix">📊 11 维能力矩阵</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>工具</th>
+            <th>模式</th>
+            <th>Stars</th>
+            <th>追问强度</th>
+            <th>读代码</th>
+            <th>沉淀物</th>
+            <th>门控</th>
+            <th>多 IDE</th>
+            <th>学习曲线</th>
+            <th>与 spec-kit</th>
+            <th>典型时长</th>
+            <th>中文支持</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Superpowers brainstorming</strong></td>
+            <td>Brainstorm</td>
+            <td>299K</td>
+            <td>⭐⭐⭐</td>
+            <td>✅</td>
+            <td>design doc</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>平</td>
+            <td>✅ 黄金配对</td>
+            <td>1-2h</td>
+            <td>中</td>
+          </tr>
+          <tr>
+            <td><strong>awesome-claude-skills</strong></td>
+            <td>Brainstorm+</td>
+            <td>1K+</td>
+            <td>⭐⭐</td>
+            <td>✅</td>
+            <td>—</td>
+            <td>❌</td>
+            <td>✅</td>
+            <td>平</td>
+            <td>✅</td>
+            <td>30m-2h</td>
+            <td>强</td>
+          </tr>
+          <tr>
+            <td><strong>agentic-awesome-skills</strong></td>
+            <td>Brainstorm+</td>
+            <td>2.6K</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>✅</td>
+            <td>—</td>
+            <td>❌</td>
+            <td>✅ 16+</td>
+            <td>平</td>
+            <td>✅</td>
+            <td>30m-1h</td>
+            <td>强</td>
+          </tr>
+          <tr>
+            <td><strong>OpenSpec explore</strong></td>
+            <td>Brainstorm(读代码)</td>
+            <td>—</td>
+            <td>⭐⭐⭐</td>
+            <td>✅ 强</td>
+            <td>—</td>
+            <td>❌</td>
+            <td>✅ 30+</td>
+            <td>平</td>
+            <td>✅ 可共存</td>
+            <td>30-60m</td>
+            <td>中</td>
+          </tr>
+          <tr>
+            <td><strong>mattpocock/grill-me</strong></td>
+            <td>Grill</td>
+            <td>290.8K</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>—</td>
+            <td>—</td>
+            <td>❌</td>
+            <td>✅ 6+</td>
+            <td>平</td>
+            <td>✅ 黄金配对</td>
+            <td>30-60m</td>
+            <td>中</td>
+          </tr>
+          <tr>
+            <td><strong>mattpocock/grill-with-docs</strong></td>
+            <td>Grill + ADR</td>
+            <td>290.8K</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>—</td>
+            <td>✅ ADR+Glossary</td>
+            <td>❌</td>
+            <td>✅ 6+</td>
+            <td>中</td>
+            <td>⭐ 黄金配对</td>
+            <td>1-2h</td>
+            <td>中</td>
+          </tr>
+          <tr>
+            <td><strong>RobMitt/grill-me-skill</strong></td>
+            <td>Grill(轻量)</td>
+            <td>928</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>—</td>
+            <td>—</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>平</td>
+            <td>✅</td>
+            <td>30-60m</td>
+            <td>中</td>
+          </tr>
+          <tr>
+            <td><strong>Jekudy/grillme-skill</strong></td>
+            <td>Grill(结构化)</td>
+            <td>69</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>—</td>
+            <td>—</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>中</td>
+            <td>✅</td>
+            <td>1-2h</td>
+            <td>中</td>
+          </tr>
+          <tr>
+            <td><strong>MbappeWU/murder-board</strong></td>
+            <td>Grill(verdict)</td>
+            <td>18</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>—</td>
+            <td>✅ 纪要</td>
+            <td>✅ verdict</td>
+            <td>❌</td>
+            <td>中</td>
+            <td>✅</td>
+            <td>1-2h</td>
+            <td>中</td>
+          </tr>
+          <tr>
+            <td><strong>Kiro</strong></td>
+            <td>Spec 3 件套</td>
+            <td>N/A</td>
+            <td>—</td>
+            <td>✅</td>
+            <td>✅ 完整 spec</td>
+            <td>—</td>
+            <td>❌ Kiro</td>
+            <td>陡</td>
+            <td>❌ 互斥</td>
+            <td>—</td>
+            <td>英</td>
+          </tr>
+          <tr>
+            <td><strong>OpenSpec propose</strong></td>
+            <td>Spec change</td>
+            <td>—</td>
+            <td>—</td>
+            <td>✅</td>
+            <td>✅ change 包</td>
+            <td>—</td>
+            <td>✅ 30+</td>
+            <td>平</td>
+            <td>✅ 可共存</td>
+            <td>30m</td>
+            <td>中</td>
+          </tr>
+          <tr>
+            <td><strong>grill-spec-flow</strong></td>
+            <td>门控 spec</td>
+            <td>0</td>
+            <td>⭐⭐⭐</td>
+            <td>—</td>
+            <td>✅ spec 包</td>
+            <td>✅ 4 门</td>
+            <td>Claude+Codex</td>
+            <td>陡</td>
+            <td>⚠️ 需桥接</td>
+            <td>几天</td>
+            <td>中</td>
+          </tr>
+          <tr>
+            <td><strong>Marvin</strong></td>
+            <td>编程式 plan</td>
+            <td>5K+</td>
+            <td>—</td>
+            <td>✅</td>
+            <td>Python 对象</td>
+            <td>—</td>
+            <td>Python</td>
+            <td>陡</td>
+            <td>⚠️ 需 glue</td>
+            <td>—</td>
+            <td>强</td>
+          </tr>
+          <tr>
+            <td><strong>idea-to-pr</strong></td>
+            <td>7 阶段管线</td>
+            <td>8</td>
+            <td>⭐⭐⭐</td>
+            <td>—</td>
+            <td>✅ spec 全部</td>
+            <td>✅ 阶段</td>
+            <td>❌</td>
+            <td>中</td>
+            <td>⚠️</td>
+            <td>几天</td>
+            <td>中</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 统一决策树 ================= -->
+    <h2 id="unified-tree">🌳 统一决策树(终极版)</h2>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 1200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="统一决策树">
+        <defs>
+          <marker id="arr-u" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- 起点 -->
+        <rect x="330" y="20" width="240" height="44" rx="22" fill="#fff8c5" stroke="#9a6700" stroke-width="3"/>
+        <text x="450" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6700">起点:项目处于什么状态?</text>
+
+        <!-- Q1 -->
+        <line x1="450" y1="64" x2="450" y2="100" stroke="#57606a" stroke-width="2" marker-end="url(#arr-u)"/>
+        <rect x="330" y="105" width="240" height="50" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="450" y="128" text-anchor="middle" font-size="12" font-weight="700" fill="#0969da">Q1. 方向清楚吗?</text>
+        <text x="450" y="145" text-anchor="middle" font-size="10" fill="#57606a">知道"大致要做什么"</text>
+
+        <!-- Q1a 完全模糊 -->
+        <line x1="390" y1="155" x2="120" y2="200" stroke="#cf222e" stroke-width="2" marker-end="url(#arr-u)"/>
+        <text x="240" y="180" text-anchor="middle" font-size="10" font-weight="600" fill="#cf222e">完全不清楚</text>
+
+        <rect x="40" y="205" width="240" height="100" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+        <text x="160" y="230" text-anchor="middle" font-size="13" font-weight="700" fill="#cf222e">🅰️ 模式 A: Brainstorm</text>
+        <text x="160" y="252" text-anchor="middle" font-size="10" fill="#1f2328">Superpowers brainstorming</text>
+        <text x="160" y="270" text-anchor="middle" font-size="10" fill="#1f2328">+ agentic-awesome-skills</text>
+        <text x="160" y="290" text-anchor="middle" font-size="10" font-weight="700" fill="#cf222e">时长:1-2h</text>
+
+        <!-- Q1b 方向清楚 -->
+        <line x1="510" y1="155" x2="780" y2="200" stroke="#1a7f37" stroke-width="2" marker-end="url(#arr-u)"/>
+        <text x="640" y="180" text-anchor="middle" font-size="10" font-weight="600" fill="#1a7f37">方向清楚</text>
+
+        <rect x="620" y="205" width="240" height="100" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="740" y="230" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">🅱️ Q2. 有 RFC 吗?</text>
+
+        <!-- Q2a 有 RFC(继续走) -->
+        <line x1="680" y1="305" x2="180" y2="350" stroke="#cf222e" stroke-width="2" marker-end="url(#arr-u)"/>
+        <text x="450" y="328" text-anchor="middle" font-size="10" font-weight="600" fill="#cf222e">有 RFC,想拷问</text>
+
+        <rect x="40" y="355" width="280" height="120" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+        <text x="180" y="380" text-anchor="middle" font-size="13" font-weight="700" fill="#cf222e">🔥 模式 B: Grill</text>
+        <text x="180" y="402" text-anchor="middle" font-size="10" fill="#1f2328">个人:/grill-me</text>
+        <text x="180" y="420" text-anchor="middle" font-size="10" fill="#1f2328">团队:/grill-with-docs</text>
+        <text x="180" y="438" text-anchor="middle" font-size="10" fill="#1f2328">要 verdict:Murder-Board</text>
+        <text x="180" y="460" text-anchor="middle" font-size="10" font-weight="700" fill="#cf222e">时长:30-120m</text>
+
+        <!-- Q2b 无 RFC -->
+        <line x1="800" y1="305" x2="800" y2="350" stroke="#1a7f37" stroke-width="2" marker-end="url(#arr-u)"/>
+        <text x="830" y="328" text-anchor="middle" font-size="10" font-weight="600" fill="#1a7f37">无 RFC,先探索</text>
+
+        <rect x="620" y="355" width="240" height="120" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="740" y="380" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">📑 模式 C: Draft</text>
+        <text x="740" y="402" text-anchor="middle" font-size="10" fill="#1f2328">读代码:OpenSpec explore</text>
+        <text x="740" y="420" text-anchor="middle" font-size="10" fill="#1f2328">Python:Marvin</text>
+        <text x="740" y="438" text-anchor="middle" font-size="10" fill="#1f2328">跳过:Draft RFC 草稿</text>
+        <text x="740" y="460" text-anchor="middle" font-size="10" font-weight="700" fill="#1a7f37">时长:1-3 天</text>
+
+        <!-- 汇聚到 spec-kit -->
+        <line x1="180" y1="485" x2="450" y2="540" stroke="#57606a" stroke-width="2" stroke-dasharray="4,4"/>
+        <line x1="740" y1="485" x2="450" y2="540" stroke="#57606a" stroke-width="2" stroke-dasharray="4,4"/>
+        <line x1="450" y1="540" x2="450" y2="580" stroke="#0969da" stroke-width="3" marker-end="url(#arr-u)"/>
+
+        <rect x="220" y="585" width="460" height="50" rx="25" fill="#0969da"/>
+        <text x="450" y="615" text-anchor="middle" font-size="15" font-weight="700" fill="white">→ /speckit-specify 规范化</text>
+
+        <!-- 5 个子阶段对照 -->
+        <text x="450" y="670" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2328">5 个子阶段 × 对应工具</text>
+
+        <rect x="40" y="690" width="820" height="40" rx="6" fill="#ddf4ff" stroke="#0969da"/>
+        <text x="450" y="715" text-anchor="middle" font-size="11" fill="#0969da">① Idea(自然语言) → ② Brainstorm(brainstorming) → ③ Draft(OpenSpec explore) → ④ Grill(grill-with-docs) → ⑤ Spec(/speckit-specify)</text>
+
+        <!-- 4 种推荐组合 -->
+        <text x="450" y="770" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2328">4 种推荐组合(按场景)</text>
+
+        <rect x="40" y="790" width="820" height="50" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="50" y="812" font-size="11" font-weight="700" fill="#1a7f37">组合 1 · 个人轻量(80%)</text>
+        <text x="50" y="830" font-size="10" fill="#1f2328">/speckit-specify 直接走(RFC 已有)</text>
+
+        <rect x="40" y="850" width="820" height="50" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="50" y="872" font-size="11" font-weight="700" fill="#1a7f37">组合 2 · 团队复杂(15%)</text>
+        <text x="50" y="890" font-size="10" fill="#1f2328">brainstorming → /grill-with-docs → /speckit-specify</text>
+
+        <rect x="40" y="910" width="820" height="50" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="50" y="932" font-size="11" font-weight="700" fill="#9a6700">组合 3 · 读代码场景(3%)</text>
+        <text x="50" y="950" font-size="10" fill="#1f2328">OpenSpec explore → /grill-me → /speckit-specify</text>
+
+        <rect x="40" y="970" width="820" height="50" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+        <text x="50" y="992" font-size="11" font-weight="700" fill="#cf222e">组合 4 · 高合规场景(2%)</text>
+        <text x="50" y="1010" font-size="10" fill="#1f2328">grill-spec-flow(5 阶段+4 门)→ 手动桥接到 /speckit-specify</text>
+
+        <!-- 关键提示 -->
+        <rect x="40" y="1040" width="820" height="60" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="450" y="1062" text-anchor="middle" font-size="11" font-weight="700" fill="#9a6700">⚠️ 通用原则</text>
+        <text x="450" y="1080" text-anchor="middle" font-size="10" fill="#1f2328">Brainstorm 用于"想做什么",Grill 用于"这样做对吗",Spec-kit 用于"把方案变成 Markdown"</text>
+        <text x="450" y="1095" text-anchor="middle" font-size="10" fill="#57606a">三者可叠加,但同一时间只用 1 个,不要 4 个并行</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 2:14 工具统一决策树(5 子阶段 × 4 组合)</div>
+
+    <!-- ================= 3 种组合 ================= -->
+    <h2 id="combinations">🔗 3 种推荐组合(spec-kit + 工具)</h2>
+
+    <p>对发现阶段工具的常见组合做了归类,本项目绝大多数情况用组合 1,复杂 feature 用组合 2。</p>
+
+    <div class="combo-row recommended">
+      <span class="label best">⭐ 默认</span>
+      <strong>组合 1:仅 spec-kit</strong>(80% 场景)
+      <p><strong>触发条件</strong>:已有 RFC,功能清晰,直接拆 feature</p>
+      <p><strong>工具清单</strong>:只有 spec-kit(已装)</p>
+      <p><strong>流程</strong>:RFC → /speckit-specify → /speckit-plan → /speckit-tasks → /speckit-implement → /speckit-converge</p>
+      <p><strong>本项目适用</strong>:RFC-002 答案溯源(已 Approved,直接走)</p>
+    </div>
+
+    <div class="combo-row recommended">
+      <span class="label best">⭐ 推荐</span>
+      <strong>组合 2:spec-kit + Superpowers + mattpocock</strong>(15% 场景)
+      <p><strong>触发条件</strong>:跨团队、长寿命 feature,需要术语统一</p>
+      <p><strong>工具清单</strong>:</p>
+      <ul>
+        <li>Superpowers <code>brainstorming</code>(发散阶段)</li>
+        <li>mattpocock <code>/grill-with-docs</code>(拷问 + 沉淀 ADR/Glossary)</li>
+        <li>spec-kit 全套</li>
+      </ul>
+      <p><strong>流程</strong>:brainstorming(1-2h)→ RFC → /grill-with-docs(1-2h,产出 ADR)→ /speckit-specify</p>
+      <p><strong>本项目适用</strong>:下一个大型项目(AI 工作台)</p>
+    </div>
+
+    <div class="combo-row optional">
+      <span class="label maybe">⚠️ 选配</span>
+      <strong>组合 3:spec-kit + OpenSpec</strong>(3% 场景)
+      <p><strong>触发条件</strong>:已经在用 OpenSpec,想保留 OpenSpec 格式</p>
+      <p><strong>工具清单</strong>:</p>
+      <ul>
+        <li>OpenSpec <code>explore</code> + <code>propose</code></li>
+        <li>spec-kit <code>/speckit-constitution</code> + <code>/speckit-specify</code></li>
+      </ul>
+      <p><strong>流程</strong>:explore → propose(OpenSpec change 包)→ /speckit-specify(转 spec-kit 格式)</p>
+      <p><strong>本项目适用</strong>:不推荐(有格式转换成本)</p>
+    </div>
+
+    <div class="combo-row optional">
+      <span class="label alt">🛡️ 特殊</span>
+      <strong>组合 4:spec-kit + grill-spec-flow</strong>(2% 场景)
+      <p><strong>触发条件</strong>:高合规/医疗/金融,需要"门控"留痕</p>
+      <p><strong>工具清单</strong>:</p>
+      <ul>
+        <li>grill-spec-flow(5 阶段 + 4 门)</li>
+        <li>spec-kit 接手 <code>requirements.md</code></li>
+      </ul>
+      <p><strong>本项目适用</strong>:不推荐(速度慢,本项目无合规压力)</p>
+    </div>
+
+    <!-- ================= 5 个场景 ================= -->
+    <h2 id="scenarios">🌟 5 个实战场景的"工具组合处方"</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>场景</th>
+            <th>项目状态</th>
+            <th>工具组合</th>
+            <th>时长</th>
+            <th>产出</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. 从零开始新项目</strong></td>
+            <td>完全模糊</td>
+            <td>Superpowers brainstorming<br>+ deep-research</td>
+            <td>1-2 天</td>
+            <td>RFC + 术语表</td>
+          </tr>
+          <tr>
+            <td><strong>2. 加新功能(本项目常遇)</strong></td>
+            <td>方向清楚,功能模糊</td>
+            <td>OpenSpec explore<br>+ idea-autopsy<br>+ /grill-me</td>
+            <td>3-5 天</td>
+            <td>RFC + 方案对比 + Revised 清单</td>
+          </tr>
+          <tr>
+            <td><strong>3. 跨团队 RFC 前</strong></td>
+            <td>需要"压力测试"</td>
+            <td>Superpowers brainstorming<br>+ before-you-build<br>+ what-could-break<br>+ /grill-with-docs</td>
+            <td>2-3 天</td>
+            <td>RFC v1.0 + ADR + Glossary</td>
+          </tr>
+          <tr>
+            <td><strong>4. 技术 POC</strong></td>
+            <td>可行性未知</td>
+            <td>brainstorming(确认 spike)<br>+ recursive-research</td>
+            <td>3-7 天</td>
+            <td>POC 代码 + 选型报告</td>
+          </tr>
+          <tr>
+            <td><strong>5. 已有 PRD,直接拆 spec</strong></td>
+            <td>PRD 完整</td>
+            <td>rich-elicitation(扫边界)<br>+ /grill-me(可选)<br>+ /speckit-specify</td>
+            <td>1-2 天</td>
+            <td>specs/NNN-feature/*</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>关键洞察:模式 B(Grill)应该出现在哪个场景?</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>场景</th>
+            <th>需要 Grill 吗?</th>
+            <th>推荐 Grill 类型</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. 从零开始</td>
+            <td>❌ 不需要(还在 brainstorm 阶段)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>2. 加新功能</td>
+            <td>✅ <strong>需要</strong>(OpenSpec explore 后用 grill-me)</td>
+            <td>/grill-me(个人轻量)</td>
+          </tr>
+          <tr>
+            <td>3. 跨团队 RFC</td>
+            <td>✅✅ <strong>强烈需要</strong></td>
+            <td>/grill-with-docs(团队 + ADR)</td>
+          </tr>
+          <tr>
+            <td>4. 技术 POC</td>
+            <td>❌ 不需要(POC 阶段不要拷问)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>5. 已有 PRD</td>
+            <td>⚠️ 可选(简单 feature 跳过)</td>
+            <td>/grill-me(15-30 分钟快拷)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 反模式 ================= -->
+    <h2 id="anti-patterns">🚫 反模式(从两份文档汇总)</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>反模式</th>
+            <th>后果</th>
+            <th>正确做法</th>
+            <th>来自</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>❌ 装太多 skill,挑花眼</td>
+            <td>2 周还在选,没开始</td>
+            <td>先装 1-2 个最常用,跑通再加</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>❌ 不评估项目状态直接选</td>
+            <td>用错工具,产出无效</td>
+            <td>先看决策树,定位项目状态</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>❌ 用 Kiro 但要切换 IDE</td>
+            <td>团队抵触,推不动</td>
+            <td>已经在 Claude Code 生态,选 Superpowers / OpenSpec</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>❌ 选了发现工具但跳过 spec-kit</td>
+            <td>产出无结构化,无法 Converge</td>
+            <td>发现阶段 → spec-kit 是连续流程</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>❌ POC 阶段走 spec-kit</td>
+            <td>POC 失败,白写 spec</td>
+            <td>POC 阶段用 brainstorming + recursive-research</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>❌ 用 Marvin 写非 Python 项目</td>
+            <td>不匹配</td>
+            <td>非 Python 项目用 OpenSpec / Superpowers</td>
+            <td>discovery-tools</td>
+          </tr>
+          <tr>
+            <td>❌ 用 Grill 探索方向</td>
+            <td>AI 不知道问什么(没东西可拷问)</td>
+            <td>先用 brainstorming 出 RFC</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>❌ 一上来就 Grill 一个想法</td>
+            <td>被拷问到放弃</td>
+            <td>至少先写到 RFC 草稿阶段</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>❌ 装 3 个 Grill skill 同时跑</td>
+            <td>对话冲突,AI 不知道听哪个</td>
+            <td>挑 1 个(推荐 mattpocock)</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>❌ Grill 一个 1 行需求</td>
+            <td>没东西可问,AI 尬问</td>
+            <td>至少 1 段(200+ 字)再 Grill</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>❌ 用 Grill 替代 brainstorming</td>
+            <td>把"发散"环节跳过</td>
+            <td>Grill 是"反对意见",brainstorming 是"想法"</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>❌ Grill 后不更新 RFC</td>
+            <td>问题回答了但方案没改</td>
+            <td>把"Revised"清单写回 RFC</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>❌ 用 grill-spec-flow 不读门控短语</td>
+            <td>一直卡在门 1</td>
+            <td>先看 4 个精确短语</td>
+            <td>grill-skills</td>
+          </tr>
+          <tr>
+            <td>❌ 用 OpenSpec 又用 spec-kit 写 change</td>
+            <td>两套格式混乱</td>
+            <td>选一套,或者用 OpenSpec 后手动转 spec-kit</td>
+            <td>两份综合</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 本项目推荐 ================= -->
+    <h2 id="recommendation">🎯 本项目(Deep Research Agent)推荐</h2>
+
+    <h3>项目现状</h3>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>Constitution</td><td>v1.1.0(8 条原则,已稳定)</td></tr>
+          <tr><td>团队规模</td><td>3 个研发团队</td></tr>
+          <tr><td>现有功能</td><td>检索/推理/生成/渲染(已成熟)</td></tr>
+          <tr><td>近期待加</td><td>答案溯源(RFC-002 Approved)、流式定价</td></tr>
+          <tr><td>团队状态</td><td>已有 RFC 习惯,SDD 思维已建立</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>针对不同 feature 的处方</h3>
+
+    <div class="combo-row recommended">
+      <span class="label best">📌 当前</span>
+      <strong>RFC-002 答案溯源(已 Approved)</strong>
+      <p><strong>推荐</strong>:组合 1(仅 spec-kit)+ <strong>加 /grill-with-docs</strong></p>
+      <p><strong>理由</strong>:</p>
+      <ul>
+        <li>RFC 已有,但<strong>跨团队</strong>(3 个团队),需要术语统一</li>
+        <li><code>/grill-with-docs</code> 沉淀的 ADR + Glossary 会<strong>被后续多个 feature spec 复用</strong></li>
+        <li>零冲突,5 分钟装 + 1-2 小时拷问</li>
+      </ul>
+      <p><strong>具体步骤</strong>:</p>
+      <pre><code># 1. 装 plugin(5 分钟)
+/plugin install mattpocock-skills@claude-plugins-official
+
+# 2. 拷问 RFC-002(1-2 小时)
+/grill-with-docs on RFC-002
+
+# 3. 看产出:docs/adr/0001-citation-pointer-vs-coordinate.md
+#         GLOSSARY.md(增加 citation / source / chunk / segment)
+
+# 4. 进入 spec-kit 逐个 feature
+/speckit-specify 段落 ID 生成器  # FEATURE-007
+/speckit-specify 引用映射插入     # FEATURE-008
+/speckit-specify 引用渲染组件     # FEATURE-009
+...</code></pre>
+    </div>
+
+    <div class="combo-row recommended">
+      <span class="label best">📌 未来</span>
+      <strong>大型新项目(如"AI 工作台")</strong>
+      <p><strong>推荐</strong>:组合 2(完整 brainstorm + grill)</p>
+      <p><strong>具体步骤</strong>:</p>
+      <pre><code># 1. brainstorming(发散,1-2 小时)
+/plugin install superpowers@claude-plugins-official
+> 我想做 AI 工作台(自然语言描述)
+
+# 2. RFC 草稿(基于 brainstorm 输出)
+# 3. /grill-with-docs(1-2 小时)
+# 4. /speckit-constitution(更新)
+# 5. /speckit-specify(逐个 feature)</code></pre>
+    </div>
+
+    <div class="combo-row optional">
+      <span class="label alt">📌 临时</span>
+      <strong>个人小 feature(如流式定价)</strong>
+      <p><strong>推荐</strong>:组合 1(仅 spec-kit)</p>
+      <p>原因:你 1 个人写,1 天能搞定,不需要 brainstorm 和 grill</p>
+    </div>
+
+    <h3>核心原则(本项目)</h3>
+
+    <div class="callout success">
+      <ol>
+        <li><strong>默认不装发现工具</strong>——80% 的 feature 走 spec-kit 就够</li>
+        <li><strong>遇到跨团队 feature 才装</strong>——brianstorming + grill-with-docs</li>
+        <li><strong>遇到读代码需求才装 OpenSpec</strong>——读代码给方案</li>
+        <li><strong>任何"我以为"都过一遍 grill-me</strong>——5 分钟可能省 5 天返工</li>
+        <li><strong>grill-with-docs 的产物是 spec-kit 黄金输入</strong>——ADR 直接 copy 到 spec 的"决策依据"</li>
+      </ol>
+    </div>
+
+    <!-- ================= 选型清单 ================= -->
+    <h2 id="checklist">✅ 选型检查清单</h2>
+
+    <h3>选型前必问的 5 个问题</h3>
+    <ol>
+      <li><input type="checkbox" disabled> 我的项目状态是 5 种场景中的哪个?(完全模糊 / 方向清楚 / 有 RFC / 等 grill / 直接拆 spec)</li>
+      <li><input type="checkbox" disabled> 我在哪个 IDE?(Claude Code / Kiro / 其他)</li>
+      <li><input type="checkbox" disabled> 团队/个人使用?(影响学习曲线容忍度)</li>
+      <li><input type="checkbox" disabled> 需要沉淀 ADR/Glossary 吗?(决定 grill-me vs grill-with-docs)</li>
+      <li><input type="checkbox" disabled> 是否有 Python 强需求?(决定是否考虑 Marvin)</li>
+    </ol>
+
+    <h3>实操前 3 个准备</h3>
+    <ul>
+      <li><input type="checkbox" disabled> 准备 1 段自然语言描述(2-5 句 / 200+ 字)</li>
+      <li><input type="checkbox" disabled> 决定装 1 个还是多个工具(默认 1 个,跨团队 2 个)</li>
+      <li><input type="checkbox" disabled> 决定安装路径(全局 vs 项目级)</li>
+    </ul>
+
+    <h3>选错工具的 5 个信号(需要切换)</h3>
+    <ul>
+      <li><input type="checkbox" disabled> 用 1 周后,产出的 spec 质量反而更差</li>
+      <li><input type="checkbox" disabled> 团队成员抱怨"太复杂了"</li>
+      <li><input type="checkbox" disabled> 工具的输出与 spec-kit 格式冲突</li>
+      <li><input type="checkbox" disabled> 装的工具 1 个月没碰过</li>
+      <li><input type="checkbox" disabled> 文档 ADR 沉淀后从未被引用过</li>
+    </ul>
+
+    <hr>
+
+    <div class="callout success">
+      <p><strong>🎓 终极结论</strong>:</p>
+      <ol>
+        <li><strong>3 大模式</strong>:Brainstorm(发散)/ Grill(拷问)/ Spec(规范化)</li>
+        <li><strong>spec-kit 属于模式 C</strong>(规范化),与模式 A/B 完美互补</li>
+        <li><strong>本项目 80% 情况</strong>只需要 spec-kit(组合 1)</li>
+        <li><strong>跨团队、长寿命 feature</strong>用 mattpocock/skills 的 <code>/grill-with-docs</code>(组合 2,作者最推荐)</li>
+        <li><strong>本项目具体到 RFC-002</strong>:<code>/grill-with-docs</code> 沉淀 ADR/Glossary → <code>/speckit-specify</code> 逐个 feature</li>
+      </ol>
+    </div>
+
+    <div class="callout">
+      <p><strong>📚 关联文档</strong>:</p>
+      <ul>
+        <li><a href="discovery-tools.html">发现阶段 Skill 选型决策树</a>——6 大方案对比</li>
+        <li><a href="grill-skills.html">Grill Skills 全面对比</a>——7+ Grill 实现</li>
+        <li><a href="specify.html">Specify 深度解读</a>——/speckit-specify 怎么用</li>
+        <li><a href="constitution.html">Constitution 深度解读</a>——/speckit-constitution 怎么用</li>
+      </ul>
+    </div>
+
+  </article>
+</main>
+
+<footer class="site-footer">
+  基于 <a href="https://github.com/mattpocock/skills" target="_blank">mattpocock/skills</a>、
+  <a href="https://github.com/RobMitt/grill-me-skill" target="_blank">RobMitt/grill-me-skill</a>、
+  OpenSpec、Superpowers 等 14+ 个开源方案构建 ·
+  本文档站仅供学习与团队实践参考
+</footer>
+
+</body>
+</html>

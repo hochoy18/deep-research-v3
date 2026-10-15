@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>/speckit-specify 深度解读 · Spec Kit 中文文档</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .diagram {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .input-mode {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .input-mode > div {
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  @media (max-width: 720px) { .input-mode { grid-template-columns: 1fr; } }
+  .grad-level {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .grad-level > div {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  @media (max-width: 720px) { .grad-level { grid-template-columns: 1fr; } }
+  .grad-1 { background: #dafbe1; }
+  .grad-2 { background: #fff8c5; }
+  .grad-3 { background: #ffebe9; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">
+      <span class="brand-logo">S</span>
+      <span>Spec Kit 中文文档</span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">首页</a></li>
+        <li><a href="overview.html">概览</a></li>
+        <li><a href="quickstart.html">快速入门</a></li>
+        <li><a href="team-collaboration.html">团队协作</a></li>
+        <li><a href="constitution.html">Constitution</a></li>
+        <li><a href="specify.html" class="active">Specify</a></li>
+        <li><a href="discovery-tools.html">发现阶段</a></li>
+        <li><a href="grill-skills.html">Grill Skills</a></li>
+        <li><a href="find-tools-compare.html">深度对比</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="toc">
+    <div class="toc-title">本页导览</div>
+    <ul>
+      <li><a href="#essence">本质与定位</a></li>
+      <li><a href="#arg-params">natural language 参数详解</a></li>
+      <li><a href="#input-6levels">输入的 6 种粒度</a></li>
+      <li><a href="#workflow">完整执行流:7 阶段</a></li>
+      <li><a href="#directory-system">目录与编号系统</a></li>
+      <li><a href="#key-concepts">关键概念提取法</a></li>
+      <li><a href="#needs-clarification">[NEEDS CLARIFICATION] 决策</a></li>
+      <li><a href="#template-9sections">9 个 Section 模板</a></li>
+      <li><a href="#quality-checklist">17 项质量校验</a></li>
+      <li><a href="#case-study">本项目案例:RFC-002 → FEATURE-007</a></li>
+      <li><a href="#constitution-coord">与 Constitution 的协作</a></li>
+      <li><a href="#hooks">Extension Hooks 机制</a></li>
+      <li><a href="#runbook">标准执行流程</a></li>
+      <li><a href="#pitfalls">常见错误</a></li>
+      <li><a href="#checklist">实操检查清单</a></li>
+      <li><a href="#references">参考资料</a></li>
+    </ul>
+  </aside>
+
+  <article class="content">
+    <section class="hero">
+      <h1>/speckit-specify 深度解读</h1>
+      <p class="subtitle">基于本项目真实 SKILL.md 逐行剖析,讲透"自然语言 → 结构化 spec"的转换机制,结合 RFC-002 答案溯源案例演示完整工作流。</p>
+      <div class="badge-row">
+        <span class="tag primary">基于 SKILL.md 真实内容</span>
+        <span class="tag success">本项目 RFC-002 案例</span>
+        <span class="tag warning">含 SVG 流程图</span>
+      </div>
+    </section>
+
+    <!-- ================= 1. 本质 ================= -->
+    <h2 id="essence">🧬 本质:从自然语言到结构化 spec</h2>
+
+    <p><code>/speckit-specify</code> 的 SKILL.md metadata 给出了明确定义:</p>
+
+    <pre><code>---
+name: "speckit-specify"
+description: "Create or update the feature specification from a
+             natural language feature description."
+argument-hint: "Describe the feature you want to specify"
+compatibility: "Requires spec-kit project structure with .specify/ directory"
+metadata:
+  author: "github-spec-kit"
+  source: "templates/commands/specify.md"
+user-invocable: true
+disable-model-invocation: false
+---</code></pre>
+
+    <h3>三个关键属性</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>值</th><th>含义</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>description</code></td>
+            <td>"Create or update the feature specification from <strong>a natural language feature description</strong>"</td>
+            <td>输入只能是"自然语言描述",不接受结构化参数</td>
+          </tr>
+          <tr>
+            <td><code>argument-hint</code></td>
+            <td>"Describe the feature you want to specify"</td>
+            <td>提示用户用自然语言描述功能</td>
+          </tr>
+          <tr>
+            <td><code>user-invocable</code></td>
+            <td>true</td>
+            <td>用户可在 Claude Code 输入框直接调用</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>它在 Spec Kit 流程链中的位置</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="位置">
+        <defs>
+          <marker id="arr-l" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+        <rect x="20" y="100" width="140" height="60" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="90" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="#0969da">constitution</text>
+        <text x="90" y="142" text-anchor="middle" font-size="10" fill="#57606a">(项目级 1 次)</text>
+
+        <rect x="200" y="100" width="160" height="60" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="3"/>
+        <text x="280" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="#9a6700">specify ⭐ 当前</text>
+        <text x="280" y="142" text-anchor="middle" font-size="10" fill="#57606a">(每个 feature 1 次)</text>
+
+        <rect x="400" y="100" width="120" height="60" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="460" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">clarify</text>
+        <text x="460" y="142" text-anchor="middle" font-size="10" fill="#57606a">(可选)</text>
+
+        <rect x="560" y="100" width="100" height="60" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="610" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">plan</text>
+
+        <rect x="680" y="100" width="100" height="60" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="730" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">tasks</text>
+
+        <line x1="160" y1="130" x2="198" y2="130" stroke="#57606a" stroke-width="2" marker-end="url(#arr-l)"/>
+        <line x1="360" y1="130" x2="398" y2="130" stroke="#57606a" stroke-width="2" marker-end="url(#arr-l)"/>
+        <line x1="520" y1="130" x2="558" y2="130" stroke="#57606a" stroke-width="2" marker-end="url(#arr-l)"/>
+        <line x1="660" y1="130" x2="678" y2="130" stroke="#57606a" stroke-width="2" marker-end="url(#arr-l)"/>
+
+        <text x="400" y="40" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">specify:从"想法"到"结构化文档"的转换器</text>
+        <text x="400" y="60" text-anchor="middle" font-size="11" fill="#57606a" font-style="italic">宪法提供规则 → specify 产出 spec → plan/tasks 产出可执行计划</text>
+        <text x="400" y="200" text-anchor="middle" font-size="11" fill="#57606a" font-style="italic">specify 是链条的第一颗扣子,它的输出决定后续 plan/tasks 质量</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 1:specify 在流程链中的位置——承接宪法,产出 spec,被 clarify/plan/tasks 消费</div>
+
+    <div class="callout warning">
+      <p><strong>硬规则(SKILL.md 行 111):</strong></p>
+      <p>"You must only create <strong>one feature per /speckit-specify invocation</strong>"</p>
+      <p>一次调用 = 一个 feature。批量创建多个 feature 是<strong>违规</strong>。</p>
+    </div>
+
+    <!-- ================= 2. natural language 参数详解 ================= -->
+    <h2 id="arg-params">📝 natural language feature description 参数详解</h2>
+
+    <p>这是 SKILL.md <code>argument-hint</code> 字段定义的<strong>唯一输入参数</strong>。注意:</p>
+
+    <div class="callout">
+      <p><strong>SKILL.md 行 16-20:</strong></p>
+      <pre><code>## User Input
+
+```text
+$ARGUMENTS
+```
+
+You **MUST** consider the user input before proceeding (if not empty).</code></pre>
+      <p>且行 121:"If empty: ERROR 'No feature description provided'"</p>
+    </div>
+
+    <h3>这个参数的 5 个硬性约束</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>约束</th><th>SKILL.md 引用</th><th>违反后果</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>必须非空</strong></td>
+            <td>行 121</td>
+            <td>直接报错,完全不执行</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>必须是自然语言</strong></td>
+            <td>行 3-4 "natural language feature description"</td>
+            <td>不是 JSON / YAML,不能是结构化参数</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>粒度可变</strong></td>
+            <td>行 60 "The text the user typed... is the feature description"</td>
+            <td>可短可长,Agent 会适配</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>每次只描述 1 个 feature</strong></td>
+            <td>行 111 "one feature per invocation"</td>
+            <td>多 feature 拆多次调用</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><strong>可含技术术语</strong></td>
+            <td>行 68 "Preserve technical terms and acronyms (OAuth2, API, JWT)"</td>
+            <td>但"避免 HOW 实现细节"</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>环境变量与配置的优先级</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="参数优先级">
+        <defs>
+          <marker id="arr-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- 用户自然语言(最高) -->
+        <rect x="40" y="20" width="720" height="40" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="60" y="45" font-size="12" font-weight="700" fill="#9a6700">① 用户输入的自然语言(/$ARGUMENTS)</text>
+        <text x="700" y="45" text-anchor="end" font-size="10" fill="#9a6700">最高优先级</text>
+
+        <text x="400" y="78" text-anchor="middle" font-size="10" fill="#57606a">↓ 覆盖(可选)</text>
+
+        <!-- 环境变量 -->
+        <rect x="40" y="90" width="720" height="36" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+        <text x="60" y="112" font-size="11" font-weight="700" fill="#0969da">② 环境变量 / 显式参数</text>
+        <text x="200" y="112" font-size="10" fill="#57606a">SPECIFY_FEATURE_DIRECTORY(覆盖默认 specs/)</text>
+        <text x="640" y="112" font-size="10" fill="#0969da">GIT_BRANCH_NAME(覆盖默认分支命名)</text>
+
+        <text x="400" y="142" text-anchor="middle" font-size="10" fill="#57606a">↓ 读取</text>
+
+        <!-- 配置 -->
+        <rect x="40" y="155" width="720" height="40" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="1.5"/>
+        <text x="60" y="178" font-size="11" font-weight="700" fill="#1a7f37">③ 项目配置(只读)</text>
+        <text x="240" y="178" font-size="10" fill="#57606a">.specify/init-options.json:feature_numbering = "sequential" | "timestamp"</text>
+        <text x="700" y="195" text-anchor="end" font-size="10" fill="#1a7f37">最低优先级</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 2:输入参数的三级优先级——用户自然语言 > 环境变量 > 项目配置</div>
+
+    <!-- ================= 3. 输入的 6 种粒度 ================= -->
+    <h2 id="input-6levels">🎚️ 输入的 6 种粒度</h2>
+
+    <p>基于 SKILL.md 真实工作流,自然语言输入的<strong>粒度</strong>决定 Agent 走哪条路。这是用户最需要掌握的<strong>实操技巧</strong>。</p>
+
+    <div class="grad-level">
+      <div class="grad-1">
+        <h4 style="margin-top:0">粒度 1:具体场景(20-50 字)</h4>
+        <p><strong>推荐度:</strong>⭐⭐⭐⭐⭐</p>
+        <p><strong>示例:</strong></p>
+        <pre><code>给已登录用户,首页底部展示"看了又看"列表,最多 5 条,基于最近 7 天浏览历史</code></pre>
+        <p><strong>Agent 行为:</strong>直接生成完整 spec,基本无 [NEEDS CLARIFICATION]</p>
+      </div>
+
+      <div class="grad-1">
+        <h4 style="margin-top:0">粒度 2:用户故事(50-200 字)</h4>
+        <p><strong>推荐度:</strong>⭐⭐⭐⭐⭐</p>
+        <p><strong>示例:</strong></p>
+        <pre><code>作为已登录用户,
+我想看到"看了又看"推荐列表,
+以便发现我可能感兴趣的内容。
+
+列表:最多 5 条;
+排序:基于浏览历史;
+位置:首页底部;
+数据:最近 7 天;
+不做:不实时,每天 1 次离线</code></pre>
+        <p><strong>Agent 行为:</strong>1-2 个澄清问题,然后生成</p>
+      </div>
+
+      <div class="grad-2">
+        <h4 style="margin-top:0">粒度 3:产品需求(200-500 字)</h4>
+        <p><strong>推荐度:</strong>⭐⭐⭐⭐</p>
+        <p><strong>示例:</strong></p>
+        <pre><code>需求背景:提升首页停留时长
+用户痛点:用户不知该看什么
+目标:KPI 提升 20%
+功能:推荐 5 条相似内容
+约束:每天 1 次离线更新
+不做:不做协同过滤,不做个性化排序</code></pre>
+        <p><strong>Agent 行为:</strong>大量推断 + 关键澄清(2-3 个)</p>
+      </div>
+
+      <div class="grad-2">
+        <h4 style="margin-top:0">粒度 4:RFC 摘要(500-2000 字)</h4>
+        <p><strong>推荐度:</strong>⭐⭐⭐</p>
+        <p><strong>示例:</strong>把整个 RFC 文档贴进来</p>
+        <p><strong>Agent 行为:</strong>信息充足但需裁剪,只取 1 个 feature 范围</p>
+        <p><strong>风险:</strong>信息过载,可能误解为多个 feature</p>
+      </div>
+
+      <div class="grad-3">
+        <h4 style="margin-top:0">粒度 5:模糊想法(1-2 句)</h4>
+        <p><strong>推荐度:</strong>⭐⭐(不推荐)</p>
+        <p><strong>示例:</strong></p>
+        <pre><code>做个推荐系统</code></pre>
+        <p><strong>Agent 行为:</strong>3 个 [NEEDS CLARIFICATION] 全用上</p>
+        <p><strong>风险:</strong>澄清完后 spec 还是粗糙</p>
+      </div>
+
+      <div class="grad-3">
+        <h4 style="margin-top:0">粒度 6:技术方案(避开)</h4>
+        <p><strong>推荐度:</strong>❌(违反原则)</p>
+        <p><strong>示例:</strong></p>
+        <pre><code>用 FAISS 向量库 + Redis 缓存
+加 Python 异步任务 + React 组件</code></pre>
+        <p><strong>问题:</strong>SKILL.md 行 285-288 明文要求"Avoid HOW to implement"</p>
+        <p><strong>Agent 行为:</strong>提取业务需求,忽略技术细节</p>
+      </div>
+    </div>
+
+    <div class="callout success">
+      <p><strong>实操建议(本项目场景):</strong></p>
+      <p>推荐<strong>粒度 2(用户故事)</strong>或<strong>粒度 3(产品需求)</strong>。这两个粒度:</p>
+      <ul>
+        <li>✅ 信息足以让 Agent 生成完整 spec</li>
+        <li>✅ 留有 1-3 个澄清空间,Owner 主动决策</li>
+        <li>✅ 符合宪法 "WHAT not HOW" 要求</li>
+      </ul>
+    </div>
+
+    <!-- ================= 4. 完整执行流 ================= -->
+    <h2 id="workflow">⚙️ 完整执行流:7 阶段</h2>
+
+    <p>基于 SKILL.md 的 Outline(行 58-148)和工作流(行 119-142),specify 实际分 7 个阶段执行:</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 800 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="7 阶段执行流">
+        <defs>
+          <marker id="arr-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- 起点 -->
+        <rect x="280" y="20" width="240" height="40" rx="20" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="400" y="45" text-anchor="middle" font-size="12" font-weight="700" fill="#0969da">用户输入 /speckit-specify [描述]</text>
+
+        <!-- 阶段 1:Pre-Execution Hooks -->
+        <rect x="40" y="80" width="720" height="50" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="1.5"/>
+        <text x="60" y="103" font-size="12" font-weight="700" fill="#9a6700">阶段 1 · 预执行检查(行 24-56)</text>
+        <text x="60" y="123" font-size="10" fill="#57606a">检查 .specify/extensions.yml 的 before_specify 钩子;无则跳过</text>
+
+        <!-- 阶段 2:生成 short name -->
+        <rect x="40" y="150" width="720" height="55" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="1.5"/>
+        <text x="60" y="173" font-size="12" font-weight="700" fill="#9a6700">阶段 2 · 生成 short name(行 64-74)⭐</text>
+        <text x="60" y="192" font-size="10" fill="#57606a">2-4 词、action-noun 格式、保留技术术语</text>
+        <text x="60" y="203" font-size="10" fill="#9a6700">例:"add user auth" → "user-auth"; "fix payment timeout" → "fix-payment-timeout"</text>
+
+        <!-- 阶段 3:Branch -->
+        <rect x="40" y="225" width="720" height="50" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="1.5"/>
+        <text x="60" y="248" font-size="12" font-weight="700" fill="#9a6700">阶段 3 · 分支创建(行 76-80,可选)</text>
+        <text x="60" y="268" font-size="10" fill="#57606a">钩子创建/切换 git 分支,产出 BRANCH_NAME 和 FEATURE_NUM</text>
+
+        <!-- 阶段 4:创建 spec 目录与文件 -->
+        <rect x="40" y="295" width="720" height="80" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="1.5"/>
+        <text x="60" y="318" font-size="12" font-weight="700" fill="#1a7f37">阶段 4 · 创建 spec 目录与文件(行 82-114)⭐</text>
+        <text x="60" y="338" font-size="10" fill="#57606a">解析 feature_numbering → sequential "003" / timestamp "20260319-143022"</text>
+        <text x="60" y="351" font-size="10" fill="#57606a">目录:specs/003-user-auth/;文件:spec.md(spec-template 复制)</text>
+        <text x="60" y="364" font-size="10" fill="#57606a">持久化到 .specify/feature.json(feature_directory 字段)</text>
+
+        <!-- 阶段 5:加载模板和宪法 -->
+        <rect x="40" y="395" width="720" height="50" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+        <text x="60" y="418" font-size="12" font-weight="700" fill="#0969da">阶段 5 · 加载模板 + 宪法(行 115-117)</text>
+        <text x="60" y="438" font-size="10" fill="#57606a">加载 spec-template.md 模板;加载 constitution.md 治理约束</text>
+
+        <!-- 阶段 6:核心执行流 -->
+        <rect x="40" y="465" width="720" height="100" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="1.5"/>
+        <text x="60" y="488" font-size="12" font-weight="700" fill="#cf222e">阶段 6 · 核心执行流(行 119-142)⭐⭐⭐</text>
+        <text x="60" y="506" font-size="10" fill="#57606a">[1] 解析描述(空则报错)</text>
+        <text x="60" y="520" font-size="10" fill="#57606a">[2] 提取关键概念:actors / actions / data / constraints</text>
+        <text x="60" y="534" font-size="10" fill="#57606a">[3] 不清楚的部分:首选"基于行业惯例推断"→ 才用 [NEEDS CLARIFICATION](max 3)</text>
+        <text x="60" y="548" font-size="10" fill="#57606a">[4] 填 User Scenarios & Testing(无流程则报错)</text>
+        <text x="60" y="560" font-size="10" fill="#57606a">[5] 生成 Functional Requirements(每条 MUST 可测试)</text>
+
+        <!-- 阶段 7:质量校验 -->
+        <rect x="40" y="585" width="720" height="90" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="1.5"/>
+        <text x="60" y="608" font-size="12" font-weight="700" fill="#1a7f37">阶段 7 · 质量校验(行 146-236)</text>
+        <text x="60" y="625" font-size="10" fill="#57606a">a. 生成 checklists/requirements.md(17 项内容质量/完整性/就绪度)</text>
+        <text x="60" y="640" font-size="10" fill="#57606a">b. 跑校验(每项 pass/fail + 引用具体 spec 段落)</text>
+        <text x="60" y="654" font-size="10" fill="#57606a">c. 处理结果(全过 → 结束;失败 → 重写,最多 3 轮;有 NEEDS CLARIFICATION → AskUserQuestion)</text>
+        <text x="60" y="668" font-size="10" fill="#57606a">d. 更新 checklist(记录每轮 pass/fail)</text>
+
+        <!-- 终点 -->
+        <rect x="280" y="690" width="240" height="20" rx="10" fill="#dafbe1" stroke="#1a7f37" stroke-width="1.5"/>
+        <text x="400" y="705" text-anchor="middle" font-size="11" font-weight="700" fill="#1a7f37">输出完成报告</text>
+
+        <line x1="400" y1="60" x2="400" y2="78" stroke="#57606a" stroke-width="2" marker-end="url(#arr-w)"/>
+        <line x1="400" y1="130" x2="400" y2="148" stroke="#57606a" stroke-width="2" marker-end="url(#arr-w)"/>
+        <line x1="400" y1="205" x2="400" y2="223" stroke="#57606a" stroke-width="2" marker-end="url(#arr-w)"/>
+        <line x1="400" y1="275" x2="400" y2="293" stroke="#57606a" stroke-width="2" marker-end="url(#arr-w)"/>
+        <line x1="400" y1="375" x2="400" y2="393" stroke="#57606a" stroke-width="2" marker-end="url(#arr-w)"/>
+        <line x1="400" y1="445" x2="400" y2="463" stroke="#57606a" stroke-width="2" marker-end="url(#arr-w)"/>
+        <line x1="400" y1="565" x2="400" y2="583" stroke="#57606a" stroke-width="2" marker-end="url(#arr-w)"/>
+        <line x1="400" y1="675" x2="400" y2="688" stroke="#57606a" stroke-width="2" marker-end="url(#arr-w)"/>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 3:specify 的 7 阶段执行流——核心是阶段 6(关键概念提取)和阶段 7(质量校验)</div>
+
+    <!-- ================= 5. 目录与编号系统 ================= -->
+    <h2 id="directory-system">📁 目录与编号系统</h2>
+
+    <p>SKILL.md 行 86-94 详细定义了 spec 目录的解析规则。理解这一点对<strong>多 feature 并行</strong>很重要。</p>
+
+    <h3>两种编号方案</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>feature_numbering</th><th>目录格式</th><th>示例</th><th>优缺点</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>"sequential"</code>(本项目)</td>
+            <td><code>NNN-&lt;short-name&gt;</code></td>
+            <td><code>003-user-auth</code></td>
+            <td>✅ 编号紧凑,容易排序<br>❌ 多人同时创建可能冲突</td>
+          </tr>
+          <tr>
+            <td><code>"timestamp"</code></td>
+            <td><code>YYYYMMDD-HHMMSS-&lt;short-name&gt;</code></td>
+            <td><code>20260319-143022-user-auth</code></td>
+            <td>✅ 全球唯一,无冲突<br>❌ 编号长,不易记忆</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>目录结构演进</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="目录结构">
+        <text x="20" y="30" font-size="13" font-weight="700" fill="#1f2328">specs/</text>
+
+        <g font-family="monospace" font-size="11" fill="#1f2328">
+          <!-- 第一个 feature -->
+          <rect x="40" y="50" width="220" height="80" rx="6" fill="#ddf4ff" stroke="#0969da"/>
+          <text x="50" y="68">001-answer-citation/</text>
+          <text x="60" y="86" fill="#57606a">├── spec.md</text>
+          <text x="60" y="102" fill="#57606a">├── checklists/</text>
+          <text x="60" y="116" fill="#57606a">│   └── requirements.md</text>
+          <text x="60" y="130" fill="#57606a">└── plan.md(后续)</text>
+
+          <rect x="290" y="50" width="220" height="80" rx="6" fill="#ddf4ff" stroke="#0969da"/>
+          <text x="300" y="68">002-streaming-pricing/</text>
+          <text x="310" y="86" fill="#57606a">├── spec.md</text>
+          <text x="310" y="102" fill="#57606a">├── checklists/</text>
+          <text x="310" y="116" fill="#57606a">└── tasks.md(后续)</text>
+
+          <rect x="540" y="50" width="220" height="80" rx="6" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+          <text x="550" y="68">003-user-auth/ ⭐ 新</text>
+          <text x="560" y="86" fill="#57606a">├── spec.md</text>
+          <text x="560" y="102" fill="#57606a">├── checklists/</text>
+          <text x="560" y="116" fill="#57606a">│   └── requirements.md</text>
+          <text x="560" y="130" fill="#1a7f37">└── .specify/feature.json</text>
+
+          <text x="20" y="160" font-size="13" font-weight="700" fill="#1f2328">.specify/</text>
+          <rect x="40" y="180" width="220" height="60" rx="6" fill="#fff8c5" stroke="#9a6700"/>
+          <text x="50" y="200" font-size="11">feature.json ⭐</text>
+          <text x="50" y="218" font-size="10" fill="#57606a">{</text>
+          <text x="60" y="232" font-size="10" fill="#57606a">"feature_directory": "specs/003-user-auth"</text>
+
+          <rect x="290" y="180" width="220" height="60" rx="6" fill="#fff8c5" stroke="#9a6700"/>
+          <text x="300" y="200" font-size="11">memory/</text>
+          <text x="300" y="218" font-size="10" fill="#57606a">└── constitution.md</text>
+          <text x="300" y="232" font-size="10" fill="#57606a">(被 specify 加载)</text>
+        </g>
+
+        <text x="400" y="290" text-anchor="middle" font-size="10" font-style="italic" fill="#57606a">specs/ 下每个目录是一个独立 feature;feature.json 让下游命令知道当前激活的 feature</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 4:spec 目录的树形结构,sequential 编号 001/002/003...,每个 feature 独立目录</div>
+
+    <div class="callout">
+      <p><strong>关键设计:spec 目录 vs git 分支(SKILL.md 行 112)</strong></p>
+      <p>"The spec directory name and the git branch name are <strong>independent</strong> — they may be the same but that is the user's choice"</p>
+      <p>分支名是 <code>feature/003-user-auth</code>,spec 目录是 <code>specs/003-user-auth/</code>,两者<strong>不强绑定</strong>。</p>
+    </div>
+
+    <!-- ================= 6. 关键概念提取法 ================= -->
+    <h2 id="key-concepts">🔍 关键概念提取法</h2>
+
+    <p>SKILL.md 行 122-124 明文要求:从自然语言描述中<strong>提取 4 类关键概念</strong>。这是 Agent 的核心工作。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>概念类型</th><th>说明</th><th>示例</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Actors(主体)</strong></td>
+            <td>谁会用这个功能?</td>
+            <td>已登录用户、管理员、游客、API 调用方</td>
+          </tr>
+          <tr>
+            <td><strong>Actions(行为)</strong></td>
+            <td>主体会做什么?</td>
+            <td>点击、搜索、提交、查看、上传</td>
+          </tr>
+          <tr>
+            <td><strong>Data(数据)</strong></td>
+            <td>涉及什么数据?</td>
+            <td>用户浏览历史、订单列表、文档内容</td>
+          </tr>
+          <tr>
+            <td><strong>Constraints(约束)</strong></td>
+            <td>什么规则/限制?</td>
+            <td>最多 5 条、每天 1 次、GDPR、≥18 岁</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>实际转换示例(本项目)</h3>
+    <p><strong>用户输入(粒度 2):</strong></p>
+    <pre><code>/speckit-specify 给已登录用户,首页底部展示"看了又看"列表,
+最多 5 条,基于最近 7 天浏览历史</code></pre>
+
+    <p><strong>Agent 提取:</strong></p>
+    <pre><code>Actors:    [已登录用户]
+Actions:   [查看推荐列表]
+Data:      [用户浏览历史(7 天),推荐内容(最多 5 条)]
+Constraints: [首页底部,最多 5 条,7 天窗口,只对已登录用户]</code></pre>
+
+    <p><strong>生成的 User Scenarios:</strong></p>
+    <pre><code>## User Scenarios & Testing
+
+### Primary User Story
+**As a** 已登录用户
+**I want to** 在首页底部看到"看了又看"列表
+**So that** 发现我可能感兴趣的内容
+
+**Acceptance Scenarios**:
+1. **Given** 我已登录 + 有过去 7 天的浏览历史
+   **When** 打开首页
+   **Then** 在底部看到最多 5 条推荐,每条含标题、缩略图、来源</code></pre>
+
+    <!-- ================= 7. NEEDS CLARIFICATION 决策 ================= -->
+    <h2 id="needs-clarification">❓ [NEEDS CLARIFICATION] 决策</h2>
+
+    <p>SKILL.md 行 125-131 是<strong>specify 最巧妙的设计之一</strong>——Agent 不会"硬问"所有不清楚的事,而是按<strong>优先级</strong>决定:先推断、再标注、最后问。</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="决策树">
+        <defs>
+          <marker id="arr-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- 起点 -->
+        <rect x="280" y="20" width="240" height="40" rx="20" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="400" y="45" text-anchor="middle" font-size="12" font-weight="700" fill="#9a6700">某细节不清楚</text>
+
+        <!-- 判断 1 -->
+        <rect x="320" y="80" width="160" height="44" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+        <text x="400" y="105" text-anchor="middle" font-size="11" font-weight="700" fill="#0969da">有合理默认?</text>
+
+        <!-- 默认 -->
+        <line x1="350" y1="124" x2="120" y2="160" stroke="#1a7f37" stroke-width="2" marker-end="url(#arr-d)"/>
+        <rect x="40" y="160" width="220" height="60" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="150" y="183" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">用默认 + 写 Assumptions</text>
+        <text x="150" y="202" text-anchor="middle" font-size="10" fill="#57606a">例:HTTP 用 REST/GraphQL,</text>
+        <text x="150" y="215" text-anchor="middle" font-size="10" fill="#57606a">数据保留 30 天</text>
+
+        <!-- 需问 -->
+        <line x1="450" y1="124" x2="680" y2="160" stroke="#cf222e" stroke-width="2" marker-end="url(#arr-d)"/>
+        <rect x="540" y="160" width="220" height="60" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+        <text x="650" y="183" text-anchor="middle" font-size="12" font-weight="700" fill="#cf222e">[NEEDS CLARIFICATION]</text>
+        <text x="650" y="202" text-anchor="middle" font-size="10" fill="#57606a">影响 scope / 安全 / UX</text>
+        <text x="650" y="215" text-anchor="middle" font-size="10" fill="#cf222e">最多 3 个</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 5:Agent 遇到不清楚细节时的决策树——首选默认,次选标 [NEEDS CLARIFICATION],最后问</div>
+
+    <h3>SKILL.md 行 308-319 给出的"合理默认"清单</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>领域</th><th>默认(不需问)</th></tr></thead>
+        <tbody>
+          <tr><td>数据保留</td><td>用行业标准</td></tr>
+          <tr><td>性能目标</td><td>用标准 Web/移动 App 期望</td></tr>
+          <tr><td>错误处理</td><td>用户友好提示 + 合理 fallback</td></tr>
+          <tr><td>认证方式</td><td>Web 用 session 或 OAuth2</td></tr>
+          <tr><td>集成模式</td><td>Web 用 REST/GraphQL;库用函数调用;工具用 CLI</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>需要 [NEEDS CLARIFICATION] 的场景(SKILL.md 行 125-127)</h3>
+    <ul>
+      <li>选择会<strong>显著影响 scope 或 UX</strong></li>
+      <li>存在<strong>多种合理解释</strong>且影响不同</li>
+      <li><strong>没有任何合理默认</strong></li>
+    </ul>
+
+    <h3>澄清问题格式(SKILL.md 行 206-223)</h3>
+    <pre><code>## Question [N]: [Topic]
+
+**Context**: [引用 spec 相关段落]
+
+**What we need to know**: [具体问题]
+
+**Suggested Answers**:
+
+| Option | Answer | Implications |
+|--------|--------|--------------|
+| A      | 第一种建议 | 对功能的影响 |
+| B      | 第二种建议 | 对功能的影响 |
+| C      | 第三种建议 | 对功能的影响 |
+| Custom | 自己提供答案 | 如何给 |
+
+**Your choice**: _[等待用户回答]_</code></pre>
+
+    <div class="callout warning">
+      <p><strong>硬规则(SKILL.md 行 130):</strong></p>
+      <p>"<strong>LIMIT: Maximum 3 [NEEDS CLARIFICATION] markers total</strong>"</p>
+      <p>超过 3 个时,按"scope > security/privacy > UX > technical details"优先级,只保留前 3 个,其余用"informed guess"。</p>
+    </div>
+
+    <!-- ================= 8. 9 个 Section 模板 ================= -->
+    <h2 id="template-9sections">📋 9 个 Section 模板</h2>
+
+    <p>spec-template.md 规定 6 个<strong>必填</strong> + 3 个<strong>可选</strong> Section(SKILL.md 行 290-294)。</p>
+
+    <h3>必填(必须完成)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Section</th><th>作用</th><th>填写要求</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>User Scenarios & Testing</strong></td>
+            <td>用户场景 + 验收测试</td>
+            <td>必须有 primary user story;无流程则报错(SKILL.md 行 133)</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>Requirements</strong></td>
+            <td>功能需求(Functional Requirements)</td>
+            <td>每条 MUST 可测试(SKILL.md 行 135);用 MUST/SHOULD/MAY 开头</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>Key Entities</strong></td>
+            <td>关键实体(如涉及数据)</td>
+            <td>列出主要数据对象</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>Success Criteria</strong></td>
+            <td>成功标准</td>
+            <td>可衡量、技术无关(SKILL.md 行 136-139)</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><strong>Assumptions</strong></td>
+            <td>假设(Agent 的推断)</td>
+            <td>把 informed guesses 写在这里</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><strong>Edge Cases</strong></td>
+            <td>边缘情况</td>
+            <td>列出极端情况与处理方式</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>可选(相关时填,不相关删除整个 Section,不留 N/A)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Section</th><th>何时需要</th></tr></thead>
+        <tbody>
+          <tr><td>7</td><td>Dependencies</td><td>有外部依赖时</td></tr>
+          <tr><td>8</td><td>Out of Scope</td><td>边界模糊时明确"不做"</td></tr>
+          <tr><td>9</td><td>Open Questions</td><td>Clarify 阶段前的暂存区</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout success">
+      <p><strong>SKILL.md 行 294 关键提示:</strong></p>
+      <p>"When a section doesn't apply, <strong>remove it entirely</strong> (don't leave as 'N/A')"</p>
+      <p>不相关的 Section 要<strong>整个删除</strong>,不能留 "N/A" 占位。</p>
+    </div>
+
+    <!-- ================= 9. 17 项质量校验 ================= -->
+    <h2 id="quality-checklist">✅ 17 项质量校验</h2>
+
+    <p>SKILL.md 行 148-185 定义了 spec 必须通过的质量校验,分成 3 类:</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="17 项质量校验">
+        <!-- Content Quality -->
+        <rect x="40" y="40" width="240" height="200" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="160" y="65" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">Content Quality(4 项)</text>
+        <text x="50" y="92" font-size="11" fill="#1f2328">□ 无实现细节</text>
+        <text x="50" y="108" font-size="11" fill="#1f2328">  (语言/框架/API)</text>
+        <text x="50" y="130" font-size="11" fill="#1f2328">□ 聚焦用户价值</text>
+        <text x="50" y="148" font-size="11" fill="#1f2328">□ 写给非技术干系人</text>
+        <text x="50" y="170" font-size="11" fill="#1f2328">□ 所有必填 Section</text>
+        <text x="50" y="186" font-size="11" fill="#1f2328">  完成</text>
+        <text x="50" y="208" font-size="11" font-weight="600" fill="#1a7f37">最关键:不漏实现细节</text>
+
+        <!-- Requirement Completeness -->
+        <rect x="300" y="40" width="220" height="200" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="410" y="65" text-anchor="middle" font-size="13" font-weight="700" fill="#9a6700">Completeness(8 项)</text>
+        <text x="310" y="88" font-size="10" fill="#1f2328">□ 无 [NEEDS CLARIFICATION] 残留</text>
+        <text x="310" y="104" font-size="10" fill="#1f2328">□ Requirements 可测试 + 无歧义</text>
+        <text x="310" y="120" font-size="10" fill="#1f2328">□ Success criteria 可衡量</text>
+        <text x="310" y="136" font-size="10" fill="#1f2328">□ Success criteria 技术无关</text>
+        <text x="310" y="152" font-size="10" fill="#1f2328">□ 所有验收场景已定义</text>
+        <text x="310" y="168" font-size="10" fill="#1f2328">□ Edge cases 已识别</text>
+        <text x="310" y="184" font-size="10" fill="#1f2328">□ Scope 明确有界</text>
+        <text x="310" y="200" font-size="10" fill="#1f2328">□ Dependencies/Assumptions 已识别</text>
+
+        <!-- Feature Readiness -->
+        <rect x="540" y="40" width="220" height="200" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="650" y="65" text-anchor="middle" font-size="13" font-weight="700" fill="#0969da">Readiness(4 项)</text>
+        <text x="550" y="88" font-size="10" fill="#1f2328">□ 每个 FR 都有验收标准</text>
+        <text x="550" y="106" font-size="10" fill="#1f2328">□ User Scenarios 覆盖主流程</text>
+        <text x="550" y="124" font-size="10" fill="#1f2328">□ Feature 满足 Success Criteria</text>
+        <text x="550" y="142" font-size="10" fill="#1f2328">□ 无实现细节泄漏</text>
+        <text x="550" y="180" font-size="10" font-style="italic" fill="#0969da">校验失败:</text>
+        <text x="550" y="198" font-size="10" font-style="italic" fill="#0969da">重写 → 最多 3 轮</text>
+        <text x="550" y="216" font-size="10" font-style="italic" fill="#0969da">→ 3 轮后仍失败则警告</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 6:17 项质量校验分 3 类——内容质量(4)、完整性(8)、就绪度(4)</div>
+
+    <h3>Success Criteria 优劣对比(SKILL.md 行 339-343)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>✅ 好的标准</th><th>❌ 差的标准</th><th>原因</th></tr></thead>
+        <tbody>
+          <tr><td>"用户 3 分钟内完成结账"</td><td>"API 响应时间 &lt; 200ms"</td><td>前者用户视角,后者实现细节</td></tr>
+          <tr><td>"系统支持 10,000 并发用户"</td><td>"数据库可处理 1000 TPS"</td><td>前者用户视角,后者实现细节</td></tr>
+          <tr><td>"95% 搜索 1 秒内返回结果"</td><td>"Redis 缓存命中率 &gt; 80%"</td><td>前者技术无关,后者技术特定</td></tr>
+          <tr><td>"任务完成率提升 40%"</td><td>"React 组件渲染高效"</td><td>前者可衡量,后者框架特定</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 10. 本项目案例 ================= -->
+    <h2 id="case-study">📘 本项目案例:RFC-002 → FEATURE-007</h2>
+
+    <p>本项目有一个 <strong>RFC-002 答案溯源</strong> 的全景设计,这是用 specify 第一个可执行的子 feature 的真实过程。</p>
+
+    <h3>RFC-002 拆解</h3>
+    <pre><code>RFC-002 答案溯源(Accepted)
+├── FEATURE-007: 片段 ID 生成器(本次 specify)
+├── FEATURE-008: 引用映射插入
+├── FEATURE-009: 引用渲染组件
+└── FEATURE-010: 跳转交互</code></pre>
+
+    <h3>用户输入(natural language,粒度 2)</h3>
+    <pre><code>/speckit-specify 实现片段 ID 生成器:
+
+作为检索服务,
+我想为每个返回的检索片段打一个唯一 ID 并持久化,
+以便后续引用映射能定位到原始片段。
+
+输入:检索结果(标题、URL、摘要、来源)
+输出:每个片段带 ID 字段
+存储:用现有 PostgreSQL,新增 fragments 表
+不做:不做向量化,不做 embedding 索引,不做缓存层
+
+性能:10,000 片段/秒写入
+一致性:写入失败必须报错,不能丢</code></pre>
+
+    <h3>Agent 提取的关键概念</h3>
+    <pre><code>Actors:    [检索服务,后续引用服务(下游)]
+Actions:   [生成 ID, 持久化片段, 返回带 ID 的结果]
+Data:      [片段(标题、URL、摘要、来源、ID)]
+Constraints: [PostgreSQL 持久化, 10K 写入/秒, 失败报错不丢]</code></pre>
+
+    <h3>生成的 spec.md(本项目 007 样例)</h3>
+    <pre><code># Feature Specification: 片段 ID 生成器
+
+**Feature ID**: FEATURE-007-fragment-id
+**Owner**: @zhang-san(检索团队)
+**Status**: Draft
+**Created**: 2026-10-14
+
+## User Scenarios & Testing
+
+### Primary User Story
+**As a** 检索服务
+**I want to** 为每个返回的检索片段打一个唯一 ID 并持久化
+**So that** 后续引用映射能定位到原始片段(为答案溯源功能打底)
+
+**Acceptance Scenarios**:
+
+1. **Given** 检索服务返回 1 个检索结果(标题/URL/摘要/来源)
+   **When** 调用片段 ID 生成器
+   **Then** 该片段获得唯一 ID(UUID v7),并持久化到 fragments 表
+   **And** 返回的检索结果中该片段带 `id` 字段
+
+2. **Given** 同一 URL/标题/摘要的片段已经存在
+   **When** 再次调用
+   **Then** 返回已有的 ID(幂等)
+
+3. **Given** 数据库写入失败
+   **When** 调用片段 ID 生成器
+   **Then** 返回 500 错误,且不返回部分结果
+
+### Edge Cases
+
+- 检索结果中 URL 缺失或无效:拒绝处理,返回 400
+- 同一秒内 10,000+ 片段:无 ID 冲突(PK 约束保证)
+- 数据库连接断开:重试 3 次后失败报错
+
+## Requirements
+
+### Functional Requirements
+
+- **FR-001**: 系统 MUST 为每个检索片段生成 UUID v7 作为唯一 ID
+- **FR-002**: 系统 MUST 在 fragments 表持久化(URL、标题、摘要、来源、ID、created_at)
+- **FR-003**: 系统 MUST 支持幂等性:同一 URL/标题/摘要返回相同 ID
+- **FR-004**: 系统 MUST 在写入失败时返回错误,不返回部分结果
+- **FR-005**: 系统 MUST 在检索结果中返回带 `id` 字段的片段
+
+### Non-Functional Requirements
+
+- **NFR-001**: 吞吐量 MUST ≥ 10,000 片段/秒
+- **NFR-002**: P99 延迟 MUST ≤ 50ms(不含网络)
+- **NFR-003**: ID 生成 MUST 符合 RFC 9562(UUID v7)
+
+## Key Entities
+
+- **Fragment(片段)**:
+  - `id`: UUID v7,主键
+  - `url`: 文本,NOT NULL,索引
+  - `title`: 文本,NOT NULL
+  - `snippet`: 文本,NOT NULL
+  - `source`: 文本(检索来源标识)
+  - `created_at`: TIMESTAMP,NOT NULL,默认 NOW()
+
+## Success Criteria
+
+- **SC-001**: 检索服务能以 10,000 片段/秒的速度通过本服务
+- **SC-002**: 100% 写入失败能被上游捕获并重试
+- **SC-003**: 重复片段(同 URL+title+snippet)始终返回相同 ID
+- **SC-004**: 检索结果 100% 带 `id` 字段
+- **SC-005**: 数据保留期 ≥ 90 天(支持事后追溯)
+
+## Assumptions
+
+- 现有 PostgreSQL 实例可承载新增表(容量评估见 RFC-002 第 5.3 节)
+- UUID v7 满足唯一性要求(冲突概率 &lt; 10^-9)
+- "幂等"定义基于 URL+title+snippet 三元组哈希(由 Owner 确认)
+- 检索结果单批最大 1000 片段(由调用方约束)
+
+## Out of Scope
+
+- 不做向量化(由 FEATURE-012 单独 spec)
+- 不做 embedding 索引
+- 不做片段缓存层
+- 不做跨团队数据同步
+- 不做片段去重(只在片段 ID 层面)
+
+## Dependencies
+
+- PostgreSQL 14+(已在生产)
+- 检索服务上游(由检索团队维护)
+- 引用服务下游(FEATURE-008 尚未开始)</code></pre>
+
+    <h3>生成的 checklists/requirements.md</h3>
+    <pre><code># Specification Quality Checklist: 片段 ID 生成器
+
+**Purpose**: 验证 spec 完整性和质量,再进入 plan 阶段
+**Created**: 2026-10-14
+**Feature**: specs/007-fragment-id/spec.md
+
+## Content Quality
+- [x] 无实现细节(spec 没提 SQL、API、PostgreSQL 配置)
+- [x] 聚焦用户价值(检索服务、引用服务)
+- [x] 写给非技术干系人(User Story 清晰)
+- [x] 所有必填 Section 完成
+
+## Requirement Completeness
+- [x] 无 [NEEDS CLARIFICATION] 残留
+- [x] Requirements 可测试(每条 FR/NFR 都可测)
+- [x] Success criteria 可衡量(10K/秒、100%、90 天)
+- [x] Success criteria 技术无关
+- [x] 验收场景 3 个已定义
+- [x] Edge cases 3 个已识别
+- [x] Scope 明确(Out of Scope 列出 5 项)
+- [x] Dependencies 列出 3 项
+
+## Feature Readiness
+- [x] 每条 FR 有验收标准
+- [x] User Scenarios 覆盖主流程
+- [x] 满足 Success Criteria(SC-001~005 都可达)
+- [x] 无实现细节泄漏(向量化、embedding 都已 Out of Scope)
+
+## Notes
+- ✅ 全过,进入 /speckit-plan 阶段
+- ⚠️ NFR-001(10K/秒)需在 plan 阶段细化为具体的批量写入策略</code></pre>
+
+    <h3>产出与下一步</h3>
+    <div class="diagram">
+      <svg viewBox="0 0 800 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FEATURE-007 流水线">
+        <rect x="20" y="60" width="160" height="60" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="100" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">/speckit-specify</text>
+        <text x="100" y="103" text-anchor="middle" font-size="10" fill="#57606a">✅ 已完成</text>
+
+        <line x1="180" y1="90" x2="220" y2="90" stroke="#57606a" stroke-width="2" marker-end="url(#arr-d)"/>
+
+        <rect x="220" y="60" width="160" height="60" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+        <text x="300" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#0969da">/speckit-clarify</text>
+        <text x="300" y="103" text-anchor="middle" font-size="10" fill="#57606a">下一步:可选</text>
+
+        <line x1="380" y1="90" x2="420" y2="90" stroke="#57606a" stroke-width="2" marker-end="url(#arr-d)"/>
+
+        <rect x="420" y="60" width="160" height="60" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="500" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#9a6700">/speckit-plan</text>
+        <text x="500" y="103" text-anchor="middle" font-size="10" fill="#57606a">技术方案</text>
+
+        <line x1="580" y1="90" x2="620" y2="90" stroke="#57606a" stroke-width="2" marker-end="url(#arr-d)"/>
+
+        <rect x="620" y="60" width="160" height="60" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="700" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#1a7f37">/speckit-tasks</text>
+        <text x="700" y="103" text-anchor="middle" font-size="10" fill="#57606a">任务拆分</text>
+
+        <text x="400" y="160" text-anchor="middle" font-size="10" font-style="italic" fill="#57606a">specs/007-fragment-id/ 下生成:spec.md + checklists/requirements.md</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 7:FEATURE-007 specify 完成后的下一步流水线</div>
+
+    <!-- ================= 11. 与 Constitution 的协作 ================= -->
+    <h2 id="constitution-coord">🤝 与 Constitution 的协作</h2>
+
+    <p>SKILL.md 行 117 明文要求 specify 加载 constitution.md。两者<strong>关系紧密</strong>:</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="constitution 协作">
+        <defs>
+          <marker id="arr-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+          </marker>
+        </defs>
+
+        <!-- Constitution -->
+        <rect x="40" y="40" width="200" height="200" rx="8" fill="#fff8c5" stroke="#9a6700" stroke-width="2"/>
+        <text x="140" y="65" text-anchor="middle" font-size="13" font-weight="700" fill="#9a6700">Constitution</text>
+        <text x="140" y="83" text-anchor="middle" font-size="10" fill="#57606a">项目级 1 次</text>
+
+        <text x="50" y="108" font-size="10" font-weight="600" fill="#1f2328">本项目 8 条原则:</text>
+        <text x="50" y="125" font-size="9" fill="#57606a">I. Security-First</text>
+        <text x="50" y="138" font-size="9" fill="#57606a">II. Spec-Traceable</text>
+        <text x="50" y="151" font-size="9" fill="#57606a">III. Test-First</text>
+        <text x="50" y="164" font-size="9" fill="#57606a">IV. Converge-Gate</text>
+        <text x="50" y="177" font-size="9" fill="#57606a">V. One-Feature-Owner</text>
+        <text x="50" y="190" font-size="9" fill="#57606a">VI. API Contract</text>
+        <text x="50" y="203" font-size="9" fill="#57606a">VII. 可观测性</text>
+        <text x="50" y="216" font-size="9" fill="#57606a">VIII. 简洁优先</text>
+
+        <!-- Specify -->
+        <rect x="300" y="40" width="200" height="200" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+        <text x="400" y="65" text-anchor="middle" font-size="13" font-weight="700" fill="#1a7f37">Specify</text>
+        <text x="400" y="83" text-anchor="middle" font-size="10" fill="#57606a">每个 feature 1 次</text>
+
+        <text x="310" y="108" font-size="10" font-weight="600" fill="#1f2328">如何消费宪法:</text>
+        <text x="310" y="125" font-size="9" fill="#57606a">● Requirements 中必须引用</text>
+        <text x="310" y="138" font-size="9" fill="#57606a">  Security-First / Spec-Traceable</text>
+        <text x="310" y="151" font-size="9" fill="#57606a">● Success Criteria 必须包含</text>
+        <text x="310" y="164" font-size="9" fill="#57606a">  Converge-Gate 判定项</text>
+        <text x="310" y="177" font-size="9" fill="#57606a">● Key Entities 必须有 Owner</text>
+        <text x="310" y="190" font-size="9" fill="#57606a">● Out of Scope 必须包含</text>
+        <text x="310" y="203" font-size="9" fill="#57606a">  "不做 X,因为宪法要求 Y"</text>
+        <text x="310" y="216" font-size="9" fill="#57606a">● Assumptions 显式提及</text>
+
+        <!-- 箭头 -->
+        <line x1="240" y1="140" x2="298" y2="140" stroke="#9a6700" stroke-width="2" marker-end="url(#arr-c)"/>
+        <text x="270" y="130" text-anchor="middle" font-size="10" font-weight="600" fill="#9a6700">约束</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">图 8:Constitution 怎么"渗透"到 Specify 的产出中</div>
+
+    <h3>本项目 FEATURE-007 体现的 4 条宪法原则</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>宪法原则</th><th>FEATURE-007 中如何体现</th></tr></thead>
+        <tbody>
+          <tr><td>Security-First</td><td>FR-004 写入失败报错(防止数据丢失)</td></tr>
+          <tr><td>Spec-Traceable</td><td>FEATURE-007 由 RFC-002 拆出,spec 头有 Feature ID</td></tr>
+          <tr><td>Test-First</td><td>Acceptance Scenarios 3 个,FR/NFR 全部可测</td></tr>
+          <tr><td>One-Feature-Owner</td><td>spec 头 Owner: @zhang-san(检索团队)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 12. Extension Hooks ================= -->
+    <h2 id="hooks">🔌 Extension Hooks 机制</h2>
+
+    <p>SKILL.md 行 24-56 和 242-271 定义了 Extension Hooks。这是一个<strong>可选</strong>的扩展点,本项目未启用,了解即可。</p>
+
+    <h3>两类钩子</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>钩子类型</th><th>触发时机</th><th>本项目状态</th></tr></thead>
+        <tbody>
+          <tr><td><code>before_specify</code></td><td>specify 开始前</td><td>未注册(无 .specify/extensions.yml)</td></tr>
+          <tr><td><code>after_specify</code></td><td>specify 完成后</td><td>未注册</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>钩子可做什么(示例)</h3>
+    <ul>
+      <li>创建/切换 git 分支</li>
+      <li>通知 Slack/飞书</li>
+      <li>创建 Jira ticket</li>
+      <li>运行自定义的预检脚本</li>
+    </ul>
+
+    <div class="callout">
+      <p><strong>SKILL.md 行 56:</strong>"If no hooks are registered or <code>.specify/extensions.yml</code> does not exist, <strong>skip silently</strong>"</p>
+      <p>本项目无 extensions.yml,所以<strong>所有钩子阶段都直接跳过</strong>,specify 行为等价于纯 Agent 工作流。</p>
+    </div>
+
+    <!-- ================= 13. 标准执行流程 ================= -->
+    <h2 id="runbook">🛠️ 标准执行流程</h2>
+
+    <p>基于 SKILL.md + 本项目状态,推荐 7 步标准流程:</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <h4>Step 1 · 准备输入(粒度 2 或 3)</h4>
+        <p>用"用户故事"或"产品需求"格式准备自然语言描述。避免技术方案细节。</p>
+        <p><strong>推荐模板:</strong></p>
+        <pre><code>作为 [用户/系统],
+我想 [做什么],
+以便 [达成什么]。
+
+[必填:输入/输出/存储/性能/不做的事]</code></pre>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 2 · 启动 Claude Code,执行命令</h4>
+        <pre><code>cd /Users/cai.he/.../deep-research/v3
+claude
+# 在 Claude Code 输入框:
+/speckit-specify [粘贴自然语言描述]</code></pre>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 3 · 监控 7 阶段执行</h4>
+        <p>观察 Agent 工具调用进度。注意关键阶段:</p>
+        <ul>
+          <li>阶段 2:short name 生成</li>
+          <li>阶段 4:目录创建(检查 sequential 编号是否正确)</li>
+          <li>阶段 6:核心提取 + 澄清</li>
+          <li>阶段 7:质量校验</li>
+        </ul>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 4 · 回答澄清问题(如有)</h4>
+        <p>Agent 会弹出最多 3 个 AskUserQuestion。逐个回答,选择 A/B/C 或 Custom。</p>
+        <p><strong>回答格式:</strong> Q1: A, Q2: Custom - [细节], Q3: B</p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 5 · Review spec.md</h4>
+        <p>查看 <code>specs/NNN-slug/spec.md</code>,人工检查:</p>
+        <ul>
+          <li>无 [NEEDS CLARIFICATION] 残留</li>
+          <li>每条 FR/NFR 可测试</li>
+          <li>Success Criteria 4 条以上,含数字</li>
+          <li>Edge Cases ≥ 3 个</li>
+          <li>Out of Scope ≥ 3 项</li>
+          <li>Owner 字段填了(本项目强制)</li>
+        </ul>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 6 · 提交到 git</h4>
+        <pre><code>cd /Users/cai.he/.../deep-research/v3
+git checkout -b feature/007-fragment-id
+git add specs/007-fragment-id/
+git commit -m "spec(007): fragment ID generator specification
+
+- FEATURE-007-fragment-id
+- Owner: @zhang-san
+- Draft spec.md + checklists/requirements.md
+- 0 NEEDS CLARIFICATION 残留
+- 17/17 质量校验通过
+
+Co-Authored-By: Claude Code <noreply@anthropic.com>"
+git push origin feature/007-fragment-id</code></pre>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Step 7 · 拉 PR + 跨团队评审</h4>
+        <p>PR 模板必填字段(Spec-Traceable 强制):</p>
+        <pre><code>Spec: FEATURE-007-fragment-id
+Owner: @zhang-san
+Tests: TBD(由 plan 阶段填)
+Observability: TBD
+Security: TBD</code></pre>
+        <p>需 ≥1 个跨团队 reviewer 批准 → 才能进入 plan 阶段。</p>
+      </div>
+    </div>
+
+    <!-- ================= 14. 常见错误 ================= -->
+    <h2 id="pitfalls">⚠️ 常见错误</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>错误</th><th>SKILL.md 引用</th><th>后果</th><th>对策</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>参数为空</td>
+            <td>行 121</td>
+            <td>直接报错,不执行</td>
+            <td>提供非空描述</td>
+          </tr>
+          <tr>
+            <td>一次指定多个 feature</td>
+            <td>行 111</td>
+            <td>违反硬规则,产生混合 spec</td>
+            <td>拆成多次调用,每次 1 个 feature</td>
+          </tr>
+          <tr>
+            <td>写技术方案而非业务需求</td>
+            <td>行 285-288</td>
+            <td>spec 难读,plan 阶段混乱</td>
+            <td>只写 WHAT/WHY,不写 HOW</td>
+          </tr>
+          <tr>
+            <td>用模糊词(MUST 改成 should)</td>
+            <td>行 17 (MUST)</td>
+            <td>Requirements 失去强制力</td>
+            <td>FR 全部 MUST 开头,SC 用百分比/数字</td>
+          </tr>
+          <tr>
+            <td>[NEEDS CLARIFICATION] 超过 3 个</td>
+            <td>行 130</td>
+            <td>Agent 强行截断,丢重要信息</td>
+            <td>提前用"先 RFC 后 specify"收边界</td>
+          </tr>
+          <tr>
+            <td>Out of Scope 留 "N/A"</td>
+            <td>行 294</td>
+            <td>校验失败</td>
+            <td>不相关则整个 Section 删除</td>
+          </tr>
+          <tr>
+            <td>Success Criteria 写实现指标</td>
+            <td>行 339-343</td>
+            <td>无法跨实现验证</td>
+            <td>用"用户看到/能在 X 秒内/提升 Y%"</td>
+          </tr>
+          <tr>
+            <td>忘了写 Owner</td>
+            <td>本项目宪法 V</td>
+            <td>Converge 阶段被阻断</td>
+            <td>spec 头必须有 Owner 字段</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= 15. 实操检查清单 ================= -->
+    <h2 id="checklist">✅ 实操检查清单</h2>
+
+    <h3>执行命令前</h3>
+    <ul>
+      <li><input type="checkbox" disabled> 确认功能边界已收口(有 RFC 或清晰的范围文档)</li>
+      <li><input type="checkbox" disabled> 准备自然语言描述(粒度 2 或 3)</li>
+      <li><input type="checkbox" disabled> 描述包含:谁用、做什么、为啥、关键约束</li>
+      <li><input type="checkbox" disabled> 描述不含:具体技术栈、SQL、API endpoint、代码</li>
+      <li><input type="checkbox" disabled> Owner 已确认(本项目强制)</li>
+    </ul>
+
+    <h3>执行命令中</h3>
+    <ul>
+      <li><input type="checkbox" disabled> 监控 Agent 的 7 阶段进度</li>
+      <li><input type="checkbox" disabled> 短名称(short name)是否合理</li>
+      <li><input type="checkbox" disabled> sequential 编号是否冲突(用 NNN 三位数)</li>
+      <li><input type="checkbox" disabled> 回答每个 AskUserQuestion(最多 3 个)</li>
+      <li><input type="checkbox" disabled> 确认 17 项校验全部通过</li>
+    </ul>
+
+    <h3>Review spec.md</h3>
+    <ul>
+      <li><input type="checkbox" disabled> 6 个必填 Section 都完成</li>
+      <li><input type="checkbox" disabled> 无 [NEEDS CLARIFICATION] 残留</li>
+      <li><input type="checkbox" disabled> 每条 FR 可测试(用 MUST/SHOULD/MAY 开头)</li>
+      <li><input type="checkbox" disabled> ≥4 条 Success Criteria,全部含数字</li>
+      <li><input type="checkbox" disabled> ≥3 条 Edge Cases</li>
+      <li><input type="checkbox" disabled> ≥3 条 Out of Scope</li>
+      <li><input type="checkbox" disabled> Owner 字段已填</li>
+      <li><input type="checkbox" disabled> Feature ID 格式 FEATURE-NNN-slug</li>
+    </ul>
+
+    <h3>提交阶段</h3>
+    <ul>
+      <li><input type="checkbox" disabled> 拉分支 feature/NNN-slug</li>
+      <li><input type="checkbox" disabled> 提交 specs/NNN-slug/{spec.md, checklists/requirements.md}</li>
+      <li><input type="checkbox" disabled> commit message 含 Feature ID</li>
+      <li><input type="checkbox" disabled> 拉 PR 跨团队 reviewer</li>
+      <li><input type="checkbox" disabled> PR 模板必填字段完整</li>
+    </ul>
+
+    <!-- ================= 16. 参考资料 ================= -->
+    <h2 id="references">📚 参考资料</h2>
+
+    <h3>本项目直接资源</h3>
+    <ul>
+      <li><code>.claude/skills/speckit-specify/SKILL.md</code>(349 行,本文基础)</li>
+      <li><code>.specify/templates/spec-template.md</code>(132 行,9 个 Section 模板)</li>
+      <li><code>.specify/init-options.json</code>(本项目用 <code>feature_numbering: "sequential"</code>)</li>
+      <li><code>.specify/memory/constitution.md</code>(v1.1.0,8 条原则)</li>
+      <li><a href="constitution.html">Constitution 深度解读</a>(本项目文档)</li>
+    </ul>
+
+    <h3>相关命令</h3>
+    <ul>
+      <li><code>/speckit-constitution</code>(项目级 1 次,制定宪法)</li>
+      <li><code>/speckit-clarify</code>(spec 之后的歧义澄清)</li>
+      <li><code>/speckit-plan</code>(技术方案,基于 spec)</li>
+      <li><code>/speckit-tasks</code>(任务拆分,基于 plan)</li>
+      <li><code>/speckit-analyze</code>(对齐检查,合并前)</li>
+      <li><code>/speckit-checklist</code>(质量清单,合并前)</li>
+      <li><code>/speckit-converge</code>(收敛判定,合并前)</li>
+    </ul>
+
+    <h3>RFC 与 spec 关系</h3>
+    <p>本项目 RFC-002 答案溯源是模糊需求全景图的范例,specify 是把 RFC 拆解成可执行 spec 的工具。建议先看 <a href="constitution.html">Constitution 文档</a> 了解治理规则,再看 RFC-002 学习从 RFC 到 spec 的转换。</p>
+
+    <hr>
+
+    <div class="callout success">
+      <p><strong>下一步建议:</strong></p>
+      <ol>
+        <li>用"用户故事"格式准备你的下一个 feature 描述</li>
+        <li>在 Claude Code 跑一次 <code>/speckit-specify</code>,看实际生成效果</li>
+        <li>如果信息不足,Agent 会主动 AskUserQuestion;回答后看 spec.md</li>
+        <li>提交到 PR,跨团队评审后进入 plan 阶段</li>
+        <li>想让我帮你<strong>用你的真实项目场景</strong>演练一遍 specify 流程?告诉我 feature 名。</li>
+      </ol>
+    </div>
+
+  </article>
+</main>
+
+</body>
+</html>
