@@ -71,9 +71,9 @@ description: "M1 任务清单（5 个 User Story × 4 人并行 5 天）"
 
 **Target**: Day 2 末完成
 
-- [ ] T016 创建 `research_backend/app/main.py`（FastAPI app 实例 + lifespan + CORS + 全局异常处理 + 启动 banner） [Owner: Dev.cai.1]
-- [ ] T017 [P] 创建 `research_backend/app/config.py`（pydantic-settings 加载 .env，启动时校验必备变量，constitution I 兜底） [Owner: Dev.cai.1]
-- [ ] T018 [P] 创建 `research_backend/app/api/deps.py`（依赖注入：DB session / Redis client / LangGraph compiled graph / Langfuse client） [Owner: Dev.cai.1]
+- [x] T016 创建 `research_backend/app/main.py`（FastAPI app 实例 + lifespan + CORS + 全局异常处理 + 启动 banner） [Owner: Dev.cai.1]
+- [x] T017 [P] 创建 `research_backend/app/config.py`（pydantic-settings 加载 .env，启动时校验必备变量，constitution I 兜底） [Owner: Dev.cai.1]
+- [x] T018 [P] 创建 `research_backend/app/api/deps.py`（依赖注入：DB session / Redis client / LangGraph compiled graph / Langfuse client） [Owner: Dev.cai.1]
 - [ ] T019 创建 `research_backend/app/db/models.py`（SQLAlchemy 2.x async ORM，Thread + Message 两个模型，映射 data-model.md schema） [Owner: Dev.cai.2]
 - [ ] T020 创建 `research_backend/app/db/session.py`（async engine + sessionmaker + alembic 集成） [Owner: Dev.cai.2]
 - [ ] T021 创建 `research_backend/app/db/migrations/`（alembic init + 第一个 migration：threads + messages 两表，索引匹配 data-model.md） [Owner: Dev.cai.2]
@@ -81,13 +81,13 @@ description: "M1 任务清单（5 个 User Story × 4 人并行 5 天）"
 - [ ] T023 [P] 创建 `research_backend/app/ratelimit/limiter.py`（Redis 滑动窗口实现：key=ip_hash:user_id，INCR + EXPIRE 原子；阈值每分 10 / 每小时 100，超限 raise HTTPException 429） [Owner: Dev.cai.4]
 - [ ] T024 [P] 创建 `research_backend/app/api/schemas.py`（Pydantic 模型：Thread / Message / MessageCreate / SSEEvent / Error，对应 contracts/openapi.yaml） [Owner: Dev.cai.2]
 - [ ] T025 [P] 创建 `research_backend/app/observability/langfuse.py`（`get_client()` + `@observe` decorator + OTel 配置，ADR-0006） [Owner: Dev.cai.2]
-- [ ] T026 [P] 创建 `research_backend/app/observability/logging.py`（structlog 配置：JSON 输出 + ts/level/service/trace_id/actor/event/latency_ms/error 必填字段，constitution VII） [Owner: Dev.cai.1]
+- [x] T026 [P] 创建 `research_backend/app/observability/logging.py`（structlog 配置：JSON 输出 + ts/level/service/trace_id/actor/event/latency_ms/error 必填字段，constitution VII） [Owner: Dev.cai.1]
 - [ ] T027 创建 `research_backend/app/agents/base.py`（BaseAgent 抽象：M1 阶段仅占位，不实现 4 Agent；M2+ 启用，spec Q1 极简 echo） [Owner: Dev.cai.2]
 - [ ] T028 [P] 创建 `research_backend/app/agents/echo.py`（M1 极简 echo 节点：接 user query → 按 token 切分 → 流式回显，spec Q1 澄清） [Owner: Dev.cai.2]
 - [ ] T029 创建 `research_backend/app/graph/state.py`（AgentState M1 简化为：`{ messages: list, user_id: str, thread_id: str }`，M2+ 扩展） [Owner: Dev.cai.2]
 - [ ] T030 创建 `research_backend/app/graph/graph.py`（StateGraph compile：单 echo 节点 + START/END 边 + RedisCheckpointSaver 接入） [Owner: Dev.cai.2]
 - [ ] T031 [P] 创建 `research_backend/app/api/routes.py`（路由注册：/health / /threads / /threads/{id} / /threads/{id}/messages，按 contracts/openapi.yaml 落地） [Owner: Dev.cai.2]
-- [ ] T032 创建 `research_backend/pyproject.toml` dev 依赖（pytest / pytest-asyncio / pytest-cov / ruff / bandit / pip-audit / httpx / factory-boy / freezegun） [Owner: Dev.cai.1]
+- [x] T032 创建 `research_backend/pyproject.toml` dev 依赖（pytest / pytest-asyncio / pytest-cov / ruff / bandit / pip-audit / httpx / factory-boy / freezegun） [Owner: Dev.cai.1]
 - [ ] T033 [P] 创建 `research_frontend/app/layout.tsx`（根 layout + 字体 + 全局 ErrorBoundary） [Owner: Dev.cai.3]
 - [ ] T034 [P] 创建 `research_frontend/app/page.tsx`（对话主页：左侧 thread 列表 + 右侧 ChatThread） [Owner: Dev.cai.3]
 - [ ] T035 [P] 创建 `research_frontend/lib/api.ts`（fetch wrapper：自动携带 cookie + EventSource SSE 客户端 + 错误处理） [Owner: Dev.cai.3]
@@ -111,13 +111,13 @@ description: "M1 任务清单（5 个 User Story × 4 人并行 5 天）"
 
 ### Tests for US1 ⚠️ TDD 优先
 
-- [ ] T041 [P] [US1] 编写 `research_backend/tests/integration/test_dev_up.py`（集成测试：起 5 个 docker-compose 服务，逐一 curl /health，验证全 up） [Owner: Dev.cai.1]
-- [ ] T042 [P] [US1] 编写 `research_backend/tests/unit/test_config.py`（单测：pydantic-settings 加载 .env，缺失必备变量 raise ValidationError） [Owner: Dev.cai.1]
+- [x] T041 [P] [US1] 编写 `research_backend/tests/integration/test_dev_up.py`（集成测试：起 5 个 docker-compose 服务，逐一 curl /health，验证全 up） [Owner: Dev.cai.1]
+- [x] T042 [P] [US1] 编写 `research_backend/tests/unit/test_config.py`（单测：pydantic-settings 加载 .env，缺失必备变量 raise ValidationError） [Owner: Dev.cai.1]
 
 ### Implementation for US1
 
 - [ ] T043 [US1] 完善 `deploy/docker-compose.yml`（5 服务：postgres:16 / redis:8 / langfuse/langfuse:4.59.0 / backend / frontend；healthcheck + depends_on + 网络 bridge + 数据卷 + 资源限制） [Owner: Dev.cai.1]
-- [ ] T044 [P] [US1] 完善 `research_backend/Dockerfile`（Python 3.12-slim + uv 装依赖 + uvicorn 启动 + healthcheck） [Owner: Dev.cai.1]
+- [x] T044 [P] [US1] 完善 `research_backend/Dockerfile`（Python 3.12-slim + uv 装依赖 + uvicorn 启动 + healthcheck） [Owner: Dev.cai.1]
 - [ ] T045 [P] [US1] 完善 `research_frontend/Dockerfile`（Node 20-alpine 多阶段：build → standalone output → 运行） [Owner: Dev.cai.3]
 - [ ] T046 [P] [US1] 完善 `Taskfile.yml`（增加 dev:up 等待 healthcheck / dev:down 清卷 / dev:logs tail / backend:test / backend:lint / backend:coverage / frontend:test / frontend:dev） [Owner: Dev.cai.4]
 - [ ] T047 [P] [US1] 端口冲突检测（`task dev:up` 启动前 lsof 检查 3000/3001/5432/6379/8000 端口，冲突时给明确修复建议） [Owner: Dev.cai.1]

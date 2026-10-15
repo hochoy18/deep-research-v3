@@ -1,0 +1,158 @@
+[project]
+name = "research-backend"
+version = "0.1.0-m1"
+description = "hochoy Deep Research Agent — backend (M1 mock echo service)"
+authors = [
+    { name = "hochoy", email = "dev@hochoy.example" },
+]
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { text = "Proprietary" }
+
+# ---------------------------------------------------------------------------
+# Runtime dependencies — minimal M1 mock service (constitution VIII simplicity)
+# ---------------------------------------------------------------------------
+dependencies = [
+    # Web framework (research.md R9, ADR-0010 no auth)
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+
+    # Settings & validation (constitution I launch-time validation)
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.5.0",
+
+    # Observability (ADR-0006 Langfuse OTel)
+    "structlog>=24.4.0",
+    "langfuse>=3.0.0",
+
+    # Future M2+ hooks; M1 keeps stubs only
+    # "langgraph>=0.2.0",   # Dev.cai.2 wires in Phase 2 T029/T030
+    # "sqlalchemy[asyncio]>=2.0.36",  # Dev.cai.2 wires in Phase 2 T019/T020
+    # "redis>=5.1.0",        # Dev.cai.4 wires in Phase 2 T023
+]
+
+# ---------------------------------------------------------------------------
+# Dev dependencies — Constitution III (Test-First, NON-NEGOTIABLE)
+# Critical-path coverage gate: 80% on the 4 declared paths
+# ---------------------------------------------------------------------------
+[project.optional-dependencies]
+dev = [
+    # Test framework (TDD red-green-refactor loop)
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=5.0.0",
+
+    # HTTP testing for /health, /threads endpoints
+    "httpx>=0.27.0",
+    "asgi-lifespan>=2.1.0",
+
+    # Test fixtures / determinism
+    "factory-boy>=3.3.0",
+    "freezegun>=1.5.0",
+    "fakeredis>=2.26.0",
+
+    # Lint / format (constitution II/III consistency)
+    "ruff>=0.7.0",
+
+    # SAST / SCA (constitution I)
+    "bandit[toml]>=1.7.10",
+    "pip-audit>=2.7.0",
+]
+
+# ---------------------------------------------------------------------------
+# uv 0.4+ lockfile metadata (research.md R9)
+# ---------------------------------------------------------------------------
+[tool.uv]
+managed = true
+
+# ---------------------------------------------------------------------------
+# Pytest configuration — Constitution III Test-First
+# Critical paths (4) marked via pytest markers
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--asyncio-mode=auto",
+    "-p",
+    "asyncio",
+]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "critical_path_1: query submission → mock SSE stream end-to-end",
+    "critical_path_2: thread create / list / reopen (user_id filtered)",
+    "critical_path_3: anonymous cookie generation + rate limiting",
+    "critical_path_4: observability trace write",
+    "unit: pure unit test (no external services)",
+    "integration: requires docker-compose stack or stubbed deps",
+]
+
+# ---------------------------------------------------------------------------
+# Coverage configuration — Constitution III (key path ≥80%)
+# Critical-path sources must remain explicitly listed below
+# ---------------------------------------------------------------------------
+[tool.coverage.run]
+branch = true
+source = [
+    "app",
+]
+omit = [
+    "tests/*",
+    "app/__init__.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 80
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+
+[tool.coverage.paths]
+source = ["app"]
+
+# ---------------------------------------------------------------------------
+# Ruff (linter + formatter; replaces black + flake8)
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["tests/fixtures"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "N",   # pep8-naming
+    "S",   # bandit subset (safer overlap with [tool.bandit])
+    "C4",  # flake8-comprehensions
+]
+ignore = [
+    "S101",  # allow `assert` in tests; pytest relies on it
+    "E501",  # handled by formatter (line-length)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S", "B008"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+# ---------------------------------------------------------------------------
+# Bandit — Constitution I SAST gate (high severity → exit 1)
+# ---------------------------------------------------------------------------
+[tool.bandit]
+exclude_dirs = ["tests"]
+# skip B101 (assert) inside test code already covered by per-file-ignores above
+skips = []
