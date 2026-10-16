@@ -74,28 +74,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Co-Owner C | @Dev.cai.3 | US-2 frontend + US-3 PR-gate (Next.js + vitest + ci.yml + W-14) |
 | Co-Owner D | @Dev.cai.4 | US-4 tests + US-5 owners (Taskfile + pre-commit + coveragerc + CODEOWNERS 验证) |
 
-### Converge-Gate 状态（集成日 2026-10-16）
+### Converge-Gate 状态（集成日 2026-10-16 实测）
 
-| # | 验证项 | 命令 | 状态 |
-|---|---|---|---|
-| 1 | Taskfile ≥ 10 task | `grep -cE "^  [a-z]..." Taskfile.yml` | ✅ PASS（13 个） |
-| 2 | 后端 uv sync | `cd research_backend && uv sync` | ⏳ 待集成日跑 |
-| 3 | 前端 pnpm install | `cd research_frontend && pnpm install` | ⏳ 待集成日跑 |
-| 4 | 后端能 import graph | `uv run python -c "from app.graph.graph import graph; print(graph)"` | ⏳ 待集成日跑 |
-| 5 | 后端单测 | `uv run pytest tests/unit -v` | ⏳ 待集成日跑 |
-| 6 | 前端单测 | `pnpm test` | ⏳ 待集成日跑 |
-| 7 | 关键路径覆盖率 ≥ 80% | `uv run pytest --cov=app` | ⏳ 待集成日跑 |
-| 8 | ruff lint 0 error | `uv run ruff check .` | ⏳ 待集成日跑 |
-| 9 | eslint 0 error | `pnpm lint` | ⏳ 待集成日跑 |
-| 10 | bandit 0 high | `uv run bandit -r app/ -ll` | ⏳ 待集成日跑 |
-| 11 | gitleaks 0 leak | `gitleaks detect --source .` | ⏳ 待集成日跑（需装 gitleaks） |
-| 12 | CODEOWNERS 路径覆盖 | `bash scripts/check_codeowners.sh` | ✅ PASS（32 rules + 1 wildcard） |
-| 13 | ci.yml 8 jobs 名 | `grep -E "^\s{2}[a-z-]+:" .github/workflows/ci.yml` | ✅ PASS（backend / frontend-lint / frontend-test / frontend-build / sast / sca-pip / sca-gitleaks / commitlint） |
-| 14 | dev:up 启服务 | `task dev:up` | ⏳ 待集成日跑（需装 task + Docker 5 容器） |
+| # | 验证项 | 命令 | 实测结果 | 状态 |
+|---|---|---|---|---|
+| 1 | Taskfile ≥ 10 task | `grep -cE "^  [a-z]..." Taskfile.yml` | 13 tasks | ✅ PASS |
+| 2 | 后端 uv sync | `cd research_backend && uv sync --extra dev` | 123 packages resolved | ✅ PASS |
+| 3 | 前端 pnpm install | `cd research_frontend && pnpm install` | Already up to date | ✅ PASS |
+| 4 | 后端能 import graph | `.venv/bin/python -c "from app.graph.graph import get_compiled_graph"` | OK | ✅ PASS |
+| 5 | 后端单测 | `.venv/bin/pytest tests/unit -v` | 114 passed, 0 failed | ✅ PASS |
+| 6 | 前端单测 | `pnpm test run` | 7/7 passed | ✅ PASS |
+| 7 | 关键路径覆盖率 ≥ 80% | `.venv/bin/pytest --cov=app` | **70.51%**（routes.py 35% 拉低） | ⚠️ NOT MET |
+| 8 | ruff lint 0 error | `.venv/bin/ruff check .` | 0 errors | ✅ PASS |
+| 9 | eslint 0 error | `pnpm lint` | exit 0 (0 errors, 0 warnings) | ✅ PASS |
+| 10 | bandit 0 high | `.venv/bin/bandit -r app/ -ll` | 0 high | ✅ PASS |
+| 11 | gitleaks 0 leak | `gitleaks detect --source .` | 工具未装 | ⏭️ SKIP |
+| 12 | CODEOWNERS 路径覆盖 | `bash scripts/check_codeowners.sh` | 32 rules PASS | ✅ PASS |
+| 13 | ci.yml 8 jobs 名 | `grep -E "^\s{2}[a-z-]+:" .github/workflows/ci.yml` | 8 jobs | ✅ PASS |
+| 14 | dev:up 启服务 | `task dev:up` | task 工具未装 + Docker 5 容器 | ⏭️ SKIP |
 
-**已过**: 3/14 (轻量级静态检查)
-**待跑**: 11/14 (动态测试 + dev:up)
-**注**: #11 gitleaks 需要 `brew install gitleaks`；#14 task 需要 `brew install go-task` + Docker 5 容器启动
+**最终**: 11/14 PASS · 1/14 NOT MET (#7 coverage) · 2/14 SKIP (#11 gitleaks, #14 dev:up)
+
+**集成日修复**（主 Owner TL.cai）：
+- `c61f25d` `fix(backend): ruff 0 errors`（加 RUF001/002/003 ignore for 中文 docstring）
+- `74f550c` `fix(backend): add dev optional-dependencies`（补 T002 漏掉的 langfuse + 补 redis 依赖）
+- `96bd221` `fix(frontend): vitest 7/7 + eslint 0 errors`（JSX plugin / flat config / TS 7→5.7）
+
+**已知债务**：
+- **#7 coverage 70.51% < 80%**：routes.py 35% 拉低（HTTP 路由需要 integration tests，超出 M1 单测范围）。M2 加 integration test suite 补上
+- **#11 gitleaks 未装**：pre-commit 链已配置（`gitleaks v8.18.4`），CI job `sca-gitleaks` 也会跑；只是本机未装。集成日未装不影响 CI gate
+- **#14 dev:up 未跑**：需 `brew install go-task` + Docker 5 容器（Postgres 16 / Redis 8 / Langfuse 4.59 / backend / frontend）。手动 follow `docs/deployment.md` 即可
 
 ### 已知债务（Deferred）
 
