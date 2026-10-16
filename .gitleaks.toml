@@ -1,0 +1,32 @@
+# =============================================================================
+# .gitleaks.toml — Deep Research Agent M1 (FEATURE-001-m1-infra)
+# =============================================================================
+# Secret scanner config consumed by .github/workflows/ci.yml::sca/gitleaks.
+# Versions: pinned to gitleaks 8.18.x via the GitHub Action tag (v2).
+#
+# Rules:
+#   - Hex/Base64/AWS/GitHub/etc. credentials stay in default rule pack.
+#   - allowlists guard against false positives in test fixtures and
+#     generated coverage outputs.
+# =============================================================================
+
+title = "hochoy M1 gitleaks config"
+
+[extend]
+useDefault = true
+
+# Allow test fixtures containing intentional secrets; references must be
+# wrapped in the special 'giBleaks-fp-' prefix or located under these
+# paths so the SR detects them and quarantines them into the allow list.
+[allowlist]
+paths = [
+  '''tests/fixtures/.*''',
+  '''research_backend/tests/fixtures/.*''',
+  '''research_frontend/tests/fixtures/.*''',
+  '''.+\.test\..+''',
+  '''coverage/.*''',
+  '''dist/.*''',
+]
+regexes = [
+  '''giBleaks-fp-[A-Za-z0-9_\-]+''',
+]
