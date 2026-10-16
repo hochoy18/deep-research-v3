@@ -260,13 +260,14 @@ Eval pipeline + CI/CD + 安全 + 异常降级 + v1 demo，HotpotQA 子集跑通�
 
 ### A.1 Owner × Branch × 任务 × 工时 × 依赖
 
-| Owner          | Branch             | 任务                                                                                                                                              | 工时 | 依赖             |
-| -------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | ---------------- |
-| A - Backend Infra | `feat/m1-infra`    | FastAPI 骨架 + pydantic-settings + Postgres/Redis 连接 + alembic + Langfuse SDK + Dockerfile + `/health` `/threads` 假接口                       | 3d   | —                |
-| B - Graph Base | `feat/m1-graph`    | LangGraph AgentState schema + BaseAgent + Planner（mock LLM）+ RedisCheckpointSaver + 一个端到端假 trace                                          | 4d   | A 的 config      |
-| C - Frontend   | `feat/m1-frontend` | Next.js + Tailwind + shadcn + 对话流 + EventSource + Markdown 渲染 + 假数据流测试                                                                  | 3d   | A 的 OpenAPI schema（mock 也行） |
-| D - Deploy + CI | `feat/m1-deploy`   | docker-compose v1 + GitHub Actions PR pipeline + Taskfile + pre-commit（commitlint + ruff + eslint）                                                | 2d   | A 的 Dockerfile  |
-| 集成日         | —                  | merge 全部 → main → 跑一次端到端（query → SSE → draft）                                                                                            | 1d   | 上面全部         |
+| Owner          | 实名           | Branch                  | 任务                                                                                                                                              | 工时 | 依赖             |
+| -------------- | -------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | ---------------- |
+| A - Backend Infra | Dev.cai.1     | `feat/m1-us1-infra`     | FastAPI 骨架 + pydantic-settings + Postgres/Redis 连接 + alembic + Langfuse SDK + Dockerfile + `/health` `/threads` 假接口                       | 3d   | —                |
+| B - Graph Base | Dev.cai.2       | `feat/m1-us2-echo-backend` | LangGraph AgentState schema + BaseAgent + Planner（mock LLM）+ RedisCheckpointSaver + 一个端到端假 trace                                          | 4d   | A 的 config      |
+| C - Frontend   | Dev.cai.3       | `feat/m1-us2-frontend`  | Next.js + Tailwind + shadcn + 对话流 + EventSource + Markdown 渲染 + 假数据流测试                                                                  | 3d   | A 的 OpenAPI schema（mock 也行） |
+| D - Deploy + CI | Dev.cai.4      | `feat/m1-us4-tests-owners` | docker-compose v1 + GitHub Actions PR pipeline + Taskfile + pre-commit（commitlint + ruff + eslint）                                                | 2d   | A 的 Dockerfile  |
+| 主 Owner       | TL.cai         | `feature/001-m1-infra` (bootstrap) + main 兜底 | 跨 US 协调 / Converge-Gate 签字 / 集成日 demo / merge 顺序决策                                              | 5d   | 上面全部         |
+| 集成日         | TL.cai + Dev.cai.1-4 | —    | merge 全部 → main → 跑一次端到端（query → SSE → draft）                                                                                            | 1d   | 上面全部         |
 
 ### A.2 集成顺序（避免冲突）
 

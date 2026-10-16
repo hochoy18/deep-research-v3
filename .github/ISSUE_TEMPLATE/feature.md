@@ -12,7 +12,7 @@ assignees: []
 
 ## Spec 追溯
 
-- **Spec ID**: FEATURE-###-slug
+- **Spec ID**: FEATURE-001-m1-infra（当前 M1；后续 milestone 替换 ID）
 - **关联 User Story**: US-#
 - **关联 Plan / Task**: tasks.md T### / plan.md §...
 

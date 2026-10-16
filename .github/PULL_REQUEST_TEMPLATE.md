@@ -8,7 +8,7 @@
 |---|---|
 | **Spec** | FEATURE-###  <!-- 例：FEATURE-001-m1-infra --> |
 | **Owner** | @<username>   <!-- 主 Owner 或执行 Co-Owner --> |
-| **Type** | feat / fix / docs / config / test / refactor |
+| **Type** | feat / fix / docs / style / refactor / perf / test / build / ci / chore / revert  <!-- 见 contributing.md §2 Conventional Commits --> |
 | **User Story** | US-#  <!-- 如适用；config/docs 可填 N/A --> |
 | **Task** | T###  <!-- 对应 tasks.md 中的 task id --> |
 

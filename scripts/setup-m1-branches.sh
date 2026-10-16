@@ -40,6 +40,9 @@ WORK_BRANCHES=(
   "feat/m1-us4-tests-owners:Dev.cai.4"
 )
 BOOTSTRAP_BRANCH="feature/001-m1-infra"  # 主 Owner 用的初始 bootstrap 分支（与 spec.md §Feature Branch 对齐）
+# 注：bootstrap 分支只用于 setup 期（脚本第一次跑时一次性写 .github/ 模板）；
+#     脚本执行完成后该分支归档（merge 到 main 或删除），不再用于日常开发。
+#     主 Owner 日常工作在 main 上（constitution V "1 主 Owner 兜底 main"）。
 
 # ---- 工具函数 ----
 step()  { printf "\n\033[1;34m▶ %s\033[0m\n" "$1"; }
@@ -87,7 +90,30 @@ else
     ok "[DRY] git checkout -b $BOOTSTRAP_BRANCH"
   else
     git checkout -b "$BOOTSTRAP_BRANCH"
-    ok "已创建本地分支 $BOOTSTRAP_BRANCH"
+    # W-3 修复：先创建占位文件 + commit，避免 push 空 ref
+    cat > "BOOTSTRAP.md" <<'BOOTSTRAP_EOF'
+# M1 Bootstrap 分支（setup-only）
+
+本分支由 `scripts/setup-m1-branches.sh` 第一次运行时创建，
+用于落地 `.github/` 模板（CODEOWNERS / PR / Issue）和 branch protection。
+
+**本分支 setup 完成后归档**（merge 到 main 后删除），不再用于日常开发。
+主 Owner 日常工作在 main 上。
+BOOTSTRAP_EOF
+    git add BOOTSTRAP.md
+    git commit -m "chore(m1): bootstrap branch marker
+
+setup-only 分支占位，避免 push 空 ref。
+脚本第 1 次跑时创建；后续 merge 到 main 后归档。
+
+Spec: FEATURE-001-m1-infra
+Owner: TL.cai
+Type: docs
+Converge: N/A
+Tests: N/A
+Observability: N/A
+Security: N/A" > /dev/null 2>&1
+    ok "已创建本地分支 $BOOTSTRAP_BRANCH（含 BOOTSTRAP.md 占位）"
   fi
 fi
 
@@ -233,7 +259,7 @@ cat > "$PR_TEMPLATE" <<'PR_TEMPLATE_EOF'
 |---|---|
 | **Spec** | FEATURE-###  <!-- 例：FEATURE-001-m1-infra --> |
 | **Owner** | @<username>   <!-- 主 Owner 或执行 Co-Owner --> |
-| **Type** | feat / fix / docs / config / test / refactor |
+| **Type** | feat / fix / docs / style / refactor / perf / test / build / ci / chore / revert  <!-- 见 contributing.md §2 Conventional Commits --> |
 | **User Story** | US-#  <!-- 如适用；config/docs 可填 N/A --> |
 | **Task** | T###  <!-- 对应 tasks.md 中的 task id --> |
 
@@ -314,7 +340,7 @@ assignees: []
 
 ## Spec 追溯
 
-- **Spec ID**: FEATURE-###-slug
+- **Spec ID**: FEATURE-001-m1-infra（当前 M1；后续 milestone 替换 ID）
 - **关联 User Story**: US-#
 - **关联 Plan / Task**: tasks.md T### / plan.md §...
 
