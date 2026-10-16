@@ -15,7 +15,6 @@ import re
 import uuid
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Optional, Union
 
 from pydantic import (
     BaseModel,
@@ -23,7 +22,6 @@ from pydantic import (
     Field,
     field_validator,
 )
-
 
 # === Schemas for /threads === #
 
@@ -44,8 +42,8 @@ class Thread(BaseModel):
     status: ThreadStatusEnum = ThreadStatusEnum.ACTIVE
     created_at: datetime
     updated_at: datetime
-    langgraph_thread_id: Optional[uuid.UUID] = None
-    message_count: Optional[int] = Field(
+    langgraph_thread_id: uuid.UUID | None = None
+    message_count: int | None = Field(
         default=None, ge=0, description="该 thread 下的消息数（可选字段）"
     )
 
@@ -104,7 +102,7 @@ class Message(BaseModel):
     content: str
     status: MessageStatusEnum
     created_at: datetime
-    completed_at: Optional[datetime] = None
+    completed_at: datetime | None = None
 
 
 # === Schemas for SSE === #
@@ -147,7 +145,7 @@ class SSEEvent(BaseModel):
     下通过；M1 阶段仅作为 shape 锁定，运行时 routes 用更窄的 data 构造。
     """
     event: SSEEventType
-    data: Union[_MessageChunk, _StateUpdate, _Done, _ErrorDetail]
+    data: _MessageChunk | _StateUpdate | _Done | _ErrorDetail
 
 
 # === Common Error === #
@@ -157,7 +155,7 @@ class Error(BaseModel):
     """OpenAPI Error schema。"""
     error: str
     message: str
-    details: Optional[dict] = None
+    details: dict | None = None
 
 
 # === Helper: compose quick-validating UUID v4 === #
@@ -176,11 +174,11 @@ def is_uuid_v4(value: str) -> bool:
 # === Re-exports for convenience === #
 
 __all__ = [
-    "Thread",
+    "Error",
     "Message",
     "MessageCreate",
     "SSEEvent",
     "SSEEventType",
-    "Error",
+    "Thread",
     "is_uuid_v4",
 ]

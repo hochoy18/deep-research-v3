@@ -6,11 +6,9 @@
 from __future__ import annotations
 
 import asyncio
-import os
 from typing import Any
 
 import pytest
-
 from app.observability.langfuse import (
     check_langfuse_configured,
     get_client,
@@ -86,7 +84,7 @@ class TestStartAndUpdateObservation:
         """output=None / metadata=None 时不调用 .update()。"""
         # mock observation
         class _Obs:
-            calls: list[dict] = []
+            calls: list[dict] = []  # noqa: RUF012
 
             def update(self, **kwargs: Any) -> None:
                 self.calls.append(kwargs)
@@ -97,7 +95,7 @@ class TestStartAndUpdateObservation:
 
     def test_update_observation_calls_update(self) -> None:
         class _Obs:
-            calls: list[dict] = []
+            calls: list[dict] = []  # noqa: RUF012
 
             def update(self, **kwargs: Any) -> None:
                 self.calls.append(kwargs)

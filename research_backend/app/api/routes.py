@@ -21,10 +21,10 @@ import asyncio
 import logging
 import time
 import uuid
-from typing import Annotated, AsyncIterator, Optional
+from collections.abc import AsyncIterator
+from datetime import UTC
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException, Request, status
 from pydantic import ValidationError
 from sse_starlette.sse import EventSourceResponse
 
@@ -35,19 +35,17 @@ from app.api.schemas import (
     MessageCreate,
     MessageRoleEnum,
     MessageStatusEnum,
-    SSEEvent,
     SSEEventType,
     Thread,
     is_uuid_v4,
 )
-from app.db.session import get_session
-from app.graph.graph import get_compiled_graph
-from app.observability.langfuse import check_langfuse_configured
-
 
 # 注意：以下 import 是模块级；不要在 _stream_echo_response 局部 try 里 re-import，
 # 否则会触发 UnboundLocalError（局部变量遮蔽模块级）。
-from app.db.models import Message as MessageORM  # noqa: E402
+from app.db.models import Message as MessageORM
+from app.db.session import get_session
+from app.graph.graph import get_compiled_graph
+from app.observability.langfuse import check_langfuse_configured
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +121,8 @@ async def create_thread(request: Request) -> Thread:
     user_id = _get_user_id(request)
     _ensure_user_id_format(user_id)
 
-    from app.db.models import ThreadStatusEnum, Thread as ThreadORM
+    from app.db.models import Thread as ThreadORM
+    from app.db.models import ThreadStatusEnum
 
     new_id = uuid.uuid4()
     async with get_session() as session:
@@ -215,7 +214,8 @@ async def list_messages(thread_id: str, request: Request) -> dict:
 
     from sqlalchemy import select
 
-    from app.db.models import Message as MessageORM, Thread as ThreadORM
+    from app.db.models import Message as MessageORM
+    from app.db.models import Thread as ThreadORM
 
     async with get_session() as session:
         # 先校验 thread 越权
@@ -282,7 +282,7 @@ async def post_message(
     try:
         body_raw = await request.body()
     except Exception:
-        raise HTTPException(
+        raise HTTPException(  # noqa: B904
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=Error(error="bad_request", message="body read failed").model_dump(),
         )
@@ -298,7 +298,7 @@ async def post_message(
         payload = json.loads(body_raw.decode("utf-8"))
         create = MessageCreate.model_validate(payload)
     except (ValidationError, ValueError) as exc:
-        raise HTTPException(
+        raise HTTPException(  # noqa: B904
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=Error(
                 error="validation_error",
@@ -309,7 +309,8 @@ async def post_message(
     # === 越权 / thread 存在性 === #
     from sqlalchemy import select
 
-    from app.db.models import Message as MessageORM, Thread as ThreadORM
+    from app.db.models import Message as MessageORM
+    from app.db.models import Thread as ThreadORM
 
     async with get_session() as session:
         thread = (
@@ -364,8 +365,8 @@ async def post_message(
 
 async def _stream_echo_response(
     *,
-    thread_id: str,
-    user_id: str,
+    thread_id: str,  # noqa: ARG001
+    user_id: str,  # noqa: ARG001
     user_query: str,
     assistant_message_id: str,
 ) -> AsyncIterator[dict]:
@@ -403,7 +404,7 @@ async def _stream_echo_response(
 
     # 3.1 同步更新 DB（complete）
     try:
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         from sqlalchemy import select
 
@@ -415,7 +416,7 @@ async def _stream_echo_response(
             if msg is not None:
                 msg.status = MessageStatusEnum.COMPLETE.value
                 msg.content = built_content
-                msg.completed_at = datetime.now(timezone.utc)
+                msg.completed_at = datetime.now(UTC)
     except Exception as exc:
         logger.exception("failed to update assistant msg: %s", exc)
         yield {
@@ -446,4 +447,4 @@ async def _stream_echo_response(
 
 
 # === Re-export compiled graph getter for deps === #
-__all__ = ["router", "get_compiled_graph"]
+__all__ = ["get_compiled_graph", "router"]

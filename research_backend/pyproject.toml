@@ -113,6 +113,9 @@ select = [
 ignore = [
     "PLR0913", # too-many-arguments (acceptable in FastAPI handlers)
     "PLR2004", # magic value (acceptable in config defaults)
+    "RUF001", # ambiguous-unicode-character-string — M1 docstring 友好（中文）
+    "RUF002", # ambiguous-unicode-character-docstring — 同上
+    "RUF003", # ambiguous-unicode-character-comment — 同上
 ]
 
 [tool.ruff.lint.per-file-ignores]

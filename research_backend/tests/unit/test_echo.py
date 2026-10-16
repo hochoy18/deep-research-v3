@@ -8,15 +8,12 @@
 """
 from __future__ import annotations
 
-import pytest
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-
 from app.agents.echo import (
     EchoAgent,
     chunk_text,
     echo_node,
 )
-
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 # === chunk_text 行为 === #
 

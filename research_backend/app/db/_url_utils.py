@@ -5,10 +5,9 @@
 from __future__ import annotations
 
 import os
-from typing import Optional
 
 
-def to_sync_database_url(alembic_config_url: Optional[str] = None) -> str:
+def to_sync_database_url(alembic_config_url: str | None = None) -> str:
     """将 postgresql+asyncpg:// 翻译为 postgresql://（兼容 sync driver）。
 
     注意：alembic 1.13+ 仍要求同步 driver；本函数是 env.py 与测试共用入口。

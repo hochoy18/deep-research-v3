@@ -7,10 +7,9 @@ from __future__ import annotations
 from typing import Annotated, get_args, get_origin, get_type_hints
 
 import pytest
+from app.graph.state import AgentState
 from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.graph.message import add_messages
-
-from app.graph.state import AgentState
 
 
 class TestAgentStateContract:

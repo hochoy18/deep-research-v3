@@ -10,8 +10,8 @@
 from __future__ import annotations
 
 import os
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import AsyncIterator, Optional
 
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -32,8 +32,8 @@ def _build_database_url() -> str:
 
 
 # Engine / sessionmaker 单例
-_engine: Optional[AsyncEngine] = None
-_session_factory: Optional[async_sessionmaker[AsyncSession]] = None
+_engine: AsyncEngine | None = None
+_session_factory: async_sessionmaker[AsyncSession] | None = None
 
 
 def get_engine() -> AsyncEngine:
@@ -43,7 +43,7 @@ def get_engine() -> AsyncEngine:
     - pool_pre_ping=True：避免 stale connection
     - pool_size=5 / max_overflow=10：本地 1-3 用户规模
     """
-    global _engine
+    global _engine  # noqa: PLW0603
     if _engine is None:
         _engine = create_async_engine(
             _build_database_url(),
@@ -58,7 +58,7 @@ def get_engine() -> AsyncEngine:
 
 def get_session_factory() -> async_sessionmaker[AsyncSession]:
     """获取（或惰性初始化）sessionmaker 工厂。"""
-    global _session_factory
+    global _session_factory  # noqa: PLW0603
     if _session_factory is None:
         _session_factory = async_sessionmaker(
             bind=get_engine(),
@@ -104,7 +104,7 @@ def metadata_for_alembic():
 # 测试用 reset（避免 import 期连接）
 def _reset_singletons_for_tests() -> None:
     """仅测试可调用；强制 next 次 get_*() 重新生成。"""
-    global _engine, _session_factory
+    global _engine, _session_factory  # noqa: PLW0603
     if _engine is not None:
         # AsyncEngine 不能在 loop 已 close 后 dispose；这里仅置 None
         _engine = None

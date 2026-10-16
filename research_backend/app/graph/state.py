@@ -15,7 +15,7 @@ metadata / config 等字段将分阶段加入；本文件作为契约，行为�
 """
 from __future__ import annotations
 
-from typing import Annotated, List
+from typing import Annotated
 
 from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
@@ -31,7 +31,7 @@ class AgentState(TypedDict, total=False):
     """
 
     # === 标准消息历史（add_messages reducer） ===
-    messages: Annotated[List[BaseMessage], add_messages]
+    messages: Annotated[list[BaseMessage], add_messages]
 
     # === 会话身份（spec FR-011a 越权校验使用） ===
     user_id: str

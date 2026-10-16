@@ -20,7 +20,8 @@ from __future__ import annotations
 
 import re
 import time
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 from langchain_core.messages import AIMessage, HumanMessage
 
@@ -100,18 +101,18 @@ def chunk_text(text: str, *, max_chars_per_chunk: int = 8) -> Iterator[str]:
         # 长 word 二次切分
         while len(word) > max_chars_per_chunk:
             yield word[:max_chars_per_chunk]
-            word = word[max_chars_per_chunk:]
+            word = word[max_chars_per_chunk:]  # noqa: PLW2901
         yield word
 
 
-def sleep_for_chunk_simulated(chunk_idx: int, *, ms_per_chunk: int = 50) -> None:
+def sleep_for_chunk_simulated(chunk_idx: int, *, ms_per_chunk: int = 50) -> None:  # noqa: ARG001
     """Mock 模拟"每 ~50ms 一片"的延迟（仅测试/E2E 可关闭）。
 
     M1 测试不需要真实时间流；线上 US2 完整版改用 asyncio.sleep。
     """
     if ms_per_chunk <= 0:
         return
-    time.sleep((ms_per_chunk / 1000.0))
+    time.sleep(ms_per_chunk / 1000.0)
 
 
 def _latest_human_content(messages: list[Any]) -> str | None:

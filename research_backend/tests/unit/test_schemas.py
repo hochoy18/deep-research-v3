@@ -9,11 +9,9 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
-from pydantic import ValidationError
-
 from app.api.schemas import (
     Error,
     Message,
@@ -26,7 +24,7 @@ from app.api.schemas import (
     ThreadStatusEnum,
     is_uuid_v4,
 )
-
+from pydantic import ValidationError
 
 # === MessageCreate 白名单校验（constitution I） === #
 
@@ -87,7 +85,7 @@ class TestMessageCreateWhitelist:
 
 class TestThreadSchema:
     def test_minimal_thread(self) -> None:
-        ts = datetime(2026, 10, 16, tzinfo=timezone.utc)
+        ts = datetime(2026, 10, 16, tzinfo=UTC)
         t = Thread(
             thread_id=uuid.UUID("550e8400-e29b-41d4-a716-446655440000"),
             user_id=uuid.UUID("550e8400-e29b-41d4-a716-446655440001"),
@@ -101,11 +99,11 @@ class TestThreadSchema:
 
     def test_from_attributes_compat(self) -> None:
         """与 ORM Thread 互转（model_config.from_attributes=True）。"""
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         from app.db.models import Thread as ThreadORM
 
-        ts = datetime(2026, 10, 16, tzinfo=timezone.utc)
+        ts = datetime(2026, 10, 16, tzinfo=UTC)
         orm = ThreadORM(
             thread_id=uuid.uuid4(),
             user_id=uuid.uuid4(),
@@ -119,7 +117,7 @@ class TestThreadSchema:
         assert pyd.status == ThreadStatusEnum.ACTIVE
 
     def test_title_max_length(self) -> None:
-        ts = datetime(2026, 10, 16, tzinfo=timezone.utc)
+        ts = datetime(2026, 10, 16, tzinfo=UTC)
         with pytest.raises(ValidationError):
             Thread(
                 thread_id=uuid.uuid4(),
@@ -191,7 +189,7 @@ class TestUuidV4:
 
 class TestMessageAndError:
     def test_message_round_trip(self) -> None:
-        ts = datetime(2026, 10, 16, tzinfo=timezone.utc)
+        ts = datetime(2026, 10, 16, tzinfo=UTC)
         m = Message(
             message_id=uuid.uuid4(),
             thread_id=uuid.uuid4(),

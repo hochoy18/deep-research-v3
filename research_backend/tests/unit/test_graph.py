@@ -4,17 +4,14 @@ tasks.md T030 关键路径：「T030 graph.py 必须能成功 import 测试」�
 """
 from __future__ import annotations
 
-import os
-
 import pytest
-from langchain_core.messages import AIMessage, HumanMessage
-
 from app.agents.echo import echo_node
 from app.graph.graph import (
     compile_graph,
     get_compiled_graph,
     reset_compiled_graph_for_tests,
 )
+from langchain_core.messages import AIMessage, HumanMessage
 
 
 @pytest.fixture(autouse=True)

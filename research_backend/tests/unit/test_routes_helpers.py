@@ -4,16 +4,12 @@
 """
 from __future__ import annotations
 
-import asyncio
 import uuid
 from contextlib import asynccontextmanager
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-
 from app.api.schemas import SSEEventType
-
 
 # === Fake DB session === #
 # routes.py 中的 get_session 是 async ctx manager；用 stub 替换，
@@ -29,7 +25,7 @@ class _FakeScalarResult:
     def scalar_one_or_none(self) -> Any:
         return self._value
 
-    def scalars(self) -> "_FakeScalars":
+    def scalars(self) -> _FakeScalars:
         return _FakeScalars(self._value)
 
 
@@ -60,7 +56,7 @@ class _FakeSession:
     async def flush(self) -> None: ...
     async def refresh(self, instance: Any) -> None: ...
 
-    async def __aenter__(self) -> "_FakeSession":
+    async def __aenter__(self) -> _FakeSession:
         return self
 
     async def __aexit__(self, exc_type: Any, exc: Any, tb: Any) -> Any:
@@ -196,9 +192,8 @@ class TestHealthCheck:
 
 class TestRoutesModuleContract:
     def test_router_is_api_router(self) -> None:
-        from fastapi import APIRouter
-
         from app.api.routes import router
+        from fastapi import APIRouter
 
         assert isinstance(router, APIRouter)
 

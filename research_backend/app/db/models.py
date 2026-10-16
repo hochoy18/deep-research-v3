@@ -16,11 +16,11 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import (
+    DateTime,
+    ForeignKey,
+    Index,
     String,
     Text,
-    Index,
-    ForeignKey,
-    DateTime,
     func,
 )
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
@@ -91,7 +91,7 @@ class Thread(Base):
         PGUUID(as_uuid=True), nullable=True
     )
 
-    messages: Mapped[list["Message"]] = relationship(
+    messages: Mapped[list[Message]] = relationship(
         "Message", back_populates="thread", cascade="all, delete-orphan"
     )
 

@@ -17,10 +17,11 @@ Dev.cai.1 拥有：
 from __future__ import annotations
 
 import os
-from functools import wraps
-from typing import Any, Callable, Optional, TypeVar
+from collections.abc import Callable
+from typing import Any, TypeVar
 
-from langfuse import Langfuse, get_client as _langfuse_get_client, observe
+from langfuse import Langfuse, observe
+from langfuse import get_client as _langfuse_get_client
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -63,8 +64,8 @@ def start_observation(
     name: str,
     *,
     as_type: str = "span",
-    input_data: Optional[dict] = None,
-    metadata: Optional[dict] = None,
+    input_data: dict | None = None,
+    metadata: dict | None = None,
 ) -> Any:
     """显式开一个 observation（context manager 风格）。
 
@@ -78,14 +79,14 @@ def start_observation(
         input=input_data,
         metadata=metadata,
     )
-    return cm
+    return cm  # noqa: RET504
 
 
 def update_observation(
     obs: Any,
     *,
     output: Any = None,
-    metadata: Optional[dict] = None,
+    metadata: dict | None = None,
 ) -> None:
     """更新当前 observation（output / metadata）。"""
     if output is not None:
@@ -113,10 +114,10 @@ def check_langfuse_configured() -> tuple[bool, str]:
 # === Re-exports === #
 
 __all__ = [
+    "check_langfuse_configured",
     "get_client",
-    "observe_agent",
     "observe",
+    "observe_agent",
     "start_observation",
     "update_observation",
-    "check_langfuse_configured",
 ]

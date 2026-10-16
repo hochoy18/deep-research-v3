@@ -22,7 +22,7 @@ from __future__ import annotations
 import logging
 import os
 from functools import lru_cache
-from typing import Any, Optional
+from typing import Any
 
 from langgraph.graph import END, START, StateGraph
 
@@ -66,7 +66,7 @@ def _build_checkpointer() -> Any:
 # === Graph compile === #
 
 
-def compile_graph(checkpointer: Optional[Any] = None) -> Any:
+def compile_graph(checkpointer: Any | None = None) -> Any:
     """构造 M1 极简 graph 并 compile 返回。
 
     调用者可注入 checkpointer（生产环境用 RedisCheckpointSaver；test 用
