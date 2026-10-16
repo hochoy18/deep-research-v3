@@ -1,0 +1,99 @@
+# research_backend / pyproject.toml
+#
+# ⚠️ STUB (2026-10-16, Dev.cai.2):
+#   Dev.cai.1 拥有 pyproject.toml（spec Q5 主 Owner；tasks.md T002 / T032）。
+#   本文件为 Dev.cai.2 的回退骨架，仅够支撑 Phase 2 的 10 个 task（T019/T020/T021/
+#   T024/T025/T027/T028/T029/T030/T031）落地与测试。Dev.cai.1 合入 T002 后，
+#   此文件必须以其版本为准回写 / 替换。
+#   路径分工：
+#     - Dev.cai.1: research_backend/pyproject.toml + Dockerfile
+#     - Dev.cai.2: research_backend/app/* （本骨架之外不竞争）
+[project]
+name = "research-backend"
+version = "0.1.0-m1"
+description = "hochoy Deep Research Agent backend (M1 mock echo flow)"
+requires-python = ">=3.12,<3.13"
+readme = "README.md"
+
+dependencies = [
+  # --- Phase 2 dependencies (Dev.cai.2 owned paths) ---
+  # DB / migrations (T019/T020/T021)
+  "sqlalchemy>=2.0,<3.0",
+  "alembic>=1.13,<2.0",
+  "asyncpg>=0.29,<1.0",
+  # API / schemas (T024/T031)
+  "pydantic>=2.7,<3.0",
+  "pydantic-settings>=2.5,<3.0",
+  "fastapi>=0.143,<1.0",
+  "sse-starlette>=2.1,<3.0",
+  # Observability (T025)
+  "langfuse>=5.0.1,<6.0",
+  "opentelemetry-api>=1.27,<2.0",
+  "opentelemetry-sdk>=1.27,<2.0",
+  "opentelemetry-exporter-otlp>=1.27,<2.0",
+  # LangGraph / LangChain (T027/T028/T029/T030)
+  "langgraph>=0.2,<1.0",
+  "langchain-core>=0.3,<1.0",
+  "langgraph-checkpoint-redis>=0.1,<1.0",
+  # Redis client (deps.py uses it; T030 needs async url)
+  "redis>=5.0,<6.0",
+  # HTTP server
+  "uvicorn>=0.32,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3,<9.0",
+  "pytest-asyncio>=0.24,<1.0",
+  "pytest-cov>=5.0,<6.0",
+  "ruff>=0.7,<1.0",
+  "bandit>=1.7,<2.0",
+  "pip-audit>=2.7,<3.0",
+  "httpx>=0.27,<1.0",
+  "factory-boy>=3.3,<4.0",
+  "freezegun>=1.5,<2.0",
+  "anyio>=4.4,<5.0",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers"]
+markers = [
+  "unit: 单元测试",
+  "integration: 集成测试",
+  "contract: API 契约测试",
+]
+filterwarnings = [
+  "ignore::DeprecationWarning:langchain.*",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.coverage.run]
+source = ["app"]
+omit = [
+  "app/observability/langfuse.py",  # 外部 SDK，导入失败时已 stub
+]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+]
