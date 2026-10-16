@@ -1,0 +1,30 @@
+# =============================================================================
+# requirements-dev.txt — Deep Research Agent M1 (FEATURE-001-m1-infra)
+# =============================================================================
+# Pinned CI-tool versions installed into the Python runtime used by the
+# `backend/lint-test-coverage`, `sast/bandit`, and `sca/pip-audit` jobs in
+# `.github/workflows/ci.yml`. Versions mirror the same set declared in
+# `research_backend/pyproject.toml [project.optional-dependencies.dev]` so
+# local `uv sync --extra dev` and CI give byte-identical environments.
+#
+# Why a separate file rather than only pyproject:
+#   - One-line pip install for local debugging without uv
+#   - Independent versioning cadence from runtime deps
+#
+# Tool chain (all current stable as of 2026-10-16, locked per T015):
+# =============================================================================
+
+# Lint + format
+ruff==0.8.4
+
+# Test + coverage (Constitution III — critical paths ≥80%)
+pytest==8.3.4
+pytest-asyncio==0.24.0
+pytest-cov==6.0.0
+coverage==7.6.10
+
+# SAST (Constitution I) — bandit high-severity blocks merge
+bandit==1.7.10
+
+# SCA (Constitution I) — HIGH+ CVEs block merge
+pip-audit==2.7.3

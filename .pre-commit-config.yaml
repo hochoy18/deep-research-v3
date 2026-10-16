@@ -1,0 +1,55 @@
+# =============================================================================
+# .pre-commit-config.yaml — Deep Research Agent M1 (FEATURE-001-m1-infra)
+# =============================================================================
+# Pre-commit hook chain. Tool versions mirror requirements-dev.txt (T015)
+# and research_frontend/package.json devDependencies so a local commit
+# matches what CI runs.
+#
+# install:
+#   pip install pre-commit
+#   pre-commit install
+# =============================================================================
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+        files: ^research_backend/
+      - id: ruff-format
+        files: ^research_backend/
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.4.2
+    hooks:
+      - id: prettier
+        files: ^research_frontend/
+        additional_dependencies:
+          - prettier@3.4.2
+          - prettier-plugin-tailwindcss@0.6.9
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.17.0
+    hooks:
+      - id: eslint
+        files: ^research_frontend/
+        additional_dependencies:
+          - eslint@9.17.0
+          - eslint-config-next@16.4.2
+          - "@typescript-eslint/eslint-plugin@8.19.0"
+          - "@typescript-eslint/parser@8.19.0"
+
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.18.0
+    hooks:
+      - id: commitlint
+        stages: [commit-msg]
+        additional_dependencies:
+          - "@commitlint/cli@19.6.0"
+          - "@commitlint/config-conventional@19.6.0"
