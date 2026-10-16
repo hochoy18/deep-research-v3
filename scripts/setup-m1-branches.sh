@@ -28,6 +28,10 @@ PROTECTED_BRANCH=("main")
 MAIN_BRANCH="main"
 
 # 5 个 Owner 工作分支（TL.cai 在 main 上兜底，不开独立分支）
+# 注：Phase 2 Foundational（T016-T040）由各 Co-Owner 在自己 US 分支的
+#     PR 中增量合入；Phase 2 任务不在 WORK_BRANCHES 里以避免分支爆炸。
+#     Dev.cai.3 的 US4 前端测试（T086/T093）归到 feat/m1-us3-pr-gate
+#     （前端测试配置本就在 CI 范畴，constitution V 允许 cross-US 分支）。
 WORK_BRANCHES=(
   "feat/m1-us1-infra:Dev.cai.1"
   "feat/m1-us2-echo-backend:Dev.cai.2"
@@ -154,12 +158,12 @@ cat > "$CODEOWNERS_FILE" <<'CODEOWNERS_EOF'
 /research_backend/app/agents/                      @Dev.cai.2
 /research_backend/app/graph/                       @Dev.cai.2
 /research_backend/app/api/                         @Dev.cai.2 @Dev.cai.1
-/research_backend/app/db/                          @Dev.cai.1
+/research_backend/app/db/                          @Dev.cai.2 @Dev.cai.1
 /research_backend/app/auth/                        @Dev.cai.1
 /research_backend/app/ratelimit/                   @Dev.cai.1
-/research_backend/app/observability/               @Dev.cai.1
-/research_backend/tests/integration/               @Dev.cai.2 @Dev.cai.1
-/research_backend/tests/unit/                      @Dev.cai.2
+/research_backend/app/observability/               @Dev.cai.2 @Dev.cai.1
+/research_backend/tests/integration/               @Dev.cai.2 @Dev.cai.1 @Dev.cai.4
+/research_backend/tests/unit/                      @Dev.cai.2 @Dev.cai.1 @Dev.cai.4
 
 # --- 前端（Next.js / React / Tailwind） ---
 /research_frontend/                                @Dev.cai.3

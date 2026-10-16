@@ -13,12 +13,12 @@
 /research_backend/app/agents/                      @Dev.cai.2
 /research_backend/app/graph/                       @Dev.cai.2
 /research_backend/app/api/                         @Dev.cai.2 @Dev.cai.1
-/research_backend/app/db/                          @Dev.cai.1
+/research_backend/app/db/                          @Dev.cai.2 @Dev.cai.1
 /research_backend/app/auth/                        @Dev.cai.1
 /research_backend/app/ratelimit/                   @Dev.cai.1
-/research_backend/app/observability/               @Dev.cai.1
-/research_backend/tests/integration/               @Dev.cai.2 @Dev.cai.1
-/research_backend/tests/unit/                      @Dev.cai.2
+/research_backend/app/observability/               @Dev.cai.2 @Dev.cai.1
+/research_backend/tests/integration/               @Dev.cai.2 @Dev.cai.1 @Dev.cai.4
+/research_backend/tests/unit/                      @Dev.cai.2 @Dev.cai.1 @Dev.cai.4
 
 # --- 前端（Next.js / React / Tailwind） ---
 /research_frontend/                                @Dev.cai.3
