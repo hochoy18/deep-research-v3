@@ -1,0 +1,65 @@
+# =============================================================================
+# .coveragerc — Deep Research Agent M1 (FEATURE-001-m1-infra)
+# =============================================================================
+# Coverage.py v7+ configuration. Loaded from repo root so both backend (pytest
+# --cov) and any standalone `coverage report` invocation share settings.
+#
+# Priority (coverage.py): .coveragerc wins over setup.cfg / tox.ini /
+# pyproject.toml [tool.coverage.*]. So this file is the SOURCE OF TRUTH
+# for coverage behaviour in M1 — Dev.cai.1's pyproject.toml can declare
+# parallel [tool.coverage.*] sections, but this file overrides them.
+#
+# Owner: Dev.cai.4  [Phase 4 US-4 — 测试基础设施]
+# Constitution alignment:
+#   - III (Test-First ≥80%) — `fail_under = 80` is enforced below and via
+#                             `--cov-fail-under=80` in Taskfile.yml::test:coverage
+#   - VII (Observability)   — XML + HTML reports land under
+#                             research_backend/coverage/ for Langfuse / CI ingestion
+# =============================================================================
+
+[run]
+# Source layout — pytest runs from research_backend/, so `app` resolves to
+# research_backend/app. Tests + migrations + __main__ are excluded so the
+# percentage is meaningful for production code only.
+source = app
+branch = true
+parallel = true
+data_file = research_backend/coverage/.coverage
+omit =
+    */tests/*
+    */migrations/*
+    */__main__.py
+    */__init__.py
+
+# Concurrency — when uv runs pytest with -n auto (pytest-xdist) each worker
+# writes a .coverage.<host>.<pid> file. `coverage combine` (run by CI's
+# subsequent `coverage report` step) joins them.
+concurrency =
+    thread
+    greenlet
+
+[report]
+# Constitution III — critical-path gate. pytest --cov-fail-under in
+# Taskfile.yml re-asserts this; the value here is the standalone
+# `coverage report` default.
+fail_under = 80
+show_missing = true
+skip_covered = false
+precision = 1
+sort = Cover
+
+# Skip lines that are unreachable / boilerplate so the percentage reflects
+# what reviewers can audit.
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    \.\.\.
+
+[html]
+directory = research_backend/coverage/html
+title = hochoy Deep Research — Backend coverage
+
+[xml]
+output = research_backend/coverage/backend-coverage.xml
