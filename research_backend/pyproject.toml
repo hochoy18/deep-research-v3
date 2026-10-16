@@ -18,7 +18,7 @@ readme = "README.md"
 dependencies = [
   # --- Phase 2 dependencies (Dev.cai.2 owned paths) ---
   # DB / migrations (T019/T020/T021)
-  "sqlalchemy>=2.0,<3.0",
+  "sqlalchemy[asyncio]>=2.0,<3.0",  # asyncio extra 引入 greenlet
   "alembic>=1.13,<2.0",
   "asyncpg>=0.29,<1.0",
   # API / schemas (T024/T031)
