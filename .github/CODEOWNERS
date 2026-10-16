@@ -8,9 +8,6 @@
 # 真实 GitHub 用户名。所有者矩阵见 specs/001-m1-infra/plan.md §Owner 矩阵。
 # =============================================================================
 
-# --- 主 Owner 兜底（最后兜底） ---
-*                                                  @TL.cai
-
 # --- 后端（Python / LangGraph / DB） ---
 /research_backend/                                 @Dev.cai.2 @Dev.cai.1
 /research_backend/app/agents/                      @Dev.cai.2
@@ -53,3 +50,6 @@
 /.specify/                                         @TL.cai
 /README.md                                         @TL.cai
 CODEOWNERS                                         @TL.cai
+
+# --- 主 Owner 兜底（必须放最后：GitHub CODEOWNERS 是「最后匹配胜出」）---
+*                                                  @TL.cai

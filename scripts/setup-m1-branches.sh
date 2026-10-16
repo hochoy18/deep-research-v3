@@ -35,7 +35,7 @@ WORK_BRANCHES=(
   "feat/m1-us3-pr-gate:Dev.cai.3"
   "feat/m1-us4-tests-owners:Dev.cai.4"
 )
-BOOTSTRAP_BRANCH="001-m1-infra"  # 主 Owner 用的初始 bootstrap 分支
+BOOTSTRAP_BRANCH="feature/001-m1-infra"  # 主 Owner 用的初始 bootstrap 分支（与 spec.md §Feature Branch 对齐）
 
 # ---- 工具函数 ----
 step()  { printf "\n\033[1;34m▶ %s\033[0m\n" "$1"; }
@@ -149,9 +149,6 @@ cat > "$CODEOWNERS_FILE" <<'CODEOWNERS_EOF'
 # 真实 GitHub 用户名。所有者矩阵见 specs/001-m1-infra/plan.md §Owner 矩阵。
 # =============================================================================
 
-# --- 主 Owner 兜底（最后兜底） ---
-*                                                  @TL.cai
-
 # --- 后端（Python / LangGraph / DB） ---
 /research_backend/                                 @Dev.cai.2 @Dev.cai.1
 /research_backend/app/agents/                      @Dev.cai.2
@@ -194,6 +191,9 @@ cat > "$CODEOWNERS_FILE" <<'CODEOWNERS_EOF'
 /.specify/                                         @TL.cai
 /README.md                                         @TL.cai
 CODEOWNERS                                         @TL.cai
+
+# --- 主 Owner 兜底（必须放最后：GitHub CODEOWNERS 是「最后匹配胜出」）---
+*                                                  @TL.cai
 CODEOWNERS_EOF
 
 if $DRY_RUN; then
@@ -509,7 +509,7 @@ else
         "require_code_owner_review": true,
         "required_approving_review_count": 1
       },
-      "restrictions": null,
+      "restrictions": {},
       "required_linear_history": true,
       "allow_force_pushes": false,
       "allow_deletions": false
