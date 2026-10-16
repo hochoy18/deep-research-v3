@@ -31,9 +31,9 @@
 /research_frontend/tests/                          @Dev.cai.3
 
 # --- 部署 / 基础设施 ---
-/deploy/                                           @Dev.cai.1
+/deploy/                                           @Dev.cai.1 @Dev.cai.4
 /docker-compose*.yml                               @Dev.cai.1
-/Taskfile.yml                                      @Dev.cai.1
+/Taskfile.yml                                      @Dev.cai.4
 /.env.example                                      @Dev.cai.1
 
 # --- CI / 质量门禁 / 安全 ---
@@ -44,11 +44,11 @@
 
 # --- 测试基础设施 / 单测一键跑 ---
 /scripts/                                         @Dev.cai.4
-/pyproject.toml                                    @Dev.cai.4
+/pyproject.toml                                    @Dev.cai.1
 /.coveragerc                                       @Dev.cai.4
 
-# --- 文档 / Spec / 治理（TL.cai 主导） ---
-/docs/                                             @TL.cai
+# --- 文档 / Spec / 治理（全员可改 + TL.cai 兜底） ---
+/docs/                                             @Dev.cai.1 @Dev.cai.2 @Dev.cai.3 @Dev.cai.4 @TL.cai
 /specs/                                            @TL.cai
 /.specify/                                         @TL.cai
 /README.md                                         @TL.cai

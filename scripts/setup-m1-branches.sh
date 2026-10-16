@@ -172,9 +172,9 @@ cat > "$CODEOWNERS_FILE" <<'CODEOWNERS_EOF'
 /research_frontend/tests/                          @Dev.cai.3
 
 # --- 部署 / 基础设施 ---
-/deploy/                                           @Dev.cai.1
+/deploy/                                           @Dev.cai.1 @Dev.cai.4
 /docker-compose*.yml                               @Dev.cai.1
-/Taskfile.yml                                      @Dev.cai.1
+/Taskfile.yml                                      @Dev.cai.4
 /.env.example                                      @Dev.cai.1
 
 # --- CI / 质量门禁 / 安全 ---
@@ -185,11 +185,11 @@ cat > "$CODEOWNERS_FILE" <<'CODEOWNERS_EOF'
 
 # --- 测试基础设施 / 单测一键跑 ---
 /scripts/                                         @Dev.cai.4
-/pyproject.toml                                    @Dev.cai.4
+/pyproject.toml                                    @Dev.cai.1
 /.coveragerc                                       @Dev.cai.4
 
-# --- 文档 / Spec / 治理（TL.cai 主导） ---
-/docs/                                             @TL.cai
+# --- 文档 / Spec / 治理（全员可改 + TL.cai 兜底） ---
+/docs/                                             @Dev.cai.1 @Dev.cai.2 @Dev.cai.3 @Dev.cai.4 @TL.cai
 /specs/                                            @TL.cai
 /.specify/                                         @TL.cai
 /README.md                                         @TL.cai
@@ -280,7 +280,7 @@ else
   git diff --cached --quiet || git commit -m "chore(github): add PR template with Spec/Owner/Converge fields
 
 Spec: FEATURE-001-m1-infra
-Owner: Dev.cai.3
+Owner: TL.cai
 Type: config
 Converge: N/A
 Tests: N/A
@@ -290,9 +290,9 @@ Security: N/A" > /dev/null 2>&1
 fi
 
 # =============================================================================
-# 5. 创建 Issue 模板（feature / bug）
+# 5. 创建 Issue 模板（feature / bug / docs / config）
 # =============================================================================
-step "5. 创建 .github/ISSUE_TEMPLATE/"
+step "5. 创建 .github/ISSUE_TEMPLATE/（4 个模板）"
 
 FEATURE_TEMPLATE=".github/ISSUE_TEMPLATE/feature.md"
 cat > "$FEATURE_TEMPLATE" <<'FEATURE_TEMPLATE_EOF'
@@ -372,11 +372,89 @@ assignees: []
 - **Owner**: @<github-username>
 BUG_TEMPLATE_EOF
 
+DOCS_TEMPLATE=".github/ISSUE_TEMPLATE/docs.md"
+cat > "$DOCS_TEMPLATE" <<'DOCS_TEMPLATE_EOF'
+---
+name: Documentation
+about: 文档变更（架构 / Spec / Runbook / ADR / API）
+title: "[DOCS] "
+labels: ["documentation"]
+assignees: []
+---
+
+## 文档类型
+
+- [ ] 架构文档（architecture.md / agent-design.md / graph-design.md）
+- [ ] Spec-Kit 资产（spec.md / plan.md / tasks.md / contracts/）
+- [ ] ADR（docs/adr/）
+- [ ] Runbook（docs/runbooks/）
+- [ ] README / 部署 / 可观测性 / 评估
+- [ ] ADR 模板 / Runbook 模板
+
+## 变更范围
+
+<!-- 简述本次文档变更的范围（新增 / 修改 / 删除） -->
+
+## 关联 Spec
+
+- **Spec**: FEATURE-###-slug（如适用；纯文档变更可填 N/A）
+- **Milestone**: M#（M1 / M2 / M3 / M4）
+
+## 验收标准
+
+- [ ] 文档与代码一致（无描述漂移）
+- [ ] 引用链接全部有效
+- [ ] 术语与 constitution 一致
+
+## Owner
+
+- @<github-username>
+DOCS_TEMPLATE_EOF
+
+CONFIG_TEMPLATE=".github/ISSUE_TEMPLATE/config.md"
+cat > "$CONFIG_TEMPLATE" <<'CONFIG_TEMPLATE_EOF'
+---
+name: Configuration
+about: 配置变更（CI / pre-commit / docker-compose / Taskfile / 环境变量）
+title: "[CONFIG] "
+labels: ["config"]
+assignees: []
+---
+
+## 配置类型
+
+- [ ] CI（.github/workflows/）
+- [ ] pre-commit / commitlint / 质量门禁
+- [ ] docker-compose / Dockerfile
+- [ ] Taskfile / 脚本
+- [ ] 环境变量模板（.env.example）
+- [ ] branch protection / CODEOWNERS
+
+## 变更动机
+
+<!-- 为什么改这个配置？解决了什么问题？ -->
+
+## 影响面
+
+- [ ] 所有 PR 行为变化（CI 门禁 / review 流程）
+- [ ] 本地开发流程变化（task dev:* 命令）
+- [ ] 部署流程变化
+- [ ] 安全策略变化
+
+## 回滚方案
+
+<!-- 如何回滚？（git revert / 配置变量回退） -->
+
+## Owner
+
+- @<github-username>
+CONFIG_TEMPLATE_EOF
+
 if $DRY_RUN; then
   skip "[DRY] 跳过写 Issue 模板"
 else
   git add .github/ISSUE_TEMPLATE/
-  git diff --cached --quiet || git commit -m "chore(github): add Issue templates (feature/bug)
+  git diff --cached --quiet || git commit -m "chore(github): add Issue templates (feature/bug/docs/config)
 
 Spec: FEATURE-001-m1-infra
 Owner: Dev.cai.4
