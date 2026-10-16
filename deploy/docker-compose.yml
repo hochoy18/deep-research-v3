@@ -1,0 +1,288 @@
+# =============================================================================
+# deploy/docker-compose.yml — M1 minimum stack (5 services)
+# =============================================================================
+# Composes the local dev environment for `task dev:up` (T046). The stack
+# matches research.md R7 — postgres + redis + langfuse + backend +
+# frontend. Milvus + MinIO are intentionally OUT OF SCOPE for M1 and
+# will be added in M2/M3 (per ADR-0003 §M1 simplification).
+#
+# Spec traceability
+#   - FR-005 (5-service minimum)
+#   - SC-001 (cold-start ≤ 5 min)
+#   - ADR-0003 (Postgres + Redis)
+#   - ADR-0006 (Langfuse v4.59.0 self-hosted)
+#   - ADR-0009 (no-auth mode — cookie issued by backend, no signup)
+#   - data-model.md §Service (port + volume table)
+#
+# Layout
+#   deploy/docker-compose.yml      (this file — the source of truth)
+#   research_backend/Dockerfile    (built context for `backend`)
+#   research_frontend/Dockerfile   (built context for `frontend`)
+#   research_backend/.env.example / research_frontend/.env.example
+#       — referenced via env_file with `.example` fallback handling
+#         documented in comments below.
+#
+# Secrets: placeholders are <YOUR_…> per constitution I. Production
+#          must override via Vault / 1Password / SOPS — never via
+#          committing real values into this file.
+# =============================================================================
+
+# ---- Top-level metadata ---------------------------------------------------
+name: hochoy-deep-research-m1
+
+# ---- Networks -------------------------------------------------------------
+networks:
+  hochoy-net:
+    name: hochoy-net
+    driver: bridge
+    # Stable subnet so the frontend → backend link is deterministic in
+    # compose networking (no surprise DHCP ranges across restarts).
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+
+# ---- Volumes --------------------------------------------------------------
+# Persistent state for M1 — postgres (threads/messages), redis
+# (rate-limit + LangGraph checkpoints), langfuse (traces).
+volumes:
+  postgres_data:
+    name: hochoy-postgres-data
+  redis_data:
+    name: hochoy-redis-data
+  langfuse_data:
+    name: hochoy-langfuse-data
+
+# =============================================================================
+# Services
+# =============================================================================
+services:
+
+  # -------------------------------------------------------------------------
+  # 1) postgres — durable store for threads + messages (data-model §2/§3)
+  # -------------------------------------------------------------------------
+  postgres:
+    image: postgres:16
+    container_name: hochoy-postgres
+    restart: unless-stopped
+    networks:
+      - hochoy-net
+    ports:
+      # 5432 on host; drop \`127.0.0.1:5432:5432\` to expose only inside
+      # the compose network for production-like setups.
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: research
+      POSTGRES_USER: research
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set (see .env)}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      # Reduce noisy logs in dev; set to \"debug\" to inspect connections.
+      POSTGRES_LOG_STATEMENT: "none"
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # pg_isready exits 0 only when the server is accepting connections.
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-research} -d ${POSTGRES_DB:-research}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          # 1 vCPU / 1 GB cap is plenty for M1 (≤ 3 concurrent users).
+          cpus: "1.0"
+          memory: 1024M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  # -------------------------------------------------------------------------
+  # 2) redis — rate limit counters + LangGraph checkpoint (ADR-0003)
+  # -------------------------------------------------------------------------
+  redis:
+    image: redis:8
+    container_name: hochoy-redis
+    restart: unless-stopped
+    networks:
+      - hochoy-net
+    ports:
+      - "6379:6379"
+    environment:
+      # Keep docker-entrypoint defaults; bind on all interfaces.
+      REDIS_ARGS: "--save 60 1 --loglevel notice"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.1"
+          memory: 64M
+
+  # -------------------------------------------------------------------------
+  # 3) langfuse — observability platform (ADR-0006; data-model §4)
+  # -------------------------------------------------------------------------
+  # Self-hosted v4.59.0 backed by the local postgres + redis so we
+  # don't need an external license for M1 demo (ADR-0008 SaaS rejected).
+  langfuse-server:
+    image: langfuse/langfuse:4.59.0
+    container_name: hochoy-langfuse
+    restart: unless-stopped
+    networks:
+      - hochoy-net
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Langfuse v4 env vars — keep names matching the upstream docs.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-research}:${POSTGRES_PASSWORD:?missing}@postgres:5432/${POSTGRES_DB:-research}
+      REDIS_URL: redis://redis:6379
+      NEXTAUTH_URL: http://localhost:3001
+      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET:?LANGFUSE_NEXTAUTH_SECRET must be set (see .env)}
+      SALT: ${LANGFUSE_SALT:?LANGFUSE_SALT must be set (see .env)}
+      # Disable telemetry to upstream langfuse (constitution I opt-out).
+      TELEMETRY_ENABLED: "false"
+      # Bound upload size and request body for M1 defaults.
+      NEXT_PUBLIC_SIGN_UP_DISABLED: "true"
+    volumes:
+      - langfuse_data:/data
+    healthcheck:
+      # Langfuse exposes /api/health on the same port (3001) since v3.
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3001/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1024M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  # -------------------------------------------------------------------------
+  # 4) backend — FastAPI app (T013 Dockerfile + T016-T040 wired later)
+  # -------------------------------------------------------------------------
+  backend:
+    build:
+      context: ../research_backend
+      dockerfile: Dockerfile
+    container_name: hochoy-backend
+    restart: unless-stopped
+    networks:
+      - hochoy-net
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      langfuse-server:
+        condition: service_started
+    env_file:
+      # Real values live in research_backend/.env (gitignored); fall back
+      # to .env.example values via \`docker compose --env-file\` if the
+      # user hasn't created .env yet.
+      - path: ../research_backend/.env
+        required: false
+    environment:
+      # Override network-internal names so the backend reaches its peers
+      # via service DNS rather than localhost.
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+      LANGFUSE_BASE_URL: http://langfuse-server:3001
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://langfuse-server:3001/api/public/otel/v1/traces
+      APP_ENV: ${APP_ENV:-development}
+      APP_LOG_LEVEL: ${APP_LOG_LEVEL:-INFO}
+      APP_PORT: "8000"
+      APP_HOST: "0.0.0.0"
+    healthcheck:
+      # Mirror the Dockerfile HEALTHCHECK — uses the same /health route
+      # registered by T016 (main.py).
+      test: ["CMD-SHELL", "curl --fail --silent --max-time 3 http://127.0.0.1:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1024M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  # -------------------------------------------------------------------------
+  # 5) frontend — Next.js 16 standalone (T014 Dockerfile)
+  # -------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ../research_frontend
+      dockerfile: Dockerfile
+    container_name: hochoy-frontend
+    restart: unless-stopped
+    networks:
+      - hochoy-net
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_started
+    env_file:
+      - path: ../research_frontend/.env.local
+        required: false
+    environment:
+      # The browser will resolve localhost via the host port mapping;
+      # the server-side EventSource falls back to this if no api.ts
+      # SERVER_API_URL is provided.
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_LANGFUSE_URL: http://localhost:3001
+      NEXT_PUBLIC_APP_ENV: ${APP_ENV:-development}
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 768M
+        reservations:
+          cpus: "0.1"
+          memory: 128M
+
+# =============================================================================
+# Notes
+# =============================================================================
+# - \`docker compose up -d\` brings all five services up in dependency order.
+# - PORT CONFLICT DETECTION (T047) lives in scripts/dev/up.sh — not here.
+# - \`task dev:down\` (T046) issues \`docker compose down -v\` which also
+#   wipes the three volumes. Dev-only; production must NOT use -v.
+# - For local debug: \`docker compose logs -f backend\` or
+#   \`docker compose exec backend bash\` (the alpine stage ships no bash
+#   — use \`sh\` instead, or fall back to the builder stage).
+# - To rotate secrets: stop stack → edit \`.env\` → \`docker compose up -d\`.
+#   Swarm / Kubernetes users should swap \`.env\` for SOPS / Vault sidecars
+#   in M4+ without changing this compose file.
