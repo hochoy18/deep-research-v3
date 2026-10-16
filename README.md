@@ -107,7 +107,7 @@ task e2e:hotpotqa     # 跑 HotpotQA 评估
 task preview:deploy   # 起 CI 预发 stack
 ```
 
-## 🧪 M1 里程碑（4 人 5 天）
+## 🧪 M1 里程碑（4 人 5 天）✅ v1.0.0-M1（2026-10-16）
 
 | Day | Owner A - Infra | Owner B - Graph | Owner C - Frontend | Owner D - Deploy/CI |
 |---|---|---|---|---|
@@ -117,6 +117,12 @@ task preview:deploy   # 起 CI 预发 stack
 | **Day 5** | merge → main | merge → main | merge → main | 集成 demo + 修 bug |
 
 集成顺序：A 先 merge → D（CI 跑通）→ A 增量 → B → C → demo。
+
+**M1 状态：✅ 已完成**（2026-10-16 / 4 人 4 天并行 + 1 天集成日 / [v1.0.0-M1 tag](CHANGELOG.md) / `git checkout v1.0.0-M1` 拉取）
+
+- 交付物：FastAPI + Next.js 16 骨架 + docker-compose 5 服务 + LangGraph echo mock + 前端对话流 + Taskfile 一键起服务 + pre-commit hook 链 + ci.yml 8-job PR gate
+- 详见 [CHANGELOG.md](./CHANGELOG.md) 的 [v1.0.0-M1] 段
+- 下一步：M2 检索（Planner + Researcher + web_search + fetch_page + Plan/Sources 面板）
 
 ## 📦 技术栈
 
