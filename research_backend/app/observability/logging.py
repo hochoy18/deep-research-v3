@@ -101,7 +101,9 @@ def assert_required_fields(payload: dict[str, Any]) -> None:
     added by Dev.cai.1 in US4).
     """
     missing = [f for f in REQUIRED_FIELDS if f not in payload]
-    assert not missing, f"missing constitution VII fields: {missing}"
+    # `assert` is the right primitive here — this helper is a debug-only
+    # contract check; the B101 bandit finding is a false positive.
+    assert not missing, f"missing constitution VII fields: {missing}"  # nosec B101
 
 
 __all__ = [

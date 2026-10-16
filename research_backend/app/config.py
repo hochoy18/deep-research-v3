@@ -14,7 +14,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, PostgresDsn, field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -47,7 +47,10 @@ class Settings(BaseSettings):
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
 
     # ---- HTTP ----
-    http_host: str = "0.0.0.0"
+    # 0.0.0.0 is INTENTIONAL for a backend service that the docker-compose
+    # bridge / k8s pod needs to reach. Frontend dev uses localhost; production
+    # overrides HTTP_HOST explicitly. Suppress bandit B104 + ruff S104.
+    http_host: str = "0.0.0.0"  # noqa: S104  # nosec B104
     http_port: int = 8000
     cors_allow_origins: list[str] = Field(
         default_factory=lambda: ["http://localhost:3000", "http://127.0.0.1:3000"],

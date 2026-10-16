@@ -29,9 +29,7 @@ from __future__ import annotations
 import socket
 
 import httpx
-
 import pytest
-
 
 # Service → host:port mapping. Each entry corresponds to a service declared
 # in `deploy/docker-compose.yml`. The docker-compose v1 maps container
@@ -66,9 +64,7 @@ def test_backend_health_returns_ok() -> None:
     """`task dev:up` MUST result in a reachable backend /health."""
     host, port, path = SERVICE_ENDPOINTS["backend"]
     if not _tcp_open(host, port):
-        pytest.skip(
-            f"backend not reachable at {host}:{port} — run `task dev:up` first"
-        )
+        pytest.skip(f"backend not reachable at {host}:{port} — run `task dev:up` first")
     response = httpx.get(f"http://{host}:{port}{path}", timeout=5.0)
     assert response.status_code == 200, response.text
     body = response.json()
@@ -90,16 +86,12 @@ def test_backend_health_returns_ok() -> None:
         for name, (host, port, path) in SERVICE_ENDPOINTS.items()
     ],
 )
-def test_service_reachable(
-    name: str, host: str, port: int, path: str
-) -> None:
+def test_service_reachable(name: str, host: str, port: int, path: str) -> None:
     """Smoke probe — each declared service should accept connections."""
     if not _tcp_open(host, port):
         pytest.skip(f"{name} not reachable at {host}:{port}")
     response = httpx.get(f"http://{host}:{port}{path}", timeout=5.0)
-    assert response.status_code < 500, (
-        f"{name} returned {response.status_code}: {response.text}"
-    )
+    assert response.status_code < 500, f"{name} returned {response.status_code}: {response.text}"
 
 
 # ---------------------------------------------------------------------------
@@ -115,6 +107,6 @@ def test_health_latency_under_500ms() -> None:
     if not _tcp_open(host, port):
         pytest.skip(f"backend not reachable at {host}:{port}")
     response = httpx.get(f"http://{host}:{port}{path}", timeout=5.0)
-    assert response.elapsed.total_seconds() * 1000 < 500, (
-        f"backend /health took {response.elapsed.total_seconds() * 1000:.1f}ms"
-    )
+    assert (
+        response.elapsed.total_seconds() * 1000 < 500
+    ), f"backend /health took {response.elapsed.total_seconds() * 1000:.1f}ms"

@@ -27,9 +27,7 @@ from app.main import create_app
 def _clean_env(monkeypatch: pytest.MonkeyPatch) -> None:
     """Make sure each test has a minimal but valid env."""
     for key in list(os.environ):
-        if key.startswith(
-            ("POSTGRES_", "LANGFUSE_", "REDIS_", "HTTP_", "USER_ID_", "RATE_")
-        ):
+        if key.startswith(("POSTGRES_", "LANGFUSE_", "REDIS_", "HTTP_", "USER_ID_", "RATE_")):
             monkeypatch.delenv(key, raising=False)
     monkeypatch.setenv("POSTGRES_PASSWORD", "testpass1234")
     monkeypatch.setenv("LANGFUSE_PUBLIC_KEY", "pk-test")

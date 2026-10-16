@@ -73,10 +73,7 @@ def test_postgres_dsn_builder(monkeypatch: pytest.MonkeyPatch) -> None:
         POSTGRES_PASSWORD="hunter22hunter22",
     )
     settings = Settings()
-    assert (
-        settings.postgres_dsn
-        == "postgresql://alice:hunter22hunter22@db.local:5433/deep"
-    )
+    assert settings.postgres_dsn == "postgresql://alice:hunter22hunter22@db.local:5433/deep"
 
 
 # ---------------------------------------------------------------------------

@@ -48,6 +48,7 @@ SettingsDep = Annotated[Settings, Depends(get_settings)]
 # Health snapshot (T016 wires this into /health)
 # ---------------------------------------------------------------------------
 
+
 # Placeholder for the M1 mock service — `/health` returns a hard-coded
 # `ok` because the backend itself does not yet depend on Postgres /
 # Redis / Langfuse (those are wired by T061-T067 in US2 and T019-T025
