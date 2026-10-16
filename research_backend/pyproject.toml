@@ -10,7 +10,7 @@
 #     - Dev.cai.2: research_backend/app/* （本骨架之外不竞争）
 [project]
 name = "research-backend"
-version = "0.1.0-m1"
+version = "0.1.0+m1"  # PEP 440 post-build; -m1 不可被 TOML parser 接受
 description = "hochoy Deep Research Agent backend (M1 mock echo flow)"
 requires-python = ">=3.12,<3.13"
 readme = "README.md"
