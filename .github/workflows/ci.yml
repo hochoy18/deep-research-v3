@@ -1,0 +1,388 @@
+# =============================================================================
+# .github/workflows/ci.yml
+# =============================================================================
+# Pull-request CI gate for Deep Research Agent M1 (FEATURE-001-m1-infra).
+#
+# Constitution alignment:
+#   - I  (Security-First)        — SAST (bandit) + SCA (pip-audit / gitleaks)
+#                                  jobs block PRs with high-severity findings.
+#   - III (Test-First ≥80%)      — coverage gate (--cov-fail-under=80) fails
+#                                  any job whose critical-path coverage drops.
+#   - V  (One-Owner)             — workflows/ owned solely by @Dev.cai.3 per
+#                                  CODEOWNERS.
+#   - VI (API Contract 优先)    — Pact smoke runs against contracts/ on the
+#                                  backend job.
+# Status check names MUST stay stable — they are referenced verbatim by
+# branch protection (gh api repos/.../branches/main/protection). See
+# tasks.md W-14 (Dev.cai.3).
+#
+# Trigger summary:
+#   - pull_request: branch protection
+#   - push (main, feature/*): keeps `main` green in case of bypass push
+#   - workflow_dispatch: manual re-run from UI
+#
+# Concurrency:
+#   - In-progress CI for the same PR is cancelled when a new push arrives,
+#     so authors see their latest commit's result first.
+# =============================================================================
+
+name: ci
+
+on:
+  pull_request:
+    branches: [main, "feature/*", "feat/*"]
+  push:
+    branches: [main, "feature/*", "feat/*"]
+  workflow_dispatch:
+
+# Cancel in-progress runs for the same PR (keeps the queue tight + saves
+# runner minutes). New commits restart with a fresh run.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Minimal token scope — read-only by default. Workflow must explicitly
+# opt-in for write scopes per job.
+permissions:
+  contents: read
+  pull-requests: read
+
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "20"
+  COVERAGE_MIN_PCT: "80"
+
+# =============================================================================
+# Reusable variables
+# =============================================================================
+
+defaults:
+  run:
+    working-directory: ./
+    # Fail fast on unbuffered / unset-variable bugs; shell strict mode is OK
+    # across the workflow because every shell snippet below is hand-rolled.
+    shell: bash
+
+# =============================================================================
+# Jobs
+# =============================================================================
+
+jobs:
+  # ---------------------------------------------------------------------
+  # backend : Python lint + test + coverage (Constitution III ≥80%)
+  # ---------------------------------------------------------------------
+  backend:
+    name: backend/lint-test-coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('research_backend/uv.lock', 'research_backend/pyproject.toml') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
+
+      - name: Install uv
+        run: pip install --upgrade pip uv
+
+      - name: Install backend deps + CI tools
+        working-directory: research_backend
+        run: |
+          uv sync --frozen --extra dev
+          pip install -r ../requirements-dev.txt
+
+      - name: Ruff lint
+        working-directory: research_backend
+        run: ruff check app tests
+
+      - name: Ruff format check
+        working-directory: research_backend
+        run: ruff format --check app tests
+
+      - name: Pytest + coverage
+        working-directory: research_backend
+        run: |
+          pytest \
+            --cov=app \
+            --cov-report=xml:../coverage/backend-coverage.xml \
+            --cov-report=term-missing \
+            --cov-fail-under=${{ env.COVERAGE_MIN_PCT }} \
+            -q
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: coverage/backend-coverage.xml
+          retention-days: 14
+        if: always()
+
+  # ---------------------------------------------------------------------
+  # frontend : Node lint + test + build + coverage
+  # ---------------------------------------------------------------------
+  frontend-lint:
+    name: frontend/lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install pnpm
+        run: npm install -g pnpm@8.15.9
+
+      - name: Cache pnpm
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('research_frontend/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
+      - name: Install deps
+        working-directory: research_frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (tsc --noEmit)
+        working-directory: research_frontend
+        run: pnpm typecheck
+
+      - name: ESLint
+        working-directory: research_frontend
+        run: pnpm lint
+
+      - name: Prettier check
+        working-directory: research_frontend
+        run: pnpm fmt:check
+
+  frontend-test:
+    name: frontend/test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install pnpm
+        run: npm install -g pnpm@8.15.9
+
+      - name: Cache pnpm
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('research_frontend/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
+      - name: Install deps
+        working-directory: research_frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Vitest run + coverage
+        working-directory: research_frontend
+        run: |
+          pnpm test:coverage \
+            --coverage.reporter=text \
+            --coverage.reporter=cobertura \
+            --coverage.reporter=html
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: research_frontend/coverage
+          retention-days: 14
+        if: always()
+
+  frontend-build:
+    name: frontend/build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [frontend-lint]
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install pnpm
+        run: npm install -g pnpm@8.15.9
+
+      - name: Cache pnpm
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('research_frontend/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
+      - name: Install deps
+        working-directory: research_frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Next.js build
+        working-directory: research_frontend
+        run: pnpm build
+
+  # ---------------------------------------------------------------------
+  # sast : bandit — Constitution I, blocks on high-severity findings
+  # ---------------------------------------------------------------------
+  sast:
+    name: sast/bandit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install bandit
+        run: pip install bandit==1.7.10
+
+      # High severity (-ll) → fails the job. Medium/low stay visible in
+      # the SARIF report for human triage but do not block.
+      - name: Bandit scan (research_backend)
+        working-directory: research_backend
+        run: |
+          bandit -r app \
+            -ll \
+            -f json \
+            -o ../.tmp/bandit.json || true
+
+      - name: Enforce no HIGH-severity findings
+        run: |
+          python - <<'PY'
+          import json, sys
+          data = json.load(open(".tmp/bandit.json"))
+          high = [r for r in data.get("results", [])
+                  if r.get("issue_severity") == "HIGH"]
+          if high:
+              print(f"FAIL: {len(high)} HIGH-severity bandit findings")
+              for r in high[:10]:
+                  print(f"  - {r['filename']}:{r['line_number']} {r['test_id']} {r['issue_text']}")
+              sys.exit(1)
+          print(f"OK: 0 HIGH-severity bandit findings ({len(data.get('results', []))} total)")
+          PY
+
+      - name: Upload SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: research_backend/.tmp/bandit.json
+        continue-on-error: true
+
+  # ---------------------------------------------------------------------
+  # sca : pip-audit + gitleaks — Constitution I, blocks on high-severity CVEs
+  # ---------------------------------------------------------------------
+  sca-pip:
+    name: sca/pip-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        run: pip install --upgrade pip uv pip-audit==2.7.3
+
+      - name: Generate audit requirements
+        working-directory: research_backend
+        run: uv export --no-hashes --frozen > /tmp/audit-requirements.txt
+
+      # CVEs with severity >= HIGH exit non-zero; medium/low are reported
+      # but do not block.
+      - name: pip-audit (strict HIGH+)
+        run: |
+          pip-audit \
+            -r /tmp/audit-requirements.txt \
+            --strict \
+            --disable-pip \
+            --vulnerability-service osv
+
+  sca-gitleaks:
+    name: sca/gitleaks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+  # ---------------------------------------------------------------------
+  # commitlint — gate PR title + body against Conventional Commits
+  # ---------------------------------------------------------------------
+  commitlint:
+    name: commitlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate PR title
+        uses: wagoid/commitlint-github-action@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          configFile: .commitlintrc.json

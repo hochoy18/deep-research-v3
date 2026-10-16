@@ -1,0 +1,86 @@
+/**
+ * research_frontend/app/globals.css
+ *
+ * Tailwind v4 CSS-first configuration (ADR-0007). All design tokens live
+ * here under `@theme { ... }`; no JSON/YAML config duplication.
+ *
+ * Pipeline:
+ *   1. `@import "tailwindcss"` — v4 import replaces v3's three
+ *      `@tailwind base/components/utilities` directives.
+ *   2. `@theme { ... }` — declare design tokens (oklch colors, type ramp,
+ *      spacing) as CSS custom properties. These auto-become utility classes
+ *      (e.g. --color-brand → bg-brand / text-brand).
+ *   3. `@layer components { ... }` — semantic component classes (btn /
+ *      card / chat-bubble).
+ *   4. `@layer base { ... }` — global resets / light+dark theme application.
+ *
+ * To use a token in TypeScript:
+ *   getComputedStyle(document.documentElement).getPropertyValue('--color-brand')
+ * (no extra build step — ADR-0007 §Decision).
+ */
+
+@import "tailwindcss";
+
+@theme {
+  /* ---- Brand palette (oklch — perceptually uniform, v4 default) ---- */
+  --color-brand-50: oklch(0.97 0.02 250);
+  --color-brand-100: oklch(0.93 0.05 250);
+  --color-brand-500: oklch(0.55 0.18 250);
+  --color-brand-600: oklch(0.48 0.21 250);
+  --color-brand-700: oklch(0.41 0.19 250);
+
+  /* ---- Semantic neutrals (zh-CN friendly) ---- */
+  --color-background: oklch(0.99 0 0);
+  --color-foreground: oklch(0.18 0.02 250);
+  --color-muted: oklch(0.95 0.01 250);
+  --color-muted-foreground: oklch(0.45 0.02 250);
+  --color-border: oklch(0.90 0.01 250);
+
+  /* ---- Typography scale (Tailwind defaults kept; only override leading) ---- */
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.5rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.65rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.85rem;
+
+  /* ---- Radius (shadcn defaults) ---- */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* ---- Spacing additions (4-pt baseline) ---- */
+  --spacing-thread-sidebar: 16rem;
+  --spacing-chat-thread: minmax(0, 1fr);
+}
+
+/* Component layer — semantic helpers (kept minimal in M1; M2 expands) */
+@layer components {
+  .chat-bubble-assistant {
+    @apply rounded-lg bg-muted px-4 py-3 text-foreground;
+  }
+  .chat-bubble-user {
+    @apply rounded-lg bg-brand-500 px-4 py-3 text-background;
+  }
+  .thread-list-item {
+    @apply cursor-pointer rounded-md px-3 py-2 text-sm hover:bg-muted;
+  }
+  .thread-list-item-active {
+    @apply bg-brand-50 text-brand-700;
+  }
+}
+
+/* Base layer — global reset + dark mode (M1: light only; M2+ adds dark) */
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}

@@ -1,0 +1,158 @@
+[project]
+name = "research-backend"
+version = "0.1.0"
+description = "hochoy Deep Research Agent — Backend (FastAPI + LangGraph + LangChain classic)"
+# Versioning note: M1 milestone marker lives in
+# .specify/feature.json + git tags (`m1-complete`); the sdist is plain
+# 0.1.0 to stay PEP 440 compatible (PEP 440 disallows `-m1` suffix).
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { text = "Proprietary" }
+authors = [
+    { name = "Dev.cai.1", email = "dev.cai.1@hochoy.local" },
+]
+keywords = ["deep-research", "langgraph", "fastapi", "llm-agent", "hochoy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    # Web framework
+    "fastapi>=0.143,<0.150",
+    "uvicorn[standard]>=0.32,<0.40",
+    "python-multipart>=0.0.20,<0.2",
+    "sse-starlette>=2.1,<3.0",
+    # Validation & settings
+    "pydantic>=2.9,<3.0",
+    "pydantic-settings>=2.6,<3.0",
+    "pydantic-extra-types>=2.9,<3.0",
+    # Persistence (Postgres + Redis)
+    "sqlalchemy[asyncio]>=2.0.36,<3.0",
+    "asyncpg>=0.30,<1.0",
+    "alembic>=1.14,<2.0",
+    "redis>=5.2,<7.0",
+    # LangGraph + LangChain classic (ADR-0001 / ADR-0005)
+    # Note: langchain-classic graduated to 1.0.x in 2026; spec Q1 still
+    # calls it "0.3+" because the deliverable spec predates that release.
+    "langgraph>=1.2.15,<2.0",
+    "langchain>=1.0,<2.0",
+    "langchain-core>=1.0,<2.0",
+    "langchain-classic>=1.0,<2.0",
+    "langgraph-checkpoint-redis>=0.1,<1.0",  # Dev.cai.2 app/graph/graph.py:53 懒加载 RedisSaver
+    # Observability (ADR-0006 — Langfuse v5 OTel API)
+    "langfuse>=3.0,<4.0",
+    "opentelemetry-api>=1.27,<2.0",
+    "opentelemetry-sdk>=1.27,<2.0",
+    # Structured logging (constitution VII)
+    "structlog>=24.4,<26.0",
+    # Async HTTP client (used by observability + tools)
+    "httpx>=0.27,<1.0",
+]
+
+[project.urls]
+"Source" = "https://github.com/hochoy/deep-research"
+"Issues" = "https://github.com/hochoy/deep-research/issues"
+
+[project.scripts]
+# Hook for `uv run <name>` — Dev.cai.2 will populate `app.main` in T016
+research-backend = "app.main:run"
+
+# =============================================================================
+# Build system — PEP 517 via uv
+# =============================================================================
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+# =============================================================================
+# uv workspace configuration
+# =============================================================================
+[tool.uv]
+managed = true
+package = true
+python-preference = "managed"
+
+# =============================================================================
+# Tooling (configured here so individual tools pick them up consistently;
+# full dev dependency set is added in T032 — Dev.cai.1)
+# =============================================================================
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["app", "tests"]
+extend-exclude = ["build", "dist", ".venv"]
+
+[tool.ruff.lint]
+# Strict rule set for M1 (Security-First; constitution I)
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "S",   # flake8-bandit (security)
+    "C4",  # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "T20", # flake8-print
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "ARG", # flake8-unused-arguments
+    "PL",  # pylint
+    "RUF", # ruff-specific rules
+]
+ignore = [
+    "PLR0913", # too-many-arguments (acceptable in FastAPI handlers)
+    "PLR2004", # magic value (acceptable in config defaults)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "ARG", "PLR2004"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+markers = [
+    "integration: integration tests (require external services)",
+    "contract: API contract tests",
+    "critical_path: marks the 4 critical paths from spec SC-006",
+]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning:langchain",
+]
+
+[tool.coverage.run]
+source = ["app"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "*/__main__.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+# Critical-path gate — enforced by coverage_paths gate in CI (T072)
+# Threshold for app code overall lines: 80% (constitution III)
+fail_under = 80
+
+[tool.bandit]
+exclude_dirs = ["tests", "migrations"]
+# Treat as error: B201 B601 B602 B603 B604 B605 B606 B607 B608 B609 B610
+skips = []

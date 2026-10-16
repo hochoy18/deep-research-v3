@@ -1,0 +1,136 @@
+# =============================================================================
+# Taskfile.yml — Deep Research Agent M1 (FEATURE-001-m1-infra)
+# =============================================================================
+# Single dev entry point used by all 4 M1 Co-Owners (Dev.cai.1 / .2 / .3 / .4)
+# + TL.cai. Run `task --list` to see all targets.
+#
+# Tool versions mirror requirements-dev.txt (T015 — feat/m1-us3-pr-gate::fd7e66b)
+# and research_frontend/package.json devDependencies so a local `task X`
+# matches what CI (.github/workflows/ci.yml) runs — byte-for-byte.
+#
+# Conventions:
+#   - dev:*       : docker compose lifecycle for the M1 5-service stack
+#   - backend:*   : Python tooling (uv + ruff + pytest)
+#   - frontend:*  : TypeScript tooling (pnpm + eslint + vitest)
+#   - test:*      : cross-cutting test orchestration
+#
+# Owner: Dev.cai.4  [T004 + T091/T092/T094]
+# =============================================================================
+
+version: '3'
+
+# ---------------------------------------------------------------------------
+# Variables — single source of truth for paths + Constitution III gate
+# ---------------------------------------------------------------------------
+vars:
+  DIR_BACKEND: research_backend
+  DIR_FRONTEND: research_frontend
+  DIR_DEPLOY: deploy
+  COMPOSE_FILE: '{{.DIR_DEPLOY}}/docker-compose.yml'
+  # Constitution III — Test-First 关键路径 ≥80% 覆盖率门禁
+  COVERAGE_MIN_PCT: '80'
+
+# ---------------------------------------------------------------------------
+# Default — `task` with no args prints the catalogue
+# ---------------------------------------------------------------------------
+tasks:
+  default:
+    description: List all available tasks
+    cmds:
+      - task --list
+
+  # =========================================================================
+  # DEV LIFECYCLE — docker compose for postgres / redis / langfuse / backend / frontend
+  # =========================================================================
+
+  dev:up:
+    desc: Start the M1 stack (postgres / redis / langfuse / backend / frontend) and wait for healthchecks
+    dir: '{{.DIR_DEPLOY}}'
+    cmds:
+      - docker compose --file {{.COMPOSE_FILE}} up -d --wait
+      - docker compose --file {{.COMPOSE_FILE}} ps
+
+  dev:down:
+    desc: Stop the M1 stack and remove containers (volumes preserved for fast restart)
+    dir: '{{.DIR_DEPLOY}}'
+    cmds:
+      - docker compose --file {{.COMPOSE_FILE}} down
+
+  dev:logs:
+    desc: Tail logs from all services (Ctrl+C to stop)
+    dir: '{{.DIR_DEPLOY}}'
+    cmds:
+      - docker compose --file {{.COMPOSE_FILE}} logs -f --tail=100
+
+  # =========================================================================
+  # BACKEND — Python (uv + ruff + pytest)
+  # =========================================================================
+
+  backend:test:
+    desc: Run backend pytest suite (unit + integration + contract markers)
+    dir: '{{.DIR_BACKEND}}'
+    cmds:
+      - uv sync --frozen --extra dev
+      - uv run pytest {{.CLI_ARGS}}
+
+  backend:lint:
+    desc: Lint + format-check the backend (ruff check + ruff format --check)
+    dir: '{{.DIR_BACKEND}}'
+    cmds:
+      - uv run ruff check app tests
+      - uv run ruff format --check app tests
+
+  backend:coverage:
+    desc: Run backend tests with coverage; ≥{{.COVERAGE_MIN_PCT}}% gate (Constitution III)
+    dir: '{{.DIR_BACKEND}}'
+    cmds:
+      - uv run pytest --cov=app --cov-report=term-missing --cov-report=xml:coverage/backend-coverage.xml --cov-fail-under={{.COVERAGE_MIN_PCT}}
+
+  # =========================================================================
+  # FRONTEND — TypeScript (pnpm + eslint + vitest)
+  # =========================================================================
+
+  frontend:dev:
+    desc: Start Next.js dev server on http://localhost:3000
+    dir: '{{.DIR_FRONTEND}}'
+    cmds:
+      - pnpm install --frozen-lockfile
+      - pnpm dev
+
+  frontend:test:
+    desc: Run frontend vitest suite
+    dir: '{{.DIR_FRONTEND}}'
+    cmds:
+      - pnpm install --frozen-lockfile
+      - pnpm test --run {{.CLI_ARGS}}
+
+  frontend:lint:
+    desc: Lint + format-check the frontend (eslint + prettier)
+    dir: '{{.DIR_FRONTEND}}'
+    cmds:
+      - pnpm install --frozen-lockfile
+      - pnpm lint
+      - pnpm fmt:check
+
+  frontend:coverage:
+    desc: Run frontend tests with coverage; thresholds set in vitest.config.ts (≥{{.COVERAGE_MIN_PCT}}% lines/statements/functions)
+    dir: '{{.DIR_FRONTEND}}'
+    cmds:
+      - pnpm install --frozen-lockfile
+      - pnpm test:coverage
+
+  # =========================================================================
+  # CROSS-CUTTING — used by `task test:all` and the PR CI gate
+  # =========================================================================
+
+  test:all:
+    desc: Run backend + frontend test suites sequentially
+    cmds:
+      - task: backend:test
+      - task: frontend:test
+
+  test:coverage:
+    desc: Run all tests with coverage; ≥{{.COVERAGE_MIN_PCT}}% gate on backend (Constitution III)
+    cmds:
+      - task: backend:coverage
+      - task: frontend:coverage

@@ -531,7 +531,16 @@ else
     RESULT=$(printf '%s' '{
       "required_status_checks": {
         "strict": true,
-        "contexts": ["ci/lint", "ci/test", "ci/sast", "ci/sca"]
+        "contexts": [
+          "backend/lint-test-coverage",
+          "frontend/lint",
+          "frontend/test",
+          "frontend/build",
+          "sast/bandit",
+          "sca/pip-audit",
+          "sca/gitleaks",
+          "commitlint"
+        ]
       },
       "enforce_admins": false,
       "required_pull_request_reviews": {
